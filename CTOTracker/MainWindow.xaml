@@ -28,7 +28,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <usercontrol:EmployeeView Grid.Row="1" />
+            <usercontrol:ScheduleView Grid.Row="1" />
         </Grid>
     </Grid>
 </Window>
