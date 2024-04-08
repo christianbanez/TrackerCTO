@@ -15,9 +15,9 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Button Grid.Row="1" Height="30" />
-            <Button Grid.Row="2" Height="30" />
-            <Button Grid.Row="3" Height="30" />
+            <Button x:Name="btnEmp" Grid.Row="1" Height="30" Content="Employee" />
+            <Button x:Name="btnSched" Grid.Row="2" Height="30" Content="Schedule" />
+            <Button x:Name="btnReport" Grid.Row="3" Height="30" Content="Report" />
             <!--<Menu>
                 <MenuItem Header="Employees" FontSize="16"/>
                 <MenuItem Header="Schedule" FontSize="16"/>

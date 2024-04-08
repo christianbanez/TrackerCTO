@@ -5,16 +5,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker"
     xmlns:usercontrols="clr-namespace:CTOTracker.View.UserControls"
+    xmlns:usercontrol="clr-namespace:CTOTracker.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="MAIN"
     Title="MainWindow"
-    Width="800"
-    Height="450"
-    mc:Ignorable="d">
+    Width="1360"
+    Height="768"
+    mc:Ignorable="d" Padding="5,5,5,5" MinWidth="800" MinHeight="450">
     <Grid>
         <!--  SideNav  -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="150" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
@@ -27,6 +28,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
+            <usercontrol:EmployeeView Grid.Row="1" />
         </Grid>
     </Grid>
 </Window>

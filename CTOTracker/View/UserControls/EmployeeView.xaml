@@ -16,9 +16,29 @@
             </Grid.RowDefinitions>
 
             <!--EmployeeDisplay-->
-            <DataGrid>
+            <Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60*"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
 
-            </DataGrid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="15"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Button x:Name="btnAdd" Grid.Column="1" Margin="5"
+                                Width="60" Content="Add"/>
+                        <Button x:Name="btnEdit" Grid.Column="2" Margin="5" 
+                                Width="60" Content="Update" HorizontalAlignment="Right"/>
+                    </Grid>
+                </Grid>
+            </Grid>
 
             <!--EmployeeTable-->
             <DataGrid Grid.Row="1">
