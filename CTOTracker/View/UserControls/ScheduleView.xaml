@@ -7,6 +7,62 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+
+        <!--ScheduleDisplay-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="30*"/>
+
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!--BUTTONS-->
+            <Button Content="ADD TASK" HorizontalAlignment="Left" Margin="702,0,0,0" 
+                        VerticalAlignment="Center" Height="25" Width="88"/>
+            <ComboBox HorizontalAlignment="Left" Margin="502,0,0,0" 
+                          VerticalAlignment="Center" Width="182" Height="24"/>
+            <TextBox HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" 
+                         Text="TextBox" VerticalAlignment="Center" Width="278" Height="24"/>
+
+
+            <!--SCHDULE_TABLE-->
+            <DataGrid Grid.Row="1">
+
+            </DataGrid>
+
+            <DataGrid Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+
+            <!--TOTAL_SELECTED_PANEL-->
+            <DataGrid Grid.Row="2">
+
+            </DataGrid>
+
+
+            <!--TOTAL_OVERALL_EARN-->
+            <DataGrid Grid.Row="3">
+
+            </DataGrid>
+
+            <!--TASSK_USED_VIEW-->
+            <DataGrid Grid.Row="4">
+
+            </DataGrid>
+
+
+            <DataGrid Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+            <Button Content="Save" HorizontalAlignment="Left" Margin="403,0,0,0" 
+                    Grid.Row="2" VerticalAlignment="Center" Height="25" Width="88"/>
+            <Label Content="Total Selected :" HorizontalAlignment="Left" Margin="502,0,0,0" Grid.Row="2" VerticalAlignment="Center" Width="93" Height="25"/>
+            <Label Content="NUMBER" HorizontalAlignment="Left" Margin="600,0,0,0" Grid.Row="2" VerticalAlignment="Center" Width="67" Height="25"/>
+            <Label Content="Total Earned : " HorizontalAlignment="Left" Margin="510,8,0,0" Grid.Row="3" VerticalAlignment="Top" Height="25" Width="90"/>
+            <Label Content="NUMBER" HorizontalAlignment="Left" Margin="605,0,0,0" Grid.Row="3" VerticalAlignment="Center" Height="25" Width="90"/>
+            <DataGrid Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+
+        </Grid>
     </Grid>
+
 </UserControl>
