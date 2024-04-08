@@ -22,13 +22,14 @@
         <usercontrols:SideNav />
 
         <!--  MainPage  -->
-        <Grid Grid.Column="1">
+        <DockPanel Grid.Column="1">
+            <usercontrol:EmployeeView/>            
+        </DockPanel>
+        <!--<Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-
-            <usercontrol:ScheduleView Grid.Row="1" />
-        </Grid>
+        </Grid>-->
     </Grid>
 </Window>
