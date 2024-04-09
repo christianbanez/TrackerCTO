@@ -16,7 +16,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Button x:Name="btnEmp" Grid.Row="1" Height="30" Content="Employee" />
-            <Button x:Name="btnSched" Grid.Row="2" Height="30" Content="Schedule" />
+            <Button x:Name="btnSched" Grid.Row="2" Height="30" Content="Schedule" Click="btnSched_Click" />
             <Button x:Name="btnReport" Grid.Row="3" Height="30" Content="Report" />
             <!--<Menu>
                 <MenuItem Header="Employees" FontSize="16"/>

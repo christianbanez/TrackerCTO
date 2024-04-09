@@ -24,5 +24,25 @@ namespace CTOTracker.View.UserControls
         {
             InitializeComponent();
         }
+
+        private void btnSched_Click(object sender, RoutedEventArgs e)
+        {
+            // Instantiate an instance of ScheduleView
+            ScheduleView scheduleView = new ScheduleView();
+
+            // Create a new window
+            Window scheduleWindow = new Window();
+
+            // Set the content of the new window to the instance of ScheduleView
+            scheduleWindow.Content = scheduleView;
+
+            // Set window properties 
+            scheduleWindow.Title = "Schedule View";
+            scheduleWindow.Width = 850;
+            scheduleWindow.Height = 425;
+
+            // Show the new window
+            scheduleWindow.ShowDialog();
+        }
     }
 }

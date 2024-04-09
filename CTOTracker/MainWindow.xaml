@@ -19,7 +19,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <usercontrols:SideNav />
+        <usercontrols:SideNav Loaded="SideNav_Loaded" />
 
         <!--  MainPage  -->
         <DockPanel Grid.Column="1">
