@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -193,9 +194,6 @@ namespace CTOTracker
             return tasks;
         }
 
-
-
-
         //Add Button
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -232,12 +230,17 @@ namespace CTOTracker
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
+            finally
+            {
+               
+            }
+            
         }
 
 
         private string GetEmployeeId(string employeeName)
         {
-            string employeeId = null; // Initialize employeeId to null
+            string? employeeId = null; // Initialize employeeId to null
 
             try
             {
@@ -302,15 +305,38 @@ namespace CTOTracker
             return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
         }
 
+        public double CalculateCtoEarned(DateTime timeIn, DateTime timeOut)
+        {
+            // Calculate the duration worked
+            TimeSpan duration = timeOut - timeIn;
 
+            // Define thresholds for ctoEarned
+            TimeSpan eightHours = TimeSpan.FromHours(8);
+            TimeSpan fourHours = TimeSpan.FromHours(4);
+
+            // Compare the duration with thresholds
+            if (duration >= eightHours)
+            {
+                return 1.0; // Full day (8+ hours)
+            }
+            else if (duration >= fourHours)
+            {
+                return 0.5; // Half day (4+ hours)
+            }
+            else
+            {
+                return 0.0; // Less than 4 hours
+            }
+        }
         private void InsertIntoSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
         {
-            try
+            using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
             {
-                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                try
                 {
-                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut) " +
-                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut)"; // Define the SQL query
+
+                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned) " +
+                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned)"; // Define the SQL query
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
@@ -320,30 +346,50 @@ namespace CTOTracker
                         command.Parameters.AddWithValue("@plannedStart", startDate);
                         command.Parameters.AddWithValue("@plannedEnd", endDate);
 
-                        // Add timeIn parameter only if it's not null
-                        if (!string.IsNullOrEmpty(timeIn))
-                            command.Parameters.AddWithValue("@timeIn", timeIn);
-                        else
-                            command.Parameters.AddWithValue("@timeIn", DBNull.Value);
 
-                        // Add timeOut parameter only if it's not null
-                        if (!string.IsNullOrEmpty(timeOut))
-                            command.Parameters.AddWithValue("@timeOut", timeOut);
+
+                        // Concatenate the date portion of the start date with the timeIn value
+                        if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                        {
+                            DateTime timeInDateTime = DateTime.ParseExact(timeIn, "hh:mm tt", CultureInfo.InvariantCulture);
+                            DateTime dateTimeInWithDate = startDate.Date + timeInDateTime.TimeOfDay;
+                            command.Parameters.AddWithValue("@timeIn", dateTimeInWithDate);
+
+                            DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
+                            DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
+                            command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
+
+                            double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
+                            command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                        }
                         else
+                        {
+                            command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                             command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                            command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
+                        }
 
                         connection.Open(); // Open the connection
                         int rowsAffected = command.ExecuteNonQuery(); // Execute the query and get the number of rows affected
                         MessageBox.Show($"{rowsAffected} row(s) inserted into Schedule table."); // Display a message with the number of rows affected
                     }
+
+
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error inserting into Schedule table: " + ex.Message); // Display error message if an exception occurs
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error inserting into Schedule table: " + ex.Message); // Display error message if an exception occurs
+                }
+                finally 
+                { 
+                    connection.Close(); 
+                }
             }
         }
 
-
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

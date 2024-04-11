@@ -21,7 +21,7 @@
             </Grid.RowDefinitions>
 
             <!--BUTTONS-->
-            <Button Content="ADD TASK" HorizontalAlignment="Left" Margin="702,0,0,0" 
+            <Button Content="ASSIGN" HorizontalAlignment="Left" Margin="702,0,0,0" 
                         VerticalAlignment="Center" Height="25" Width="88" Click="Button_Click"/>
             <ComboBox HorizontalAlignment="Left" Margin="502,0,0,0" 
                           VerticalAlignment="Center" Width="182" Height="24"/>
