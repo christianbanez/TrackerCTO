@@ -237,7 +237,7 @@ namespace CTOTracker
 
         private string GetEmployeeId(string employeeName)
         {
-            string employeeId = null; // Initialize employeeId to null
+            string? employeeId = null; // Initialize employeeId to null
 
             try
             {
@@ -273,7 +273,7 @@ namespace CTOTracker
 
         private string GetTaskId(string taskName)
         {
-            string taskId = null; // Initialize taskId to null
+            string? taskId = null; // Initialize taskId to null
 
             try
             {

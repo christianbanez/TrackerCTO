@@ -28,15 +28,33 @@ namespace CTOTracker.View
         public EmployeeView()
         {
             InitializeComponent();
+            dataConnection = new DataConnection();
+            LoadEmployeeView();
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
+            PopulateRoleComboBox();
+
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+
+            txtEmpID.Clear();
+            txtFname.Clear();
+            txtLname.Clear();
+            txtEmail.Clear();
+            txtContact.Clear();
+            txtEmpID.IsEnabled = true;
+            txtFname.IsEnabled = true;
+            txtLname.IsEnabled = true;
+            txtEmail.IsEnabled = true;
+            txtContact.IsEnabled = true;
+            txtRole.IsEnabled = true;
+
             AddPnl.Visibility = Visibility.Visible;
             UpdatePnl.Visibility = Visibility.Collapsed;
             AddEdit.Visibility = Visibility.Collapsed;
+
         }
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
@@ -44,6 +62,13 @@ namespace CTOTracker.View
             UpdatePnl.Visibility = Visibility.Visible;
             AddPnl.Visibility = Visibility.Collapsed;
             AddEdit.Visibility = Visibility.Collapsed;
+
+            txtEmpID.IsEnabled = true;
+            txtFname.IsEnabled = true;
+            txtLname.IsEnabled = true;
+            txtEmail.IsEnabled = true;
+            txtContact.IsEnabled = true;
+            txtRole.IsEnabled = true;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -54,6 +79,12 @@ namespace CTOTracker.View
                 AddEdit.Visibility = Visibility.Visible;
                 AddPnl.Visibility = Visibility.Collapsed;
                 UpdatePnl.Visibility = Visibility.Collapsed;
+                txtEmpID.IsEnabled = false;
+                txtFname.IsEnabled = false;
+                txtLname.IsEnabled = false;
+                txtEmail.IsEnabled = false;
+                txtContact.IsEnabled = false;
+                txtRole.IsEnabled = false;
             }
         }
 
@@ -66,7 +97,7 @@ namespace CTOTracker.View
                 AddPnl.Visibility = Visibility.Collapsed;
                 UpdatePnl.Visibility = Visibility.Collapsed;
             }
-            dataConnection = new DataConnection();
+            //dataConnection = new DataConnection();
             LoadEmployeeView();
 
         }
@@ -74,16 +105,14 @@ namespace CTOTracker.View
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
-
                 try
                 {
-
-
+                    connection.Open();
                     string query = "SELECT inforID, fName, lName, email, contact, roleID FROM Employee";   // Specify the columns you want to retrieve
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();          // Retrieve data from the database
                     adapter.Fill(dataTable);
-                    connection.Open();
+                    
                     if (dataTable != null && dataTable.Rows.Count > 0)  // Check if any data is returned
                     {
                         DataGridEmployee1.ItemsSource = dataTable.DefaultView;     // Bind the DataTable to the DataGridView
@@ -94,6 +123,7 @@ namespace CTOTracker.View
                     }
                     // Call the method to open the connection
 
+
                 }
                 catch (Exception ex)
                 {
@@ -101,7 +131,7 @@ namespace CTOTracker.View
                 }
                 finally
                 {
-                    connection.Close();
+                    connection.Close(); 
                 }
             }
         }
@@ -166,15 +196,274 @@ namespace CTOTracker.View
             }
         }
 
-        #endregion
 
-
-
-
-
-        private void btnAdd_Click(object sender, RoutedEventArgs e)
+        private void DataGridEmployee1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }
-    }
+
+        private void PopulateRoleComboBox()
+        {
+            try
+            {
+                // Fetch data from the Employee table
+                List<string> role = GetDataFromRole();
+
+                // Check if 'employees' is null before binding to the ComboBox
+                if (role != null)
+                {
+                    txtRole.ItemsSource = role;
+                }
+                else
+                {
+                    // Handle the case when 'employees' is null
+                    MessageBox.Show("No role found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+        private List<string> GetDataFromRole()
+        {
+            // Create a list to store employee names
+            List<string> role = new List<string>();
+
+            try
+            {
+                // Get connection from DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Define the Access query to select first names (fName) and last names (lName) from the Employee table
+                    string query = "SELECT roleName FROM Role";
+
+                    // Create a command object with the query and connection
+                    OleDbCommand command = new OleDbCommand(query, connection);
+
+                    // Open the connection to the database
+                    connection.Open();
+
+                    // Execute the command and retrieve data using a data reader
+                    OleDbDataReader reader = command.ExecuteReader();
+
+                    // Iterate through the data reader to read each row
+                    while (reader.Read())
+                    {
+                        // Check if the fName and lName columns contain non-null values
+                        if (!reader.IsDBNull(reader.GetOrdinal("roleName")))
+                        {
+                            // Concatenate the first name and last name to form the full name
+                            string roleName = $"{reader["roleName"]}";
+
+                            // Add the full name to the list of employees
+                            role.Add(roleName);
+                        }
+                    }
+
+                    // Close the data reader
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+            // Return the list of employee names retrieved from the database
+            return role;
+        }
+
+
+
+        #endregion
+        private void InsertEmployee(string infor_ID, string firstName, string lastName, string email, string contact, string roleID)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    connection.Open();
+
+                    using (OleDbCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "INSERT INTO Employee (inforID, fName, lName, email, contact, roleID) " +
+                                          "VALUES (@infor_ID, @firstName, @lastName, @email, @contact, @roleID)";
+
+                        cmd.Parameters.AddWithValue("@infor_ID", infor_ID);
+                        cmd.Parameters.AddWithValue("@firstName", firstName);
+                        cmd.Parameters.AddWithValue("@lastName", lastName);
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@contact", contact);
+                        cmd.Parameters.AddWithValue("@roleID", roleID);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Error");
+            }
+        }
+        private void btnSaveAdd_Click(object sender, RoutedEventArgs e)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
+                    string roleID = GetRoleID(selectedRole);
+                    connection.Open();
+                    // Validate input fields
+                    if (!ValidateInput())
+                    {
+                        return;
+                    }
+                    string infor_ID = txtEmpID.Text;
+                    string firstName = txtFname.Text;
+                    string lastName = txtLname.Text;
+                    string email = txtEmail.Text;
+                    string contact = txtContact.Text;
+
+                    InsertEmployee(infor_ID, firstName, lastName, email, contact, roleID);
+                    MessageBox.Show("Employee added successfully!");
+                    
+                    LoadEmployeeView();
+                    txtEmpID.Clear();
+                    txtFname.Clear();
+                    txtLname.Clear();
+                    txtEmail.Clear();
+                    txtContact.Clear();
+                    //txtRole.Clear();
+
+                }
+                catch
+                {
+                    MessageBox.Show("Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+        private string GetRoleID(string roleName)
+        {
+            string? roleID = null; // Initialize taskId to null
+
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    string query = "SELECT roleID FROM Role WHERE roleName = ?"; // SQL query to retrieve task ID based on task name
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@roleName", roleName); // Add parameter for task name
+
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            roleID = result.ToString(); // Assign the task ID to taskId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
+            }
+
+            return roleID ?? throw new Exception("Role ID not found."); // Return taskId if not null, otherwise throw an exception
+        }
+
+        private void txtContact_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+                foreach (char ch in e.Text)
+                {
+                    if (!char.IsDigit(ch))
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            
+        }
+
+        private void DataGridEmployee1_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = gd.SelectedItem as DataRowView;
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate textboxes
+                txtEmpID.Text = row_selected["inforID"].ToString();
+                txtFname.Text = row_selected["fName"].ToString();
+                txtLname.Text = row_selected["lName"].ToString();
+                txtEmail.Text = row_selected["email"].ToString();
+                txtContact.Text = row_selected["contact"].ToString();
+                txtRole.Text = row_selected["roleID"].ToString();
+            }
+        }
+
+        private void btnSaveUp_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Retrieve updated values from input fields
+                string infor_ID = txtEmpID.Text;
+                string firstName = txtFname.Text;
+                string lastName = txtLname.Text;
+                string email = txtEmail.Text;
+                string contact = txtContact.Text;
+                string role = txtRole.Text;
+
+                // Update the employee record in the database
+                UpdateEmployee(infor_ID, firstName, lastName, email, contact, role);
+
+                // Refresh the DataGridView to reflect the changes
+                LoadEmployeeView();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating employee: " + ex.Message, "Error");
+            }
+        }
+        private void UpdateEmployee(string infor_ID, string firstName, string lastName, string email, string contact, string roleID)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    connection.Open();
+                    using (OleDbCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "UPDATE Employee SET firstName = @FirstName, lastName = @LastName, email = @Email, contact = @Contact, roleID = @roleID WHERE inforID = @InforID";
+
+                        cmd.Parameters.AddWithValue("@infor_ID", infor_ID);
+                        cmd.Parameters.AddWithValue("@firstName", firstName);
+                        cmd.Parameters.AddWithValue("@lastName", lastName);
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@contact", contact);
+                        cmd.Parameters.AddWithValue("@roleID", roleID);
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+        }
+
+        }
 }

@@ -17,22 +17,25 @@
         <!--  SideNav  -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="277*" />
+            <ColumnDefinition Width="78*"/>
+            <ColumnDefinition Width="166*"/>
+            <ColumnDefinition Width="689*"/>
         </Grid.ColumnDefinitions>
 
         <usercontrols:SideNav Loaded="SideNav_Loaded" />
 
         <!--  MainPage  -->
         <!--<Frame Source="usercontrol.EmployeeView"  Grid.Column="1"/>-->
-        <Frame Grid.Column="1" x:Name="Main" Margin="15" NavigationUIVisibility="Hidden" Loaded="homeLoad"/>
+        <Frame Grid.Column="1" x:Name="Main" Margin="15,15,15,15" NavigationUIVisibility="Hidden" Loaded="homeLoad" Grid.ColumnSpan="4"/>
 
     </Grid>
 </Window>
 
-        <!--<DockPanel Grid.Column="1">
+<!--<DockPanel Grid.Column="1">
             
         </DockPanel>-->
-        <!--<Grid Grid.Column="1">
+<!--<Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
                 <RowDefinition/>

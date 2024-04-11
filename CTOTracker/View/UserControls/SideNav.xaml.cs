@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CTOTracker.View.UserControls
 {
@@ -24,13 +12,16 @@ namespace CTOTracker.View.UserControls
         {
             InitializeComponent();
         }
-
+      /*  private void SideNav_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Your event handler implementation here
+        }*/
         private void btnEmpNav(object sender, RoutedEventArgs e)
         {
             // Navigate the "Main" frame to the Employee page
             if (Application.Current.MainWindow != null)
             {
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
                     mainWindow.Main.Navigate(new EmployeeView());
@@ -43,7 +34,7 @@ namespace CTOTracker.View.UserControls
             // Navigate the "Main" frame to the Employee page
             if (Application.Current.MainWindow != null)
             {
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
                     mainWindow.Main.Navigate(new ScheduleView());
@@ -56,7 +47,7 @@ namespace CTOTracker.View.UserControls
             // Navigate the "Main" frame to the Employee page
             if (Application.Current.MainWindow != null)
             {
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
                     mainWindow.Main.Navigate(new ScheduleView());
