@@ -26,5 +26,10 @@ namespace CTOTracker
         {
             Main.Navigate(new EmployeeView());
         }
+
+        private void SideNav_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
