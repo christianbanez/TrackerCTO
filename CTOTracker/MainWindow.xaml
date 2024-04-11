@@ -7,11 +7,12 @@
     xmlns:usercontrols="clr-namespace:CTOTracker.View.UserControls"
     xmlns:usercontrol="clr-namespace:CTOTracker.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="MAIN"
+    x:Name="MainWindow1"
     Title="MainWindow"
     Width="1360"
     Height="768"
-    mc:Ignorable="d" Padding="5,5,5,5" MinWidth="800" MinHeight="450">
+    mc:Ignorable="d" Padding="5,5,5,5" MinWidth="1360" MinHeight="768"
+    MaxWidth="1360" MaxHeight="768" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <!--  SideNav  -->
         <Grid.ColumnDefinitions>
@@ -22,14 +23,18 @@
         <usercontrols:SideNav />
 
         <!--  MainPage  -->
-        <DockPanel Grid.Column="1">
-            <usercontrol:EmployeeView/>            
-        </DockPanel>
+        <!--<Frame Source="usercontrol.EmployeeView"  Grid.Column="1"/>-->
+        <Frame Grid.Column="1" x:Name="Main" Margin="15" NavigationUIVisibility="Hidden" Loaded="homeLoad"/>
+
+    </Grid>
+</Window>
+
+        <!--<DockPanel Grid.Column="1">
+            
+        </DockPanel>-->
         <!--<Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
         </Grid>-->
-    </Grid>
-</Window>

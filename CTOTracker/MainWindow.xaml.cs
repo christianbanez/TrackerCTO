@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using CTOTracker.View;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,11 @@ namespace CTOTracker
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void homeLoad(object sender, RoutedEventArgs e)
+        {
+            Main.Navigate(new EmployeeView());
         }
     }
 }
