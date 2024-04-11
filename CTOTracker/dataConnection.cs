@@ -14,7 +14,7 @@ namespace CTOTracker
     public class DataConnection
     {
         public string connectionStrings = ConfigurationManager.ConnectionStrings["connectionName"].ConnectionString;
-        public string connection;
+        //public string connection;
         //OleDbConnection connection = new OleDbConnection(connectionString);
         //connection.connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source = Provider = Microsoft.ACE.OLEDB.12.0; Data Source = C:\Users\dkeh\source\repos\EmployeeTracker\dbtk.accdb";
         //public static readonly string ConnectionString = ("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\dkeh\\source\\repos\\EmployeeTracker\\dbtk.accdb");
