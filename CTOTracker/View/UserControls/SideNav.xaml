@@ -1,11 +1,12 @@
 ﻿<UserControl x:Class="CTOTracker.View.UserControls.SideNav"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:CTOTracker.View.UserControls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="100">
+
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -15,15 +16,17 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Button x:Name="btnEmp" Grid.Row="1" Height="30" Content="Employee" Click="btnEmpNav" />
-            <Button x:Name="btnSched" Grid.Row="2" Height="30" Content="Schedule" Click="btnSched_Click" />
-            <Button x:Name="btnReport" Grid.Row="3" Height="30" Content="Report" Click="btnReport_Click" />
-
+            <Button x:Name="btnEmp" Grid.Row="1" Height="30" Content="Employee"
+                    Click="btnEmpNav" Focusable="False" />
+            <Button x:Name="btnSched" Grid.Row="2" Height="30" Content="Schedule"
+                    Click="btnSched_Click" />
+            <Button x:Name="btnReport" Grid.Row="3" Height="30" Content="Report"
+                    Click="btnReport_Click" ClickMode="Press" />
         </Grid>
     </Grid>
 </UserControl>
-    
+
             <!--<Menu>
-                <MenuItem Header="Employees" FontSize="16"/>
-                <MenuItem Header="Schedule" FontSize="16"/>
+                <MenuItem Header="Employees" FontSize="16" />
+                <MenuItem Header="Schedule" FontSize="16" />
             </Menu>-->

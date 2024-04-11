@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CTOTracker.View.UserControls
 {
@@ -33,7 +21,7 @@ namespace CTOTracker.View.UserControls
                 MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
-                    mainWindow.Main.Navigate(new EmployeeView());
+                    //mainWindow.Main.Navigate(new EmployeeView());
                 }
             }
         }
@@ -46,7 +34,7 @@ namespace CTOTracker.View.UserControls
                 MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
-                    mainWindow.Main.Navigate(new ScheduleView());
+                    //mainWindow.Main.Navigate(new ScheduleView());
                 }
             }
         }
@@ -59,7 +47,7 @@ namespace CTOTracker.View.UserControls
                 MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
-                    mainWindow.Main.Navigate(new ScheduleView());
+                    // mainWindow.Main.Navigate(new ScheduleView());
                 }
             }
         }

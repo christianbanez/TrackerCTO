@@ -24,7 +24,7 @@ namespace CTOTracker
 
         private void homeLoad(object sender, RoutedEventArgs e)
         {
-            Main.Navigate(new EmployeeView());
+            //Main.Navigate(new EmployeeView());
         }
     }
 }

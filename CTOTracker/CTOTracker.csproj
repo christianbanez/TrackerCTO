@@ -9,8 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\tgbMenu.png" />
+    <None Remove="Assets\tgbMenu_MouseOver.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="View-Model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\tgbMenu.png" />
+    <Resource Include="Assets\tgbMenu_MouseOver.png" />
   </ItemGroup>
 
 </Project>
