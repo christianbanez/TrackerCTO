@@ -25,24 +25,43 @@ namespace CTOTracker.View.UserControls
             InitializeComponent();
         }
 
+        private void btnEmpNav(object sender, RoutedEventArgs e)
+        {
+            // Navigate the "Main" frame to the Employee page
+            if (Application.Current.MainWindow != null)
+            {
+                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.Main.Navigate(new EmployeeView());
+                }
+            }
+        }
+
         private void btnSched_Click(object sender, RoutedEventArgs e)
         {
-            // Instantiate an instance of ScheduleView
-            ScheduleView scheduleView = new ScheduleView();
+            // Navigate the "Main" frame to the Employee page
+            if (Application.Current.MainWindow != null)
+            {
+                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.Main.Navigate(new ScheduleView());
+                }
+            }
+        }
 
-            // Create a new window
-            Window scheduleWindow = new Window();
-
-            // Set the content of the new window to the instance of ScheduleView
-            scheduleWindow.Content = scheduleView;
-
-            // Set window properties 
-            scheduleWindow.Title = "Schedule View";
-            scheduleWindow.Width = 850;
-            scheduleWindow.Height = 425;
-
-            // Show the new window
-            scheduleWindow.ShowDialog();
+        private void btnReport_Click(object sender, RoutedEventArgs e)
+        {
+            // Navigate the "Main" frame to the Employee page
+            if (Application.Current.MainWindow != null)
+            {
+                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.Main.Navigate(new ScheduleView());
+                }
+            }
         }
     }
 }

@@ -22,9 +22,9 @@ namespace CTOTracker
             InitializeComponent();
         }
 
-        private void SideNav_Loaded(object sender, RoutedEventArgs e)
+        private void homeLoad(object sender, RoutedEventArgs e)
         {
-
+            Main.Navigate(new EmployeeView());
         }
     }
 }
