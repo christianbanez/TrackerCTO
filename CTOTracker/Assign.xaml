@@ -37,11 +37,12 @@
             </Label.Style>
         </Label>
 
-        <Label Content="Add Time :" HorizontalAlignment="Left" Margin="10,217,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="Employee_Cmbox" HorizontalAlignment="Left" Margin="43,36,0,0" VerticalAlignment="Top" Width="311"/>
-        <ComboBox x:Name="Task_Cmbox" HorizontalAlignment="Left" Margin="43,103,0,0" VerticalAlignment="Top" Width="311"/>
-        <DatePicker x:Name="startDatePicker" HorizontalAlignment="Left" Margin="43,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" DisplayDateStart="{x:Static sys:DateTime.Now}" DisplayDateEnd="{x:Static sys:DateTime.MaxValue}"/>
-        <DatePicker x:Name="endDatePicker" HorizontalAlignment="Left" Margin="251,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" DisplayDateStart="{x:Static sys:DateTime.Now}" DisplayDateEnd="{x:Static sys:DateTime.MaxValue}"/>
+        <Label Content="Add Time :" HorizontalAlignment="Left" Margin="10,217,0,0" VerticalAlignment="Top" />
+        <ComboBox x:Name="Employee_Cmbox" HorizontalAlignment="Left" Margin="43,36,0,0" VerticalAlignment="Top" Width="311"  />
+        
+        <ComboBox x:Name="Task_Cmbox" HorizontalAlignment="Left" Margin="43,103,0,0" VerticalAlignment="Top" Width="311" IsEditable="True"/>
+        <DatePicker x:Name="startDatePicker" HorizontalAlignment="Left" Margin="43,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" IsTodayHighlighted="True" PreviewKeyDown="DatePicker_PreviewKeyDown"/>
+        <DatePicker x:Name="endDatePicker" HorizontalAlignment="Left" Margin="251,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" PreviewKeyDown="DatePicker_PreviewKeyDown"/>
         <CheckBox x:Name="showTimeCheckBox" Content="Show Time" HorizontalAlignment="Left" Margin="82,223,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="startTimeTextBox" HorizontalAlignment="Left" Margin="43,307,0,0" VerticalAlignment="Top" Width="100" Text="09:00 AM">
             <TextBox.Style>

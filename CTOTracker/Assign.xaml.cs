@@ -21,33 +21,48 @@ namespace CTOTracker
     /// </summary>
     public partial class AddTask : Window
     {
+        private List<string> allEmployees; // Store all employee names
+        private List<string> filteredEmployees; // Store filtered employee names
+        private List<string> allTask;
+        private List<string> filteredTask;
         private DataConnection dataConnection; // Declare a field to hold the DataConnection object
 
         public AddTask()
         {
             InitializeComponent();
             dataConnection = new DataConnection(); // Instantiate the DataConnection object
+            allEmployees = new List<string>();
+            filteredEmployees = new List<string>();
+            allTask = new List<string>();
+            filteredTask = new List<string>();
             startTimeTextBox.Text = "09:00 AM";
             endTimeTextBox.Text = "05:00 PM";
+            Employee_Cmbox.IsEditable = true; // Allow editing of ComboBox text
+           // Employee_Cmbox.TextChanged += Employee_Cmbox_TextChanged; // Subscribe to TextChanged event
             PopulateEmployeeComboBox();
             PopulateTaskComboBox();
         }
-
+        //DatePicker Handler
+        private void DatePicker_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Suppress key presses that would result in text input
+            e.Handled = true;
+        }
         private void PopulateEmployeeComboBox()
         {
             try
             {
                 // Fetch data from the Employee table
-                List<string> employees = GetDataFromEmployeeTable();
+                allEmployees = GetDataFromEmployeeTable();
 
-                // Check if 'employees' is null before binding to the ComboBox
-                if (employees != null)
+                // Check if 'allEmployees' is null before binding to the ComboBox
+                if (allEmployees != null)
                 {
-                    Employee_Cmbox.ItemsSource = employees;
+                    Employee_Cmbox.ItemsSource = allEmployees;
                 }
                 else
                 {
-                    // Handle the case when 'employees' is null
+                    // Handle the case when 'allEmployees' is null
                     MessageBox.Show("No employees found.");
                 }
             }
@@ -64,16 +79,16 @@ namespace CTOTracker
             try
             {
                 // Fetch data from the Task table
-                List<string> tasks = GetDataFromTaskTable();
+                allTask = GetDataFromTaskTable();
 
                 // Check if 'tasks' is null before binding to the ComboBox
-                if (tasks != null)
+                if (allTask != null)
                 {
                     // Bind the data to Task ComboBox
-                    Task_Cmbox.ItemsSource = tasks;
+                    Task_Cmbox.ItemsSource = allTask;
 
                     // Select the first item in the Task ComboBox
-                    Task_Cmbox.SelectedItem = tasks.Count > 0 ? tasks[0] : null;
+                    Task_Cmbox.SelectedItem = allTask.Count > 0 ? allTask[0] : null;
                 }
                 else
                 {
@@ -87,8 +102,6 @@ namespace CTOTracker
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
-
-
 
         private List<string> GetDataFromEmployeeTable()
         {
@@ -104,30 +117,28 @@ namespace CTOTracker
                     string query = "SELECT fName, lName FROM Employee";
 
                     // Create a command object with the query and connection
-                    OleDbCommand command = new OleDbCommand(query, connection);
-
-                    // Open the connection to the database
-                    connection.Open();
-
-                    // Execute the command and retrieve data using a data reader
-                    OleDbDataReader reader = command.ExecuteReader();
-
-                    // Iterate through the data reader to read each row
-                    while (reader.Read())
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
-                        // Check if the fName and lName columns contain non-null values
-                        if (!reader.IsDBNull(reader.GetOrdinal("fName")) && !reader.IsDBNull(reader.GetOrdinal("lName")))
-                        {
-                            // Concatenate the first name and last name to form the full name
-                            string fullName = $"{reader["fName"]} {reader["lName"]}";
+                        // Open the connection to the database
+                        connection.Open();
 
-                            // Add the full name to the list of employees
-                            employees.Add(fullName);
+                        // Execute the command and retrieve data using a data reader
+                        using (OleDbDataReader reader = command.ExecuteReader())
+                        {
+                            // Iterate through the data reader to read each row
+                            while (reader.Read())
+                            {
+                                // Check if the fName and lName columns contain non-null values
+                                if (!reader.IsDBNull(reader.GetOrdinal("fName")) && !reader.IsDBNull(reader.GetOrdinal("lName")))
+                                {
+                                    // Concatenate the first name and last name to form the full name
+                                    string fullName = $"{reader["fName"]} {reader["lName"]}";
+                                    // Add the full name to the list of employees
+                                    employees.Add(fullName);
+                                }
+                            }
                         }
                     }
-
-                    // Close the data reader
-                    reader.Close();
                 }
             }
             catch (Exception ex)
@@ -140,7 +151,28 @@ namespace CTOTracker
             return employees;
         }
 
+        private void Employee_Cmbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Clear the filtered list
+            filteredEmployees.Clear();
 
+            string searchText = Employee_Cmbox.Text.ToLower();
+
+            // Filter the items in the ComboBox based on the entered text
+            foreach (string employee in allEmployees)
+            {
+                if (employee.ToLower().Contains(searchText))
+                {
+                    filteredEmployees.Add(employee);
+                }
+            }
+
+            // Update the ComboBox items source with the filtered list
+            Employee_Cmbox.ItemsSource = filteredEmployees;
+
+            // Open the dropdown
+            Employee_Cmbox.IsDropDownOpen = true;
+        }
 
         private List<string> GetDataFromTaskTable()
         {
@@ -194,50 +226,57 @@ namespace CTOTracker
             return tasks;
         }
 
-        //Add Button
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //declare month before to blackout in datetimepicker
+            DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
             try
             {
-                // Get selected employee name from ComboBox
-                string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+                // Display a confirmation dialog
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to add this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                // Get selected task name from ComboBox
-                string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
-
-                if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
+                // Check the user's response
+                if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show("Please select an employee and a task.");
-                    return;
+                    // Get selected employee name from ComboBox
+                    string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+
+                    // Get selected task name from ComboBox
+                    string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+
+                    if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
+                    {
+                        MessageBox.Show("Please select an employee and a task.");
+                        return;
+                    }
+
+                    // Retrieve employee ID and task ID from database based on selected names
+                    string employeeId = GetEmployeeId(selectedEmployee);
+                    string taskId = GetTaskId(selectedTask);
+
+
+                    // Add the blackout date
+                    startDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
+                    endDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
+
+                    // Get selected dates from date pickers
+                    DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
+                    DateTime endDate = endDatePicker.SelectedDate ?? DateTime.Now;
+
+                    // Get selected times from time pickers (if checkbox is checked)
+                    string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
+                    string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
+
+                    // Insert data into Schedule table
+                    InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
+
                 }
-
-                // Retrieve employee ID and task ID from database based on selected names
-                string employeeId = GetEmployeeId(selectedEmployee);
-                string taskId = GetTaskId(selectedTask);
-
-                // Get selected dates from date pickers
-                DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
-                DateTime endDate = endDatePicker.SelectedDate ?? DateTime.Now;
-
-                // Get selected times from time pickers (if checkbox is checked)
-                string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
-                string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
-
-                // Insert data into Schedule table
-                InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            finally
-            {
-               
-            }
-            
         }
-
-
         private string GetEmployeeId(string employeeName)
         {
             string? employeeId = null; // Initialize employeeId to null
@@ -270,9 +309,6 @@ namespace CTOTracker
 
             return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
         }
-
-
-
 
         private string GetTaskId(string taskName)
         {
@@ -330,23 +366,27 @@ namespace CTOTracker
         }
         private void InsertIntoSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
         {
-            using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+            using (OleDbConnection connection = dataConnection.GetConnection())
             {
                 try
                 {
+                    // Validate that planned start date is not greater than planned end date
+                    if (startDate > endDate)
+                    {
+                        MessageBox.Show("Planned start date cannot be greater than planned end date.");
+                        return;
+                    }
 
                     string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned) " +
-                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned)"; // Define the SQL query
+                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned)";
 
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
                         // Add parameters to the command
                         command.Parameters.AddWithValue("@empID", employeeId);
                         command.Parameters.AddWithValue("@taskID", taskId);
                         command.Parameters.AddWithValue("@plannedStart", startDate);
                         command.Parameters.AddWithValue("@plannedEnd", endDate);
-
-
 
                         // Concatenate the date portion of the start date with the timeIn value
                         if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
@@ -369,23 +409,23 @@ namespace CTOTracker
                             command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                         }
 
-                        connection.Open(); // Open the connection
-                        int rowsAffected = command.ExecuteNonQuery(); // Execute the query and get the number of rows affected
-                        MessageBox.Show($"{rowsAffected} row(s) inserted into Schedule table."); // Display a message with the number of rows affected
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        MessageBox.Show($"{rowsAffected} row(s) inserted into Schedule table.");
                     }
-
-
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error inserting into Schedule table: " + ex.Message); // Display error message if an exception occurs
+                    MessageBox.Show("Error inserting into Schedule table: " + ex.Message);
                 }
-                finally 
-                { 
-                    connection.Close(); 
+                finally
+                {
+                    connection.Close();
                 }
             }
         }
+
+
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {

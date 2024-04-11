@@ -28,6 +28,7 @@ namespace CTOTracker.View
             InitializeComponent();
             dataConnection = new DataConnection();
             LoadScheduleData();
+
         }
 
         private void LoadScheduleData()
@@ -64,6 +65,7 @@ namespace CTOTracker.View
 
             // Show the AddTask window
             addTaskWindow.ShowDialog();
+            LoadScheduleData();
         }
 
     }
