@@ -12,13 +12,16 @@ namespace CTOTracker.View.UserControls
         {
             InitializeComponent();
         }
-
+      /*  private void SideNav_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Your event handler implementation here
+        }*/
         private void btnEmpNav(object sender, RoutedEventArgs e)
         {
             // Navigate the "Main" frame to the Employee page
             if (Application.Current.MainWindow != null)
             {
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
                     //mainWindow.Main.Navigate(new EmployeeView());
@@ -31,7 +34,7 @@ namespace CTOTracker.View.UserControls
             // Navigate the "Main" frame to the Employee page
             if (Application.Current.MainWindow != null)
             {
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
                     //mainWindow.Main.Navigate(new ScheduleView());
@@ -44,7 +47,7 @@ namespace CTOTracker.View.UserControls
             // Navigate the "Main" frame to the Employee page
             if (Application.Current.MainWindow != null)
             {
-                MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                MainWindow? mainWindow = Application.Current.MainWindow as MainWindow;
                 if (mainWindow != null)
                 {
                     // mainWindow.Main.Navigate(new ScheduleView());

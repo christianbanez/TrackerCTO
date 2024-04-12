@@ -33,6 +33,8 @@
     <Resource Include="Assets\tgbMenu.png" />
     <Resource Include="Assets\tgbMenu_MouseOver.png" />
     <Resource Include="tgbMenu_MouseOver.png" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

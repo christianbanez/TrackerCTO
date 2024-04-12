@@ -21,6 +21,10 @@ namespace CTOTracker
         {
             InitializeComponent();
         }
+        private void SideNav_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Your event handler implementation here
+        }
 
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
