@@ -23,6 +23,14 @@ namespace CTOTracker.View
     public partial class ScheduleView : UserControl
     {
         private DataConnection dataConnection;
+        public class TaskModel
+        {
+            public string EmployeeName { get; set; }
+            public string TaskName { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+        }
+
         public ScheduleView()
         {
             InitializeComponent();
@@ -80,8 +88,37 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[7].Header = "Time Out";
             scheduleDataGrid.Columns[8].Header = "CTO Earned";
             scheduleDataGrid.Columns[9].Header = "CTO Used";
-            scheduleDataGrid.Columns[10].Header = "CTO Balance";
+            scheduleDataGrid.Columns[10].Header = "CTOBalance";
         }
+
+        // Event handler for double-clicking on a row in the DataGrid
+        private void DataGridRow_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
+        {
+            // Check if a row is selected
+            if (scheduleDataGrid.SelectedItem != null)
+            {
+                // Retrieve the selected row (data item)
+                DataRowView selectedRow = (DataRowView)scheduleDataGrid.SelectedItem;
+
+                // Extract relevant data from the selected row
+                string fullName = selectedRow["fName"].ToString() + " " + selectedRow["lName"].ToString();
+                string taskName = selectedRow["taskName"].ToString();
+                DateTime startDate = (DateTime)selectedRow["plannedStart"];
+                DateTime endDate = (DateTime)selectedRow["plannedEnd"];
+                string timeIn = selectedRow["timeIn"].ToString();
+                string timeOut = selectedRow["timeOut"].ToString();
+
+                // Create an instance of AddTask form
+                AddTask addTaskWindow = new AddTask();
+
+                // Pass selected data to AddTask form
+                addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut);
+
+                // Show the AddTask form
+                addTaskWindow.ShowDialog();
+            }
+        }
+
     }
 
 }

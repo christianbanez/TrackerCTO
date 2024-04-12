@@ -11,7 +11,9 @@
         <Label Content="Employee :" HorizontalAlignment="Left" Margin="43,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Task : " HorizontalAlignment="Left" Margin="37,77,0,0" VerticalAlignment="Top"/>
         <Label Content="Start Date :" HorizontalAlignment="Left" Margin="37,149,0,0" VerticalAlignment="Top"/>
-        <Label Content="End Date :" HorizontalAlignment="Left" Margin="251,149,0,0" VerticalAlignment="Top"/>
+        <Label Content="c:\users\jsantiago3\source\repos\christianbanez\trackercto\ctotracker\assign.xaml
+c:\users\jsantiago3\source\repos\christianbanez\trackercto\ctotracker\assign.xaml.cs
+End Date :" HorizontalAlignment="Left" Margin="251,149,0,0" VerticalAlignment="Top"/>
         <Label Content="Time In:" HorizontalAlignment="Left" Margin="43,276,0,0" VerticalAlignment="Top">
             <Label.Style>
                 <Style TargetType="Label">
@@ -39,7 +41,7 @@
 
         <Label Content="Add Time :" HorizontalAlignment="Left" Margin="10,217,0,0" VerticalAlignment="Top" />
         <ComboBox x:Name="Employee_Cmbox" HorizontalAlignment="Left" Margin="43,36,0,0" VerticalAlignment="Top" Width="311"  />
-        
+
         <ComboBox x:Name="Task_Cmbox" HorizontalAlignment="Left" Margin="43,103,0,0" VerticalAlignment="Top" Width="311" IsEditable="True"/>
         <DatePicker x:Name="startDatePicker" HorizontalAlignment="Left" Margin="43,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" IsTodayHighlighted="True" PreviewKeyDown="DatePicker_PreviewKeyDown"/>
         <DatePicker x:Name="endDatePicker" HorizontalAlignment="Left" Margin="251,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" PreviewKeyDown="DatePicker_PreviewKeyDown"/>
@@ -68,9 +70,10 @@
                 </Style>
             </TextBox.Style>
         </TextBox>
-
-        <Button Content="ADD" HorizontalAlignment="Left" Margin="248,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click"/>
+        <Button x:Name="AddButton" Content="ADD" HorizontalAlignment="Left" Margin="248,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click"/>
         <Button Content="CANCEL" HorizontalAlignment="Left" Margin="303,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click_1"/>
+        <Button x:Name="SAVE" Content="Save" HorizontalAlignment="Left" Margin="195,361,0,0" VerticalAlignment="Top" Height="25" Width="48" Click="SAVE_Click"/>
 
     </Grid>
+
 </Window>

@@ -37,10 +37,31 @@ namespace CTOTracker
             startTimeTextBox.Text = "09:00 AM";
             endTimeTextBox.Text = "05:00 PM";
             Employee_Cmbox.IsEditable = true; // Allow editing of ComboBox text
-           // Employee_Cmbox.TextChanged += Employee_Cmbox_TextChanged; // Subscribe to TextChanged event
             PopulateEmployeeComboBox();
             PopulateTaskComboBox();
         }
+        // Method to populate AddTask form with selected data
+        public void PopulateWithData(string fullName, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
+        {
+            // Populate UI controls with selected data
+            Employee_Cmbox.Text = fullName;
+            Task_Cmbox.Text = taskName;
+            startDatePicker.SelectedDate = startDate;
+            endDatePicker.SelectedDate = endDate;
+            showTimeCheckBox.IsChecked = !string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut);
+
+            // Extract only time component from the selected time strings
+            if (!string.IsNullOrEmpty(timeIn))
+            {
+                startTimeTextBox.Text = DateTime.Parse(timeIn).ToString("hh:mm tt");
+            }
+
+            if (!string.IsNullOrEmpty(timeOut))
+            {
+                endTimeTextBox.Text = DateTime.Parse(timeOut).ToString("hh:mm tt");
+            }
+        }
+
         //DatePicker Handler
         private void DatePicker_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -428,11 +449,92 @@ namespace CTOTracker
             }
         }
 
-
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
+
+        private void SAVE_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+                string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
+                {
+                    MessageBox.Show("Please select an employee and a task.");
+                    return;
+                }
+
+                string employeeId = GetEmployeeId(selectedEmployee);
+                string taskId = GetTaskId(selectedTask);
+
+                DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
+                DateTime endDate = endDatePicker.SelectedDate ?? DateTime.Now;
+
+                string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
+                string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
+
+                UpdateSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        private void UpdateSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    if (startDate > endDate)
+                    {
+                        MessageBox.Show("Planned start date cannot be greater than planned end date.");
+                        return;
+                    }
+
+                    string query = "UPDATE Schedule SET plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut WHERE empID = @empID AND taskID = @taskID";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@plannedStart", startDate.Date);
+                        command.Parameters.AddWithValue("@plannedEnd", endDate.Date);
+
+                        if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                        {
+                            DateTime timeInDateTime = DateTime.ParseExact(timeIn, "hh:mm tt", CultureInfo.InvariantCulture);
+                            DateTime dateTimeInWithDate = startDate.Date + timeInDateTime.TimeOfDay;
+                            command.Parameters.AddWithValue("@timeIn", dateTimeInWithDate);
+
+                            DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
+                            DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
+                            command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
+                        }
+                        else
+                        {
+                            command.Parameters.AddWithValue("@timeIn", DBNull.Value);
+                            command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                        }
+
+                        command.Parameters.AddWithValue("@empID", employeeId);
+                        command.Parameters.AddWithValue("@taskID", taskId);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        MessageBox.Show("Schedule has been updated!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error updating Schedule table: " + ex.Message);
+                }
+            }
+        }
+
+
+
     }
 }
