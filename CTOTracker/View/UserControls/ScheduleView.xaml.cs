@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace CTOTracker.View
 {
@@ -28,7 +29,6 @@ namespace CTOTracker.View
             InitializeComponent();
             dataConnection = new DataConnection();
             LoadScheduleData();
-
         }
 
         private void LoadScheduleData()
@@ -45,17 +45,19 @@ namespace CTOTracker.View
 
                     // Bind the DataTable to the DataGrid
                     scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
+            finally
+            {
+                dataConnection.GetConnection().Close();
+            }
         }
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
 
-        }
 
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -81,6 +83,48 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[8].Header = "CTO Earned";
             scheduleDataGrid.Columns[9].Header = "CTO Used";
             scheduleDataGrid.Columns[10].Header = "CTO Balance";
+        }
+
+        private void searchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+               
+                ////LoadScheduleData();
+                //if (scheduleDataGrid != null)
+                //{
+
+                //    string searchText = searchTextBox.Text;
+                //    DataView dataView = scheduleDataGrid.ItemsSource as DataView;
+
+                //    if (dataView != null)
+                //    {
+                //        StringBuilder filter = new StringBuilder();
+
+                //        // Build the filter string using column names from the dataView
+                //        for (int i = 0; i < dataView.Table.Columns.Count; i++)
+                //        {
+                //            string columnName = dataView.Table.Columns[i].ColumnName;
+                //            if (i > 0)
+                //            {
+                //                filter.Append(" OR ");
+                //            }
+                //            filter.AppendFormat("{0} LIKE '%{1}%'", columnName, searchText);
+                //        }
+
+                //        dataView.RowFilter = filter.ToString();
+                //        //dataView.RowFilter = $"Infor ID LIKE '%{searchText}%' OR First Name LIKE '%{searchText}%' OR Last Name LIKE '%{searchText}%' OR CTO Earned LIKE '%{searchText}%' OR CTO Used LIKE '%{searchText}%'";
+                //    }
+                //}
+              
+                    
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
         }
     }
 
