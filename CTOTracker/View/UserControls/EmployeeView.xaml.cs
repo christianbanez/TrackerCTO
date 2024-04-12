@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,6 +45,7 @@ namespace CTOTracker.View
             txtLname.Clear();
             txtEmail.Clear();
             txtContact.Clear();
+            txtRole.SelectedIndex = -1;
             txtEmpID.IsEnabled = true;
             txtFname.IsEnabled = true;
             txtLname.IsEnabled = true;
@@ -54,6 +56,7 @@ namespace CTOTracker.View
             AddPnl.Visibility = Visibility.Visible;
             UpdatePnl.Visibility = Visibility.Collapsed;
             AddEdit.Visibility = Visibility.Collapsed;
+            DataGridEmployee1.IsEnabled = false;
 
         }
 
@@ -63,19 +66,20 @@ namespace CTOTracker.View
             AddPnl.Visibility = Visibility.Collapsed;
             AddEdit.Visibility = Visibility.Collapsed;
 
-            txtEmpID.IsEnabled = true;
+            txtEmpID.IsEnabled = false;
             txtFname.IsEnabled = true;
             txtLname.IsEnabled = true;
             txtEmail.IsEnabled = true;
             txtContact.IsEnabled = true;
             txtRole.IsEnabled = true;
+            DataGridEmployee1.IsEnabled = true;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
-            if (msgRes == MessageBoxResult.Yes)
-            {
+            //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
+            //if (msgRes == MessageBoxResult.Yes)
+            //{
                 AddEdit.Visibility = Visibility.Visible;
                 AddPnl.Visibility = Visibility.Collapsed;
                 UpdatePnl.Visibility = Visibility.Collapsed;
@@ -85,18 +89,26 @@ namespace CTOTracker.View
                 txtEmail.IsEnabled = false;
                 txtContact.IsEnabled = false;
                 txtRole.IsEnabled = false;
-            }
+                DataGridEmployee1.IsEnabled = true;
+            //}
         }
 
         private void btnCancel2_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
-            if (msgRes == MessageBoxResult.Yes)
-            {
+            //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
+            //if (msgRes == MessageBoxResult.Yes)
+            //{
                 AddEdit.Visibility = Visibility.Visible;
                 AddPnl.Visibility = Visibility.Collapsed;
                 UpdatePnl.Visibility = Visibility.Collapsed;
-            }
+                txtEmpID.Clear();
+                txtFname.Clear();
+                txtLname.Clear();
+                txtEmail.Clear();
+                txtContact.Clear();
+                txtRole.SelectedIndex = -1;
+                DataGridEmployee1.IsEnabled = true;
+            //}
             //dataConnection = new DataConnection();
             LoadEmployeeView();
 
@@ -108,7 +120,7 @@ namespace CTOTracker.View
                 try
                 {
                     connection.Open();
-                    string query = "SELECT inforID, fName, lName, email, contact, roleID FROM Employee";   // Specify the columns you want to retrieve
+                    string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName   FROM Employee    INNER JOIN Role ON Employee.roleID = Role.roleID";   // Specify the columns you want to retrieve
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();          // Retrieve data from the database
                     adapter.Fill(dataTable);
@@ -154,7 +166,7 @@ namespace CTOTracker.View
             bool isValid = true;
             if (string.IsNullOrEmpty(txtEmpID.Text))
             {
-                MessageBox.Show("First Name cannot be empty.", "Error");
+                MessageBox.Show("ID  cannot be empty.", "Error");
                 isValid = false;
             }
             if (string.IsNullOrEmpty(txtFname.Text))
@@ -209,7 +221,7 @@ namespace CTOTracker.View
                 // Fetch data from the Employee table
                 List<string> role = GetDataFromRole();
 
-                // Check if 'employees' is null before binding to the ComboBox
+                // Check if 'role' is null before binding to the ComboBox
                 if (role != null)
                 {
                     txtRole.ItemsSource = role;
@@ -237,7 +249,7 @@ namespace CTOTracker.View
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
                     // Define the Access query to select first names (fName) and last names (lName) from the Employee table
-                    string query = "SELECT roleName FROM Role";
+                    string query = "SELECT roleID, roleName FROM Role";
 
                     // Create a command object with the query and connection
                     OleDbCommand command = new OleDbCommand(query, connection);
@@ -279,7 +291,7 @@ namespace CTOTracker.View
 
 
         #endregion
-        private void InsertEmployee(string infor_ID, string firstName, string lastName, string email, string contact, string roleID)
+        private void InsertEmployee(string inforID, string firstName, string lastName, string email, string contact, string roleID)
         {
             try
             {
@@ -289,18 +301,21 @@ namespace CTOTracker.View
 
                     using (OleDbCommand cmd = connection.CreateCommand())
                     {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = "INSERT INTO Employee (inforID, fName, lName, email, contact, roleID) " +
-                                          "VALUES (@infor_ID, @firstName, @lastName, @email, @contact, @roleID)";
+                        
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandText = "INSERT INTO Employee (inforID, fName, lName, email, contact, roleID) " +
+                                              "VALUES (@inforID, @firstName, @lastName, @email, @contact, @roleID)";
 
-                        cmd.Parameters.AddWithValue("@infor_ID", infor_ID);
-                        cmd.Parameters.AddWithValue("@firstName", firstName);
-                        cmd.Parameters.AddWithValue("@lastName", lastName);
-                        cmd.Parameters.AddWithValue("@email", email);
-                        cmd.Parameters.AddWithValue("@contact", contact);
-                        cmd.Parameters.AddWithValue("@roleID", roleID);
+                            cmd.Parameters.AddWithValue("@inforID", inforID);
+                            cmd.Parameters.AddWithValue("@firstName", firstName);
+                            cmd.Parameters.AddWithValue("@lastName", lastName);
+                            cmd.Parameters.AddWithValue("@email", email);
+                            cmd.Parameters.AddWithValue("@contact", contact);
+                            cmd.Parameters.AddWithValue("@roleID", roleID);
 
-                        cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
+                            
+                        
                     }
                 }
             }
@@ -317,12 +332,26 @@ namespace CTOTracker.View
                 {
                     string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
                     string roleID = GetRoleID(selectedRole);
+                    string inforID = txtEmpID.Text;
                     connection.Open();
                     // Validate input fields
                     if (!ValidateInput())
                     {
                         return;
                     }
+                    OleDbCommand cmd = connection.CreateCommand();
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "SELECT COUNT(*) FROM Employee WHERE inforID = @inforID";
+                    cmd.Parameters.AddWithValue("@inforID", inforID);
+                    int count = (int)cmd.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        // If a record with the same infoID exists, display an error message to the user
+                        MessageBox.Show("infor ID already exists in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return; // Exit the method to prevent further execution
+                    }
+
                     string infor_ID = txtEmpID.Text;
                     string firstName = txtFname.Text;
                     string lastName = txtLname.Text;
@@ -338,7 +367,16 @@ namespace CTOTracker.View
                     txtLname.Clear();
                     txtEmail.Clear();
                     txtContact.Clear();
-                    //txtRole.Clear();
+                    txtRole.SelectedIndex=-1;
+                    AddEdit.Visibility = Visibility.Visible;
+                    AddPnl.Visibility = Visibility.Collapsed;
+                    UpdatePnl.Visibility = Visibility.Collapsed;
+                    txtFname.IsEnabled = false;
+                    txtLname.IsEnabled = false;
+                    txtEmail.IsEnabled = false;
+                    txtContact.IsEnabled = false;
+                    txtRole.IsEnabled = false;
+                    DataGridEmployee1.IsEnabled = true;
 
                 }
                 catch
@@ -398,72 +436,189 @@ namespace CTOTracker.View
         private void DataGridEmployee1_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             DataGrid gd = (DataGrid)sender;
-            DataRowView row_selected = gd.SelectedItem as DataRowView;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
             if (row_selected != null)
             {
                 // Extract values from the row and populate textboxes
                 txtEmpID.Text = row_selected["inforID"].ToString();
+                txtEmpID.IsEnabled = false;
                 txtFname.Text = row_selected["fName"].ToString();
                 txtLname.Text = row_selected["lName"].ToString();
                 txtEmail.Text = row_selected["email"].ToString();
                 txtContact.Text = row_selected["contact"].ToString();
-                txtRole.Text = row_selected["roleID"].ToString();
+                txtRole.Text = row_selected["roleName"].ToString();
             }
         }
 
+       
         private void btnSaveUp_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                if (!ValidateInput())
+                {
+                    return;
+                }
+                string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
+                string roleID = GetRoleID(selectedRole);
                 // Retrieve updated values from input fields
-                string infor_ID = txtEmpID.Text;
+                string inforID = txtEmpID.Text;
                 string firstName = txtFname.Text;
                 string lastName = txtLname.Text;
                 string email = txtEmail.Text;
                 string contact = txtContact.Text;
-                string role = txtRole.Text;
-
+                
+                
                 // Update the employee record in the database
-                UpdateEmployee(infor_ID, firstName, lastName, email, contact, role);
+                UpdateEmployee(inforID, firstName, lastName, email, contact, roleID);
 
                 // Refresh the DataGridView to reflect the changes
                 LoadEmployeeView();
+                txtEmpID.Clear();
+                txtFname.Clear();
+                txtLname.Clear();
+                txtEmail.Clear();
+                txtContact.Clear();
+                txtRole.SelectedIndex = -1;
+                AddEdit.Visibility = Visibility.Visible;
+                AddPnl.Visibility = Visibility.Collapsed;
+                UpdatePnl.Visibility = Visibility.Collapsed;
+                txtEmpID.Clear();
+                txtFname.Clear();
+                txtLname.Clear();
+                txtEmail.Clear();
+                txtContact.Clear();
+                txtRole.SelectedIndex = -1;
+                DataGridEmployee1.IsEnabled = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error updating employee: " + ex.Message, "Error");
             }
         }
-        private void UpdateEmployee(string infor_ID, string firstName, string lastName, string email, string contact, string roleID)
+        private void UpdateEmployee(string inforID, string firstName, string lastName, string email, string contact, string roleID)
         {
-            try
+            using (OleDbConnection connection = dataConnection.GetConnection())
             {
-                using (OleDbConnection connection = dataConnection.GetConnection())
+                try
                 {
-                    connection.Open();
-                    using (OleDbCommand cmd = connection.CreateCommand())
+                    if (DataGridEmployee1.SelectedItem != null)
                     {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = "UPDATE Employee SET firstName = @FirstName, lastName = @LastName, email = @Email, contact = @Contact, roleID = @roleID WHERE inforID = @InforID";
+                        connection.Open();
+                        using (OleDbCommand cmd = connection.CreateCommand())
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandText = "UPDATE Employee SET fName = @firstName, lName = @lastName, email = @email, contact = @contact, roleID = @roleID WHERE inforID = @inforID";
 
-                        cmd.Parameters.AddWithValue("@infor_ID", infor_ID);
-                        cmd.Parameters.AddWithValue("@firstName", firstName);
-                        cmd.Parameters.AddWithValue("@lastName", lastName);
-                        cmd.Parameters.AddWithValue("@email", email);
-                        cmd.Parameters.AddWithValue("@contact", contact);
-                        cmd.Parameters.AddWithValue("@roleID", roleID);
+                            cmd.Parameters.AddWithValue("@firstName", firstName);
+                            cmd.Parameters.AddWithValue("@lastName", lastName);
+                            cmd.Parameters.AddWithValue("@email", email);
+                            cmd.Parameters.AddWithValue("@contact", contact);
+                            cmd.Parameters.AddWithValue("@roleID", roleID);
+                            cmd.Parameters.AddWithValue("@inforID", inforID);
 
-                        cmd.ExecuteNonQuery();
+                            int rowsAffected = cmd.ExecuteNonQuery();
+
+                            //cmd.ExecuteNonQuery();
+                            if (rowsAffected > 0)
+                            {
+                                MessageBox.Show("Employee updated successfully!", "Success");
+                                LoadEmployeeView();
+
+                            }
+                            else
+                            {
+                                MessageBox.Show("No records updated. Employee ID not found.", "Information");
+                            }
+                        }
+
                     }
-
+                    else
+                    {
+                        MessageBox.Show("Error updating employee");
+                    }
                 }
-
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Error updating employee: " + ex);
+                }
+                   
+               
             }
-            catch
+            
+        }
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            
+             
+        }
+
+        private void btnDelete_Click_1(object sender, RoutedEventArgs e)
+        {
+            
+            using (OleDbConnection connection = dataConnection.GetConnection())
             {
+                try
+                {
+                    if (!ValidateInput())
+                    {
+                        return;
+                    }
+                    
+                    MessageBoxResult msgRes = MessageBox.Show("Are you sure you want to delete this?", "Cancel", MessageBoxButton.YesNo);
+                    if (DataGridEmployee1.SelectedItem != null)
+                    {
+                        DataRowView row_selected = (DataRowView)DataGridEmployee1.SelectedItem;
+                        string inforID = row_selected["inforID"].ToString();
+                        if (msgRes == MessageBoxResult.Yes)
+                        {
 
+                            OleDbCommand cmd = connection.CreateCommand();
+                            connection.Open();
+                            cmd.CommandType = CommandType.Text;
+                            cmd.CommandText = "Delete from Employee where inforID = @inforID ";
+                            cmd.Parameters.AddWithValue("@inforID", inforID);
+                            cmd.ExecuteNonQuery();
+                            MessageBox.Show("Record Successfully Deleted");
+                            LoadEmployeeView();
+                            txtEmpID.Clear();
+                            txtFname.Clear();
+                            txtLname.Clear();
+                            txtEmail.Clear();
+                            txtContact.Clear();
+                            txtRole.SelectedIndex = -1;
+                        }
+                        else
+                        {
+                            txtEmpID.Clear();
+                            txtFname.Clear();
+                            txtLname.Clear();
+                            txtEmail.Clear();
+                            txtContact.Clear();
+                            txtRole.SelectedIndex = -1;
+                            AddEdit.Visibility = Visibility.Visible;
+                            AddPnl.Visibility = Visibility.Collapsed;
+                            UpdatePnl.Visibility = Visibility.Collapsed;
+                            txtFname.IsEnabled = false;
+                            txtLname.IsEnabled = false;
+                            txtEmail.IsEnabled = false;
+                            txtContact.IsEnabled = false;
+                            txtRole.IsEnabled = false;
+                            DataGridEmployee1.IsEnabled = true;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting employee: " + ex );
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                
+    
             }
         }
-
-        }
+    }
 }
