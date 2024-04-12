@@ -69,7 +69,7 @@
             </Grid>
 
             <!--  SCHDULE_TABLE  -->
-            <DataGrid Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
+            <DataGrid x:Name="scheduleDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
 
             <!--  TOTAL_SELECTED_PANEL  -->
             <Grid Grid.Row="2" Background="AliceBlue">
