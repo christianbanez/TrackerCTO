@@ -26,7 +26,6 @@ namespace CTOTracker
         private List<string> allTask;
         private List<string> filteredTask;
         private DataConnection dataConnection; // Declare a field to hold the DataConnection object
-
         public AddTask()
         {
             InitializeComponent();
@@ -226,10 +225,12 @@ namespace CTOTracker
             return tasks;
         }
 
+        //Add Schedule button
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //declare month before to blackout in datetimepicker
-            DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
+            //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
+
             try
             {
                 // Display a confirmation dialog
@@ -238,6 +239,7 @@ namespace CTOTracker
                 // Check the user's response
                 if (result == MessageBoxResult.Yes)
                 {
+
                     // Get selected employee name from ComboBox
                     string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
 
@@ -249,15 +251,12 @@ namespace CTOTracker
                         MessageBox.Show("Please select an employee and a task.");
                         return;
                     }
-
-                    // Retrieve employee ID and task ID from database based on selected names
                     string employeeId = GetEmployeeId(selectedEmployee);
                     string taskId = GetTaskId(selectedTask);
 
-
                     // Add the blackout date
-                    startDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
-                    endDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
+                    //startDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
+                    //endDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
 
                     // Get selected dates from date pickers
                     DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
@@ -266,6 +265,8 @@ namespace CTOTracker
                     // Get selected times from time pickers (if checkbox is checked)
                     string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
                     string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
+
+
 
                     // Insert data into Schedule table
                     InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
@@ -312,7 +313,7 @@ namespace CTOTracker
 
         private string GetTaskId(string taskName)
         {
-            string taskId = null; // Initialize taskId to null
+            string? taskId = null; // Initialize taskId to null
 
             try
             {
@@ -377,8 +378,8 @@ namespace CTOTracker
                         return;
                     }
 
-                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned) " +
-                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned)";
+                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoBalance) " +
+                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned, @ctoBalance)";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
@@ -401,17 +402,19 @@ namespace CTOTracker
 
                             double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                             command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                            command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
                         }
                         else
                         {
                             command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                             command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                             command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
+                            command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
                         }
 
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
-                        MessageBox.Show($"{rowsAffected} row(s) inserted into Schedule table.");
+                        MessageBox.Show("Schedule has been added!");
                     }
                 }
                 catch (Exception ex)
