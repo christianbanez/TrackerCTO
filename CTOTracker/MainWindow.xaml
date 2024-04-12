@@ -23,26 +23,73 @@
 
     <Window.Resources>
         <!--  Toggle Button Style Template  -->
-        <ImageBrush x:Key="tb_mouse_over" ImageSource="Assets/tgbMenu_MouseOver.png" />
+        <ImageBrush x:Key="tb_mouse_over" 
+                    ImageSource="/tgbMenu_MouseOver.png" 
+                    Stretch="Uniform" />
+
+        <!-- Text font style -->
+
+        <Style x:Key="font_style" TargetType="Label">
+
+            <Setter Property="FontFamily"
+                    Value="Fonts/Roboto.ttf #Roboto"/>
+
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+
+            <Setter Property="HorizontalAlignment"
+                    Value="Left"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="FontSize"
+                    Value="20"/>
+
+        </Style>
 
         <Style x:Key="tb_style" TargetType="{x:Type ToggleButton}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Border
-                            x:Name="border"
-                            Background="{TemplateBinding Background}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            SnapsToDevicePixels="True" />
+                        <Border  x:Name="border"
+                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                 Background="{TemplateBinding Background}"
+                                 SnapsToDevicePixels="True">
+                        </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource tb_mouse_over}" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource tb_mouse_over}" />
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect  BlurRadius="10"
+                                                   ShadowDepth="1"
+                                                   Direction="-90"
+                                                   Color="White"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
 
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="{StaticResource tb_mouse_over}" />
-                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource tb_mouse_over}" />
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect  BlurRadius="10"
+                                                   ShadowDepth="1"
+                                                   Direction="-90"
+                                                   Color="White"/>
+                                    </Setter.Value>
+                                </Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -51,11 +98,25 @@
         </Style>
 
     </Window.Resources>
-
     <Grid>
 
         <!--  BG  -->
-        <Grid Background="#FF161131">
+        <Grid Background="#FFD8D6E6">
+            
+            <!--Main panel-->
+            <Grid
+                x:Name="MainPnl"
+                Width="1295"
+                HorizontalAlignment="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="55*"/>
+                    <RowDefinition Height="329*"/>
+                </Grid.RowDefinitions>
+
+                <Frame x:Name="frmMain" Margin="10,10,10,10" NavigationUIVisibility="Hidden" Loaded="frmMain_Loaded" Grid.RowSpan="2"/>
+            </Grid>
+
+            <!--Side Navigation Drawer-->
             <Grid
                 x:Name="sideNav"
                 Width="65"
@@ -63,18 +124,47 @@
                 Background="#FF41446F">
 
                 <StackPanel x:Name="stpnlBtns">
-                    <!--  Menu toggle  -->
+                    <!--  Menu toggle Grid  -->
                     <Grid Height="90">
-                        <ToggleButton
-                            x:Name="tgbMenu"
-                            Grid.Column="0"
-                            Height="30"
-                            Margin="18,20,0,0"
-                            VerticalAlignment="Top"
-                            BorderThickness="0">
 
+                        <!-- Menu text -->
+                        <Label Grid.Row="1"
+                               Grid.Column="0"
+                               Margin="73,-20,0,0"
+                               Content="M E N U"
+                               Foreground="White"
+                               FontSize="20"
+                               Background="Transparent"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">
+
+                            <!--// Shadow Effect //-->
+
+                            <Label.Effect>
+
+                                <DropShadowEffect  BlurRadius="10"
+                                                   ShadowDepth="1"
+                                                   Direction="-90"
+                                                   Color="White"/>
+
+                            </Label.Effect>
+
+                        </Label>
+
+                        <!-- Toggle Button -->
+                        <ToggleButton x:Name="tgbMenu"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Margin="18,-20,0,0"
+                            Height="30"
+                            Width="30"
+                            BorderThickness="0"
+                            Style="{StaticResource tb_style}" >
+                            <!--Unchecked="tgbMenu_Unchecked" Checked="tgbMenu_Checked"-->
                             <ToggleButton.Background>
-                                <ImageBrush ImageSource="Assets/tgbMenu.png" Stretch="None" />
+                                <ImageBrush ImageSource="Assets/tgbMenu.png" 
+                                            Stretch="Uniform" />
                             </ToggleButton.Background>
 
                             <!--  Toggle button events  -->
@@ -113,9 +203,64 @@
 
                         </ToggleButton>
                     </Grid>
+
+                    <!--ListView Menu list items-->
+
+                    <ListView x:Name="listSideNav"
+                               Background="{x:Null}"
+                               BorderBrush="Transparent"
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        <!--EmloyeeView-->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" Selected="ListViewItem_Selected" >
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+                                <Image Source="Assets/btnEmp.png"
+                                       Stretch="Uniform"
+                                       Height="50" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                                <Label Content="Employee"
+                                       Margin="25,0,0,0"
+                                       Style="{StaticResource font_style}"/>
+                            </StackPanel>
+                            
+                        </ListViewItem>
+
+                        <!--ScheduleView-->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" Selected="ListViewItem_Selected_1" >
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+                                <Image Source="Assets/btnSched.png"
+                                       Stretch="Uniform" Height="50" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                                <Label Content="Schedule"
+                                       Margin="25,0,0,0"
+                                       Style="{StaticResource font_style}"/>
+                            </StackPanel>
+                        </ListViewItem>
+
+                        <!--ReportView-->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15" >
+                            <StackPanel Orientation="Horizontal"
+                                        Width="230">
+                                <Image Source="Assets/btnRep.png"
+                                       Stretch="Uniform" Height="50" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+                                <Label Content="Reports"
+                                       Margin="25,0,0,0"
+                                       Style="{StaticResource font_style}"/>
+                            </StackPanel>
+                        </ListViewItem>
+
+                    </ListView>
+
                 </StackPanel>
 
             </Grid>
+
 
         </Grid>
 
@@ -129,7 +274,7 @@
 
         <!--  MainPage  -->
         <!--<Frame Source="usercontrol.EmployeeView"  Grid.Column="1"/>-->
-        <!--<Frame Grid.Column="1" x:Name="Main" Margin="15" NavigationUIVisibility="Hidden" Loaded="homeLoad"/>-->
+        <!---->
 
     </Grid>
 </Window>

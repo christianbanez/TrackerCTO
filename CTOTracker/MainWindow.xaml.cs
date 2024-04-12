@@ -22,9 +22,19 @@ namespace CTOTracker
             InitializeComponent();
         }
 
-        private void homeLoad(object sender, RoutedEventArgs e)
+        private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
-            //Main.Navigate(new EmployeeView());
+            frmMain.Navigate(new EmployeeView());
+        }
+
+        private void ListViewItem_Selected(object sender, RoutedEventArgs e)
+        {
+            frmMain.Navigate(new EmployeeView());
+        }
+
+        private void ListViewItem_Selected_1(object sender, RoutedEventArgs e)
+        {
+            frmMain.Navigate(new ScheduleView());
         }
     }
 }

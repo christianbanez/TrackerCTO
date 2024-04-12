@@ -9,8 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\btnEmp.png" />
+    <None Remove="Assets\btnRep.png" />
+    <None Remove="Assets\btnSched.png" />
+    <None Remove="Assets\Roboto-Light.ttf" />
+    <None Remove="Assets\Roboto-Regular.ttf" />
     <None Remove="Assets\tgbMenu.png" />
     <None Remove="Assets\tgbMenu_MouseOver.png" />
+    <None Remove="tgbMenu_MouseOver.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,8 +25,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\btnEmp.png" />
+    <Resource Include="Assets\btnRep.png" />
+    <Resource Include="Assets\btnSched.png" />
+    <Resource Include="Assets\Roboto-Light.ttf" />
+    <Resource Include="Assets\Roboto-Regular.ttf" />
     <Resource Include="Assets\tgbMenu.png" />
     <Resource Include="Assets\tgbMenu_MouseOver.png" />
+    <Resource Include="tgbMenu_MouseOver.png" />
   </ItemGroup>
 
 </Project>
