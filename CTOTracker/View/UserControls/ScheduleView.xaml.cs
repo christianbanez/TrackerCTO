@@ -45,7 +45,7 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
@@ -78,17 +78,18 @@ namespace CTOTracker.View
 
         private void DataGrid_AutoGenerateColumns(object sender, EventArgs e)
         {
-            scheduleDataGrid.Columns[0].Header = "Infor ID";
-            scheduleDataGrid.Columns[1].Header = "First Name";
-            scheduleDataGrid.Columns[2].Header = "Last Name";
-            scheduleDataGrid.Columns[3].Header = "Task Name";
-            scheduleDataGrid.Columns[4].Header = "Planned Start Date";
-            scheduleDataGrid.Columns[5].Header = "Planned End Date";
-            scheduleDataGrid.Columns[6].Header = "Time In";
-            scheduleDataGrid.Columns[7].Header = "Time Out";
-            scheduleDataGrid.Columns[8].Header = "CTO Earned";
-            scheduleDataGrid.Columns[9].Header = "CTO Used";
-            scheduleDataGrid.Columns[10].Header = "CTOBalance";
+            scheduleDataGrid.Columns[0].Header = "Schedule ID";
+            scheduleDataGrid.Columns[1].Header = "Infor ID";
+            scheduleDataGrid.Columns[2].Header = "First Name";
+            scheduleDataGrid.Columns[3].Header = "Last Name";
+            scheduleDataGrid.Columns[4].Header = "Task Name";
+            scheduleDataGrid.Columns[5].Header = "Planned Start Date";
+            scheduleDataGrid.Columns[6].Header = "Planned End Date";
+            scheduleDataGrid.Columns[7].Header = "Time In";
+            scheduleDataGrid.Columns[8].Header = "Time Out";
+            scheduleDataGrid.Columns[9].Header = "CTO Earned";
+            scheduleDataGrid.Columns[10].Header = "CTO Used";
+            scheduleDataGrid.Columns[11].Header = "CTOBalance";
         }
 
         // Event handler for double-clicking on a row in the DataGrid
@@ -107,12 +108,13 @@ namespace CTOTracker.View
                 DateTime endDate = (DateTime)selectedRow["plannedEnd"];
                 string timeIn = selectedRow["timeIn"].ToString();
                 string timeOut = selectedRow["timeOut"].ToString();
+                int schedID = Convert.ToInt32(selectedRow["schedID"]); // Assuming schedID is an integer
 
                 // Create an instance of AddTask form
                 AddTask addTaskWindow = new AddTask();
 
-                // Pass selected data to AddTask form
-                addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut);
+                // Pass selected data to AddTask form, including schedID
+                addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
 
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();

@@ -41,13 +41,15 @@ namespace CTOTracker
             PopulateTaskComboBox();
         }
         // Method to populate AddTask form with selected data
-        public void PopulateWithData(string fullName, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
+        public void PopulateWithData(string fullName, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
         {
             // Populate UI controls with selected data
             Employee_Cmbox.Text = fullName;
             Task_Cmbox.Text = taskName;
             startDatePicker.SelectedDate = startDate;
             endDatePicker.SelectedDate = endDate;
+            schedIDTextBox.Text = schedID.ToString(); // Set the schedID in the schedIDTextBox
+
             showTimeCheckBox.IsChecked = !string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut);
 
             // Extract only time component from the selected time strings
@@ -61,6 +63,31 @@ namespace CTOTracker
                 endTimeTextBox.Text = DateTime.Parse(timeOut).ToString("hh:mm tt");
             }
         }
+
+        public double CalculateCtoEarned(DateTime timeIn, DateTime timeOut)
+        {
+            // Calculate the duration worked
+            TimeSpan duration = timeOut - timeIn;
+
+            // Define thresholds for ctoEarned
+            TimeSpan eightHours = TimeSpan.FromHours(8);
+            TimeSpan fourHours = TimeSpan.FromHours(4);
+
+            // Compare the duration with thresholds
+            if (duration >= eightHours)
+            {
+                return 1.0; // Full day (8+ hours)
+            }
+            else if (duration >= fourHours)
+            {
+                return 0.5; // Half day (4+ hours)
+            }
+            else
+            {
+                return 0.0; // Less than 4 hours
+            }
+        }
+
 
         //DatePicker Handler
         private void DatePicker_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -93,26 +120,25 @@ namespace CTOTracker
             }
         }
 
-
         private void PopulateTaskComboBox()
         {
             try
             {
+                // Clear existing items from the combo box
+                Task_Cmbox.Items.Clear();
+
                 // Fetch data from the Task table
                 allTask = GetDataFromTaskTable();
 
-                // Check if 'tasks' is null before binding to the ComboBox
+                // Check if 'allTask' is null before binding to the ComboBox
                 if (allTask != null)
                 {
                     // Bind the data to Task ComboBox
                     Task_Cmbox.ItemsSource = allTask;
-
-                    // Select the first item in the Task ComboBox
-                    Task_Cmbox.SelectedItem = allTask.Count > 0 ? allTask[0] : null;
                 }
                 else
                 {
-                    // Handle the case when 'tasks' is null
+                    // Handle the case when 'allTask' is null
                     MessageBox.Show("No tasks found.");
                 }
             }
@@ -122,6 +148,8 @@ namespace CTOTracker
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
+
 
         private List<string> GetDataFromEmployeeTable()
         {
@@ -363,29 +391,6 @@ namespace CTOTracker
             return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
         }
 
-        public double CalculateCtoEarned(DateTime timeIn, DateTime timeOut)
-        {
-            // Calculate the duration worked
-            TimeSpan duration = timeOut - timeIn;
-
-            // Define thresholds for ctoEarned
-            TimeSpan eightHours = TimeSpan.FromHours(8);
-            TimeSpan fourHours = TimeSpan.FromHours(4);
-
-            // Compare the duration with thresholds
-            if (duration >= eightHours)
-            {
-                return 1.0; // Full day (8+ hours)
-            }
-            else if (duration >= fourHours)
-            {
-                return 0.5; // Half day (4+ hours)
-            }
-            else
-            {
-                return 0.0; // Less than 4 hours
-            }
-        }
         private void InsertIntoSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
@@ -476,7 +481,19 @@ namespace CTOTracker
                 string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
                 string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
 
-                UpdateSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
+                // Assuming schedID is available from the UI (e.g., schedIDTextBox)
+                int schedID = Convert.ToInt32(schedIDTextBox.Text); // Adjust conversion based on data type
+
+                // Check if schedID is valid (non-zero) to determine if it's an update operation
+                if (schedID != 0)
+                {
+                    UpdateSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut, schedID); // Pass schedID to UpdateSchedule
+                }
+                else
+                {
+                    // If schedID is zero, it means it's a new schedule entry
+                    InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
+                }
             }
             catch (Exception ex)
             {
@@ -484,7 +501,7 @@ namespace CTOTracker
             }
         }
 
-        private void UpdateSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
+        private void UpdateSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
@@ -496,12 +513,12 @@ namespace CTOTracker
                         return;
                     }
 
-                    string query = "UPDATE Schedule SET plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut WHERE empID = @empID AND taskID = @taskID";
+                    string query = "UPDATE Schedule SET plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, empID = @empID, taskID = @taskID WHERE schedID = @schedID";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@plannedStart", startDate.Date);
-                        command.Parameters.AddWithValue("@plannedEnd", endDate.Date);
+                        command.Parameters.AddWithValue("@plannedStart", startDate);
+                        command.Parameters.AddWithValue("@plannedEnd", endDate);
 
                         if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
                         {
@@ -512,15 +529,18 @@ namespace CTOTracker
                             DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
                             DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                             command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
+
                         }
                         else
                         {
                             command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                             command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                            command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                         }
 
                         command.Parameters.AddWithValue("@empID", employeeId);
                         command.Parameters.AddWithValue("@taskID", taskId);
+                        command.Parameters.AddWithValue("@schedID", schedID);
 
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
@@ -531,9 +551,12 @@ namespace CTOTracker
                 {
                     MessageBox.Show("Error updating Schedule table: " + ex.Message);
                 }
+                finally
+                {
+                    connection.Close(); // Close the connection in the finally block
+                }
             }
         }
-
 
 
     }

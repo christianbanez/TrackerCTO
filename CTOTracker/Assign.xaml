@@ -73,6 +73,7 @@ End Date :" HorizontalAlignment="Left" Margin="251,149,0,0" VerticalAlignment="T
         <Button x:Name="AddButton" Content="ADD" HorizontalAlignment="Left" Margin="248,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click"/>
         <Button Content="CANCEL" HorizontalAlignment="Left" Margin="303,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click_1"/>
         <Button x:Name="SAVE" Content="Save" HorizontalAlignment="Left" Margin="195,361,0,0" VerticalAlignment="Top" Height="25" Width="48" Click="SAVE_Click"/>
+        <TextBox x:Name="schedIDTextBox" HorizontalAlignment="Left" Margin="359,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="31"/>
 
     </Grid>
 
