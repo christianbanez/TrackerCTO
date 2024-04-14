@@ -72,6 +72,8 @@ namespace CTOTracker.View
             // Instantiate an instance of the AddTask window
             AddTask addTaskWindow = new AddTask();
 
+            addTaskWindow.SAVE.Visibility = Visibility.Collapsed;
+            addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
             // Show the AddTask window
             addTaskWindow.ShowDialog();
             LoadScheduleData();
@@ -79,23 +81,23 @@ namespace CTOTracker.View
 
         private void DataGrid_AutoGenerateColumns(object sender, EventArgs e)
         {
-            scheduleDataGrid.Columns[0].Header = "Schedule ID";
-            scheduleDataGrid.Columns[1].Header = "Infor ID";
-            scheduleDataGrid.Columns[2].Header = "First Name";
-            scheduleDataGrid.Columns[3].Header = "Last Name";
-            scheduleDataGrid.Columns[4].Header = "Task Name";
-            scheduleDataGrid.Columns[5].Header = "Planned Start Date";
-            scheduleDataGrid.Columns[6].Header = "Planned End Date";
-            scheduleDataGrid.Columns[7].Header = "Time In";
-            scheduleDataGrid.Columns[8].Header = "Time Out";
-            scheduleDataGrid.Columns[9].Header = "CTO Earned";
-            scheduleDataGrid.Columns[10].Header = "CTO Used";
-            scheduleDataGrid.Columns[11].Header = "CTOBalance";
+            scheduleDataGrid.Columns[0].Header = "Infor ID";
+            scheduleDataGrid.Columns[1].Header = "First Name";
+            scheduleDataGrid.Columns[2].Header = "Last Name";
+            scheduleDataGrid.Columns[3].Header = "Task Name";
+            scheduleDataGrid.Columns[4].Header = "Planned Start Date";
+            scheduleDataGrid.Columns[5].Header = "Planned End Date";
+            scheduleDataGrid.Columns[6].Header = "Time In";
+            scheduleDataGrid.Columns[7].Header = "Time Out";
+            scheduleDataGrid.Columns[8].Header = "CTO Earned";
+            scheduleDataGrid.Columns[9].Header = "CTO Used";
+            scheduleDataGrid.Columns[10].Header = "CTOBalance";
         }
 
         // Event handler for double-clicking on a row in the DataGrid
         private void DataGridRow_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
         {
+
             // Check if a row is selected
             if (scheduleDataGrid.SelectedItem != null)
             {
@@ -117,8 +119,10 @@ namespace CTOTracker.View
                 // Pass selected data to AddTask form, including schedID
                 addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
 
+                addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();
+                LoadScheduleData();
             }
         }
 

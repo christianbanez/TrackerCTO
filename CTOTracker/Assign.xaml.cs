@@ -441,15 +441,13 @@ namespace CTOTracker
                         connection.Open();
                         int rowsAffected = command.ExecuteNonQuery();
                         MessageBox.Show("Schedule has been added!");
+                        connection.Close();
+                        this.Close();   
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error inserting into Schedule table: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
                 }
             }
         }
@@ -513,51 +511,55 @@ namespace CTOTracker
                         return;
                     }
 
-                    string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                    // Ask for confirmation before updating
+                    MessageBoxResult result = MessageBox.Show("Are you sure you want to update this schedule?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    if (result == MessageBoxResult.Yes)
                     {
-                        command.Parameters.AddWithValue("@empID", employeeId);
-                        command.Parameters.AddWithValue("@taskID", taskId);
-                        command.Parameters.AddWithValue("@plannedStart", startDate);
-                        command.Parameters.AddWithValue("@plannedEnd", endDate);
+                        string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
 
-                        if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                        using (OleDbCommand command = new OleDbCommand(query, connection))
                         {
-                            DateTime timeInDateTime = DateTime.ParseExact(timeIn, "hh:mm tt", CultureInfo.InvariantCulture);
-                            DateTime dateTimeInWithDate = startDate.Date + timeInDateTime.TimeOfDay;
-                            command.Parameters.AddWithValue("@timeIn", dateTimeInWithDate);
+                            command.Parameters.AddWithValue("@empID", employeeId);
+                            command.Parameters.AddWithValue("@taskID", taskId);
+                            command.Parameters.AddWithValue("@plannedStart", startDate);
+                            command.Parameters.AddWithValue("@plannedEnd", endDate);
 
-                            DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
-                            DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
-                            command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
+                            if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                            {
+                                DateTime timeInDateTime = DateTime.ParseExact(timeIn, "hh:mm tt", CultureInfo.InvariantCulture);
+                                DateTime dateTimeInWithDate = startDate.Date + timeInDateTime.TimeOfDay;
+                                command.Parameters.AddWithValue("@timeIn", dateTimeInWithDate);
 
-                            double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                            command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
-                            command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                                DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
+                                DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
+                                command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
+
+                                double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
+                                command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                                command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                            }
+                            else
+                            {
+                                command.Parameters.AddWithValue("@timeIn", DBNull.Value);
+                                command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                                command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
+                                command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                            }
+
+                            command.Parameters.AddWithValue("@schedID", schedID);
+
+                            connection.Open();
+                            int rowsAffected = command.ExecuteNonQuery();
+                            MessageBox.Show("Schedule has been updated!");
+                            connection.Close();
+                            this.Close();
                         }
-                        else
-                        {
-                            command.Parameters.AddWithValue("@timeIn", DBNull.Value);
-                            command.Parameters.AddWithValue("@timeOut", DBNull.Value);
-                            command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
-                            command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
-                        }
-
-                        command.Parameters.AddWithValue("@schedID", schedID);
-
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
-                        MessageBox.Show("Schedule has been updated!");
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error updating Schedule table: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
                 }
             }
         }
