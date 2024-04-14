@@ -66,6 +66,7 @@ namespace CTOTracker.View
         }
 
 
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Instantiate an instance of the AddTask window

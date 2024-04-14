@@ -25,7 +25,7 @@
                         VerticalAlignment="Center" Height="25" Width="88" Click="Button_Click"/>
             <ComboBox HorizontalAlignment="Left" Margin="502,0,0,0" 
                           VerticalAlignment="Center" Width="182" Height="24"/>
-            <TextBox HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" 
+            <TextBox x:Name="searchTextBox" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" 
                          Text="TextBox" VerticalAlignment="Center" Width="278" Height="24"/>
 
 

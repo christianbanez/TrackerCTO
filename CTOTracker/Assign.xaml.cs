@@ -34,8 +34,8 @@ namespace CTOTracker
             filteredEmployees = new List<string>();
             allTask = new List<string>();
             filteredTask = new List<string>();
-            startTimeTextBox.Text = "09:00 AM";
-            endTimeTextBox.Text = "05:00 PM";
+            //startTimeTextBox.Text = "09:00 AM";
+            //endTimeTextBox.Text = "05:00 PM";
             Employee_Cmbox.IsEditable = true; // Allow editing of ComboBox text
             PopulateEmployeeComboBox();
             PopulateTaskComboBox();
@@ -87,7 +87,6 @@ namespace CTOTracker
                 return 0.0; // Less than 4 hours
             }
         }
-
 
         //DatePicker Handler
         private void DatePicker_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -275,58 +274,7 @@ namespace CTOTracker
         }
 
         //Add Schedule button
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //declare month before to blackout in datetimepicker
-            //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
 
-            try
-            {
-                // Display a confirmation dialog
-                MessageBoxResult result = MessageBox.Show("Are you sure you want to add this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                // Check the user's response
-                if (result == MessageBoxResult.Yes)
-                {
-
-                    // Get selected employee name from ComboBox
-                    string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
-
-                    // Get selected task name from ComboBox
-                    string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
-
-                    if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
-                    {
-                        MessageBox.Show("Please select an employee and a task.");
-                        return;
-                    }
-                    string employeeId = GetEmployeeId(selectedEmployee);
-                    string taskId = GetTaskId(selectedTask);
-
-                    // Add the blackout date
-                    //startDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
-                    //endDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
-
-                    // Get selected dates from date pickers
-                    DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
-                    DateTime endDate = endDatePicker.SelectedDate ?? DateTime.Now;
-
-                    // Get selected times from time pickers (if checkbox is checked)
-                    string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
-                    string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
-
-
-
-                    // Insert data into Schedule table
-                    InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-        }
         private string GetEmployeeId(string employeeName)
         {
             string? employeeId = null; // Initialize employeeId to null
@@ -389,6 +337,58 @@ namespace CTOTracker
             }
 
             return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
+        }
+                private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //declare month before to blackout in datetimepicker
+            //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
+
+            try
+            {
+                // Display a confirmation dialog
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to add this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                // Check the user's response
+                if (result == MessageBoxResult.Yes)
+                {
+
+                    // Get selected employee name from ComboBox
+                    string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+
+                    // Get selected task name from ComboBox
+                    string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+
+                    if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
+                    {
+                        MessageBox.Show("Please select an employee and a task.");
+                        return;
+                    }
+                    string employeeId = GetEmployeeId(selectedEmployee);
+                    string taskId = GetTaskId(selectedTask);
+
+                    // Add the blackout date
+                    //startDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
+                    //endDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
+
+                    // Get selected dates from date pickers
+                    DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
+                    DateTime endDate = endDatePicker.SelectedDate ?? DateTime.Now;
+
+                    // Get selected times from time pickers (if checkbox is checked)
+                    string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
+                    string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
+
+
+
+                    // Insert data into Schedule table
+                    InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
         }
 
         private void InsertIntoSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
@@ -513,7 +513,7 @@ namespace CTOTracker
                         return;
                     }
 
-                    string query = "UPDATE Schedule SET plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, empID = @empID, taskID = @taskID WHERE schedID = @schedID";
+                    string query = "UPDATE Schedule SET plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, empID = @empID, taskID = @taskID, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
@@ -530,12 +530,17 @@ namespace CTOTracker
                             DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                             command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
 
+                            double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
+                            command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                            command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+
                         }
                         else
                         {
                             command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                             command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                             command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
+                            command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
                         }
 
                         command.Parameters.AddWithValue("@empID", employeeId);
