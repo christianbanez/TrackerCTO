@@ -513,10 +513,12 @@ namespace CTOTracker
                         return;
                     }
 
-                    string query = "UPDATE Schedule SET plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, empID = @empID, taskID = @taskID, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                    string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@empID", employeeId);
+                        command.Parameters.AddWithValue("@taskID", taskId);
                         command.Parameters.AddWithValue("@plannedStart", startDate);
                         command.Parameters.AddWithValue("@plannedEnd", endDate);
 
@@ -533,7 +535,6 @@ namespace CTOTracker
                             double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                             command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                             command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-
                         }
                         else
                         {
@@ -543,8 +544,6 @@ namespace CTOTracker
                             command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
                         }
 
-                        command.Parameters.AddWithValue("@empID", employeeId);
-                        command.Parameters.AddWithValue("@taskID", taskId);
                         command.Parameters.AddWithValue("@schedID", schedID);
 
                         connection.Open();
@@ -558,10 +557,11 @@ namespace CTOTracker
                 }
                 finally
                 {
-                    connection.Close(); // Close the connection in the finally block
+                    connection.Close();
                 }
             }
         }
+
 
 
     }
