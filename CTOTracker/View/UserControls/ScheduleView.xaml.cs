@@ -90,8 +90,6 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[6].Header = "Time In";
             scheduleDataGrid.Columns[7].Header = "Time Out";
             scheduleDataGrid.Columns[8].Header = "CTO Earned";
-            scheduleDataGrid.Columns[9].Header = "CTO Used";
-            scheduleDataGrid.Columns[10].Header = "CTOBalance";
         }
 
         // Event handler for double-clicking on a row in the DataGrid
