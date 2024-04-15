@@ -13,6 +13,30 @@ namespace CTOTracker
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_Loaded; // Attach Loaded event handler
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            AttachEventHandlers();
+        }
+
+        private void AttachEventHandlers()
+        {
+            // Find controls in the template
+            var closeButton = (Button)this.Template.FindName("CloseButton", this);
+            var titleBar = (Border)this.Template.FindName("TitleBar", this);
+
+            // Attach event handlers
+            if (closeButton != null)
+            {
+                closeButton.Click += CloseButton_Click;
+            }
+
+            if (titleBar != null)
+            {
+                titleBar.MouseLeftButtonDown += TitleBar_MouseLeftButtonDown;
+            }
         }
 
         private void SideNav_Loaded(object sender, RoutedEventArgs e)
