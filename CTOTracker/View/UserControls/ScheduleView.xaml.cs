@@ -28,8 +28,9 @@ namespace CTOTracker.View
             cbxFilter.Items.Add("Completed");
         }
 
-        private void LoadScheduleData()
+        private void LoadScheduleData(string employeeName = null)
         {
+            
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
