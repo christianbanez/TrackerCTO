@@ -85,6 +85,7 @@ namespace CTOTracker.View
             //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
             //if (msgRes == MessageBoxResult.Yes)
             //{
+            btnEdit.IsEnabled = false;
             AddEdit.Visibility = Visibility.Visible;
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
@@ -453,6 +454,7 @@ namespace CTOTracker.View
 
                 // Update the employee record in the database
                 UpdateEmployee(inforID, firstName, lastName, email, contact, roleID);
+                btnEdit.IsEnabled = false;
 
                 // Refresh the DataGridView to reflect the changes
                 LoadEmployeeView();
