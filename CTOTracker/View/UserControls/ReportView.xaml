@@ -1,12 +1,13 @@
-﻿<UserControl x:Class="CTOTracker.View.UserControls.ReportView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CTOTracker.View.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="768"
-             d:DesignWidth="1360">
+﻿<UserControl
+    x:Class="CTOTracker.View.UserControls.ReportView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:CTOTracker.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="768"
+    d:DesignWidth="1360"
+    mc:Ignorable="d">
     <Grid>
 
         <!--  ScheduleDisplay  -->
@@ -20,8 +21,7 @@
             </Grid.RowDefinitions>
 
             <!--  Employee HEADER  -->
-            <Grid
-                    Background="AliceBlue">
+            <Grid Background="AliceBlue">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
@@ -29,10 +29,10 @@
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
 
-                <Label 
+                <Label
                     Margin="10,0,0,0"
                     Content="Employee"
-                    FontSize="24"/>
+                    FontSize="24" />
 
                 <ComboBox
                     x:Name="cbxFilterRep"
@@ -70,10 +70,10 @@
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
 
-                <Label 
+                <Label
                     Margin="10,0,0,0"
                     Content="Task Schedule"
-                    FontSize="24"/>
+                    FontSize="24" />
 
                 <ComboBox
                     x:Name="cbxFilterRep1"
@@ -99,8 +99,7 @@
                 CanUserReorderColumns="False"
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
-                IsReadOnly="True"
-                Style="{StaticResource table_style}" />
+                IsReadOnly="True" />
         </Grid>
     </Grid>
 </UserControl>

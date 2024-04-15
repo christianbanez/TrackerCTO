@@ -1,4 +1,5 @@
 ﻿using CTOTracker.View;
+using CTOTracker.View.UserControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -74,6 +75,16 @@ namespace CTOTracker
             }
         }
 
+        private void ListViewItem_Selected_2(object sender, RoutedEventArgs e)
+        {
+            frmMain.Navigate(new ReportView());
+            // Uncheck the ToggleButton when a list view item is selected
+            if (listSideNav.SelectedItem != null)
+            {
+                tgbMenu.IsChecked = false;
+            }
+        }
+
         private void tgbMenu_MouseEnter(object sender, MouseEventArgs e)
         {
             // Set tooltip visibility
@@ -121,5 +132,6 @@ namespace CTOTracker
         {
             this.DragMove();
         }
+
     }
 }
