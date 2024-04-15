@@ -23,13 +23,6 @@ namespace CTOTracker.View
     public partial class ScheduleView : UserControl
     {
         private DataConnection dataConnection;
-        public class TaskModel
-        {
-            public string EmployeeName { get; set; }
-            public string TaskName { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-        }
 
         public ScheduleView()
         {
@@ -81,16 +74,22 @@ namespace CTOTracker.View
 
         private void DataGrid_AutoGenerateColumns(object sender, EventArgs e)
         {
-            scheduleDataGrid.Columns[0].Header = "Infor ID";
-            scheduleDataGrid.Columns[1].Header = "First Name";
-            scheduleDataGrid.Columns[2].Header = "Last Name";
-            scheduleDataGrid.Columns[3].Header = "Task Name";
-            scheduleDataGrid.Columns[4].Header = "Planned Start Date";
-            scheduleDataGrid.Columns[5].Header = "Planned End Date";
-            scheduleDataGrid.Columns[6].Header = "Time In";
-            scheduleDataGrid.Columns[7].Header = "Time Out";
-            scheduleDataGrid.Columns[8].Header = "CTO Earned";
+            // Set the header text for each column
+            scheduleDataGrid.Columns[0].Header = "Schedule ID";
+            scheduleDataGrid.Columns[1].Header = "Infor ID";
+            scheduleDataGrid.Columns[2].Header = "First Name";
+            scheduleDataGrid.Columns[3].Header = "Last Name";
+            scheduleDataGrid.Columns[4].Header = "Task Name";
+            scheduleDataGrid.Columns[5].Header = "Planned Start Date";
+            scheduleDataGrid.Columns[6].Header = "Planned End Date";
+            scheduleDataGrid.Columns[7].Header = "Time In";
+            scheduleDataGrid.Columns[8].Header = "Time Out";
+            scheduleDataGrid.Columns[9].Header = "CTO Earned";
+
+            // Hide the header of the first column
+            scheduleDataGrid.Columns[0].Visibility = Visibility.Collapsed;
         }
+
 
         // Event handler for double-clicking on a row in the DataGrid
         private void DataGridRow_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
@@ -116,7 +115,7 @@ namespace CTOTracker.View
 
                 // Pass selected data to AddTask form, including schedID
                 addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
-
+                addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
                 addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();

@@ -8,10 +8,14 @@
         mc:Ignorable="d"
         Title="Assign Schedule" Height="450" Width="400">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="249*"/>
+            <ColumnDefinition Width="151*"/>
+        </Grid.ColumnDefinitions>
         <Label Content="Employee :" HorizontalAlignment="Left" Margin="43,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Task : " HorizontalAlignment="Left" Margin="37,77,0,0" VerticalAlignment="Top"/>
         <Label Content="Start Date :" HorizontalAlignment="Left" Margin="37,149,0,0" VerticalAlignment="Top"/>
-        <Label Content="End Date :" HorizontalAlignment="Left" Margin="251,149,0,0" VerticalAlignment="Top"/>
+        <Label Content="End Date :" HorizontalAlignment="Left" Margin="2,149,0,0" VerticalAlignment="Top" Grid.Column="1"/>
         <Label Content="Time In:" HorizontalAlignment="Left" Margin="43,276,0,0" VerticalAlignment="Top">
             <Label.Style>
                 <Style TargetType="Label">
@@ -24,7 +28,7 @@
                 </Style>
             </Label.Style>
         </Label>
-        <Label Content="Time out :" HorizontalAlignment="Left" Margin="252,276,0,0" VerticalAlignment="Top">
+        <Label Content="Time out :" HorizontalAlignment="Left" Margin="3,276,0,0" VerticalAlignment="Top" Grid.Column="1">
             <Label.Style>
                 <Style TargetType="Label">
                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -38,11 +42,11 @@
         </Label>
 
         <Label Content="Add Time :" HorizontalAlignment="Left" Margin="10,217,0,0" VerticalAlignment="Top" />
-        <ComboBox x:Name="Employee_Cmbox" HorizontalAlignment="Left" Margin="43,36,0,0" VerticalAlignment="Top" Width="311"  />
+        <ComboBox x:Name="Employee_Cmbox" HorizontalAlignment="Left" Margin="43,36,0,0" VerticalAlignment="Top" Width="311" Grid.ColumnSpan="2"  />
 
-        <ComboBox x:Name="Task_Cmbox" HorizontalAlignment="Left" Margin="43,103,0,0" VerticalAlignment="Top" Width="311" IsEditable="True"/>
+        <ComboBox x:Name="Task_Cmbox" HorizontalAlignment="Left" Margin="43,103,0,0" VerticalAlignment="Top" Width="311" IsEditable="True" Grid.ColumnSpan="2"/>
         <DatePicker x:Name="startDatePicker" HorizontalAlignment="Left" Margin="43,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" IsTodayHighlighted="True" PreviewKeyDown="DatePicker_PreviewKeyDown"/>
-        <DatePicker x:Name="endDatePicker" HorizontalAlignment="Left" Margin="251,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" PreviewKeyDown="DatePicker_PreviewKeyDown"/>
+        <DatePicker x:Name="endDatePicker" HorizontalAlignment="Left" Margin="2,180,0,0" VerticalAlignment="Top" SelectedDateFormat="Short" SelectedDate="{x:Static sys:DateTime.Now}" PreviewKeyDown="DatePicker_PreviewKeyDown" Grid.Column="1"/>
         <CheckBox x:Name="showTimeCheckBox" Content="Show Time" HorizontalAlignment="Left" Margin="82,223,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="startTimeTextBox" HorizontalAlignment="Left" Margin="43,307,0,0" VerticalAlignment="Top" Width="100" Text="09:00 AM">
             <TextBox.Style>
@@ -56,7 +60,7 @@
                 </Style>
             </TextBox.Style>
         </TextBox>
-        <TextBox x:Name="endTimeTextBox" HorizontalAlignment="Left" Margin="254,307,0,0" VerticalAlignment="Top" Width="100" Text="05:00 PM">
+        <TextBox x:Name="endTimeTextBox" HorizontalAlignment="Left" Margin="5,307,0,0" VerticalAlignment="Top" Width="100" Text="05:00 PM" Grid.Column="1">
             <TextBox.Style>
                 <Style TargetType="TextBox">
                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -68,9 +72,9 @@
                 </Style>
             </TextBox.Style>
         </TextBox>
-        <Button x:Name="AddButton" Content="ADD" HorizontalAlignment="Left" Margin="248,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click"/>
-        <Button Content="CANCEL" HorizontalAlignment="Left" Margin="303,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click_1"/>
-        <Button x:Name="SAVE" Content="Save" HorizontalAlignment="Left" Margin="249,361,0,0" VerticalAlignment="Top" Height="25" Width="48" Click="SAVE_Click"/>
+        <Button x:Name="AddButton" Content="ADD" HorizontalAlignment="Left" Margin="248,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click" Grid.ColumnSpan="2"/>
+        <Button Content="CANCEL" HorizontalAlignment="Left" Margin="54,361,0,0" VerticalAlignment="Top" Height="25" Width="50" Click="Button_Click_1" Grid.Column="1"/>
+        <Button x:Name="SAVE" Content="Save" HorizontalAlignment="Left" Margin="249,361,0,0" VerticalAlignment="Top" Height="25" Width="48" Click="SAVE_Click" Grid.ColumnSpan="2"/>
         <TextBox x:Name="schedIDTextBox" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="28" Height="22"/>
 
     </Grid>
