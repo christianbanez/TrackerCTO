@@ -145,14 +145,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
     </Window.Resources>
 
     <!--<Border CornerRadius="10" BorderThickness="20">
         <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                <GradientStop Color="#FFECF4FB" Offset="0"/>
-                <GradientStop Color="#FFC9D1EA"  Offset="1"/>
+                <GradientStop Color="#FFECF4FB" Offset="0" />
+                <GradientStop Color="#FFC9D1EA"  Offset="1" />
             </LinearGradientBrush>
         </Border.BorderBrush>-->
 
@@ -164,9 +163,7 @@
                 <GradientStop Offset="0" Color="#FFECF4FB" />
                 <GradientStop Offset="1" Color="#FFC9D1EA" />
             </LinearGradientBrush>
-
         </Grid.Background>
-
 
         <!--  Main panel  -->
         <Grid
@@ -227,9 +224,7 @@
                                 Direction="-90"
                                 ShadowDepth="1"
                                 Color="White" />
-
                         </Label.Effect>
-
                     </Label>
 
                     <!--  Toggle Button  -->
@@ -280,9 +275,7 @@
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
-
                         </ToggleButton.Triggers>
-
                     </ToggleButton>
                 </Grid>
 
@@ -419,25 +412,15 @@
 
                                                 <Setter TargetName="Bd" Property="BorderBrush" Value="#FF6980B7" />
                                             </Trigger>
-
                                         </ControlTemplate.Triggers>
-
                                     </ControlTemplate>
-
                                 </Setter.Value>
-
                             </Setter>
-
                         </Style>
-
                     </ListView.ItemContainerStyle>
-
                 </ListView>
-
             </StackPanel>
-
         </Grid>
-
     </Grid>
 
     <!--</Border>-->

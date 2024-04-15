@@ -72,6 +72,7 @@
                     x:Name="btnAssignTask"
                     Grid.Column="5"
                     Margin="50,5,5,5"
+                    Click="btnAssignTask_Click"
                     Content="Assign Task"
                     FontSize="16" />
             </Grid>
@@ -80,7 +81,11 @@
             <DataGrid
                 x:Name="scheduleDataGrid"
                 Grid.Row="1"
-                d:ItemsSource="{d:SampleData ItemCount=5}" />
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                IsReadOnly="True" />
 
             <!--  TOTAL_SELECTED_PANEL  -->
             <Grid Grid.Row="2" Background="AliceBlue">
@@ -131,7 +136,13 @@
                     VerticalAlignment="Center"
                     Content="NUMBER" />
             </Grid>
-            <DataGrid Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}" />
+            <DataGrid
+                Grid.Row="4"
+                d:ItemsSource="{d:SampleData ItemCount=5}"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                IsReadOnly="True" />
         </Grid>
     </Grid>
 </UserControl>
