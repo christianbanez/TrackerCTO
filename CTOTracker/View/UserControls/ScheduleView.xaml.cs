@@ -54,18 +54,6 @@ namespace CTOTracker.View
         {
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            // Instantiate an instance of the AddTask window
-            AddTask addTaskWindow = new AddTask();
-
-            addTaskWindow.SAVE.Visibility = Visibility.Collapsed;
-            addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
-            // Show the AddTask window
-            addTaskWindow.ShowDialog();
-            LoadScheduleData();
-        }
-
         private void DataGrid_AutoGenerateColumns(object sender, EventArgs e)
         {
             scheduleDataGrid.Columns[0].Header = "Infor ID";
@@ -103,9 +91,11 @@ namespace CTOTracker.View
                 // Pass selected data to AddTask form, including schedID
                 addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
 
-                addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
+                addTaskWindow.AddButton.Visibility = Visibility.Collapsed; 
+                addTaskWindow.SaveButton.Visibility = Visibility.Visible;
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();
+ 
                 LoadScheduleData();
             }
         }
@@ -115,7 +105,7 @@ namespace CTOTracker.View
             // Instantiate an instance of the AddTask window
             AddTask addTaskWindow = new AddTask();
 
-            addTaskWindow.SAVE.Visibility = Visibility.Collapsed;
+            addTaskWindow.SaveButton.Visibility = Visibility.Collapsed;
             addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
             // Show the AddTask window
             addTaskWindow.ShowDialog();

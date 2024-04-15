@@ -564,7 +564,17 @@ namespace CTOTracker
             }
         }
 
+        private void showTimeCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            // Show the time pickers panel
+            addTime.Visibility = Visibility.Visible;
+        }
 
+        private void showTimeCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Hide the time pickers panel
+            addTime.Visibility = Visibility.Collapsed;
+        }
 
     }
 }
