@@ -358,9 +358,19 @@ namespace CTOTracker
                     // Get selected task name from ComboBox
                     string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
 
-                    if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
+                    if (string.IsNullOrEmpty(selectedEmployee) && string.IsNullOrEmpty(selectedTask))
                     {
-                        MessageBox.Show("Please select an employee and a task.");
+                        MessageBox.Show("Please select an employee and a task."); //Messagebox if employee and task are null
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(selectedEmployee))
+                    {
+                        MessageBox.Show("Please select an employee."); //Messagebox if employee is null
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(selectedTask))
+                    {
+                        MessageBox.Show("Please select a task."); //Messagebox if task is null
                         return;
                     }
                     string employeeId = GetEmployeeId(selectedEmployee);
@@ -377,8 +387,6 @@ namespace CTOTracker
                     // Get selected times from time pickers (if checkbox is checked)
                     string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
                     string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
-
-
 
                     // Insert data into Schedule table
                     InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);

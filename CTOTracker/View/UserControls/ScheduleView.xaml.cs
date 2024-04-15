@@ -26,6 +26,8 @@ namespace CTOTracker.View
             InitializeComponent();
             dataConnection = new DataConnection();
             LoadScheduleData();
+
+            cbxFilter.Items.Add("Completed");
         }
 
         private void LoadScheduleData()
@@ -110,6 +112,28 @@ namespace CTOTracker.View
             // Show the AddTask window
             addTaskWindow.ShowDialog();
             LoadScheduleData();
+        }
+
+        private void cbxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    // Bind the DataTable to the DataGrid
+                    scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
     }
 }

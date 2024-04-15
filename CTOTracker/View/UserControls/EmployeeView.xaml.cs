@@ -22,6 +22,7 @@ namespace CTOTracker.View
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
+            btnEdit.IsEnabled = false;
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -65,6 +66,7 @@ namespace CTOTracker.View
             //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
             //if (msgRes == MessageBoxResult.Yes)
             //{
+            btnEdit.IsEnabled = false;
             AddEdit.Visibility = Visibility.Visible;
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
@@ -371,7 +373,6 @@ namespace CTOTracker.View
                 }
             }
         }
-
         private string GetRoleID(string roleName)
         {
             string? roleID = null; // Initialize taskId to null
@@ -421,6 +422,7 @@ namespace CTOTracker.View
             DataRowView row_selected = (DataRowView)gd.SelectedItem;
             if (row_selected != null)
             {
+                btnEdit.IsEnabled = true;
                 // Extract values from the row and populate textboxes
                 txtEmpID.Text = row_selected["inforID"].ToString();
                 txtEmpID.IsEnabled = false;

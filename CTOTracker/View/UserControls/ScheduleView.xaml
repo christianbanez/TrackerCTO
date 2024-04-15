@@ -127,7 +127,7 @@
                     FontSize="16"
                     IsEditable="True"
                     IsReadOnly="True"
-                    Text="Filter by" />
+                    Text="Filter by" SelectionChanged="cbxFilter_SelectionChanged" />
 
                 <Button
                     x:Name="btnSearchSched"
