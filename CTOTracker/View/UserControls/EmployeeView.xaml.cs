@@ -98,7 +98,7 @@ namespace CTOTracker.View
             LoadEmployeeView();
         }
 
-        private void LoadEmployeeView()
+        public void LoadEmployeeView()
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
