@@ -6,9 +6,7 @@ using System.Windows.Input;
 
 namespace CTOTracker.View
 {
-    /// <summary>
-    /// Interaction logic for ScheduleView.xaml
-    /// </summary>
+
     public partial class ScheduleView : UserControl
     {
         private DataConnection dataConnection;
@@ -31,13 +29,13 @@ namespace CTOTracker.View
 
                     if (!string.IsNullOrEmpty(employeeName))
                     {
-                        query += " WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%'";
+                        query += " WHERE Employee.fName LIKE '%' OR Employee.lName LIKE '%' OR Task.taskName LIKE + '%'";
                     }
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     if (!string.IsNullOrEmpty(employeeName))
                     {
-                        adapter.SelectCommand.Parameters.AddWithValue("@Initial", employeeName.Substring(0, 1));
+                        adapter.SelectCommand.Parameters.Add(employeeName);
                     }
 
                     DataTable dataTable = new DataTable();
@@ -127,10 +125,13 @@ namespace CTOTracker.View
                 LoadScheduleData();
                 return;
             }
+            else
+            {
 
-            // Otherwise, filter the data based on the entered initial
-            string initial = searchText.Substring(0, 1); // Assuming you're filtering by the first character
-            LoadScheduleDataByInitial(initial);
+            }
+            //Otherwise, filter the data based on the entered initial
+            //string initial = searchText.Substring(0, 1); // Assuming you're filtering by the first character
+            LoadScheduleDataByInitial(searchText);
         }
 
         private void LoadScheduleDataByInitial(string initial)
@@ -139,7 +140,7 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%'";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%' OR Task.taskName LIKE @Initial + '%'";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
