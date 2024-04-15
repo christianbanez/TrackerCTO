@@ -154,7 +154,7 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" />
+                Style="{StaticResource table_style}" MouseDoubleClick="DataGridRow_MouseDoubleClick_1" />
 
             <!--  TOTAL_SELECTED_PANEL  -->
             <Grid Grid.Row="2" Background="AliceBlue">
