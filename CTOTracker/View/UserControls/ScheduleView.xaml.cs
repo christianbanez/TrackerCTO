@@ -6,9 +6,7 @@ using System.Windows.Input;
 
 namespace CTOTracker.View
 {
-    /// <summary>
-    /// Interaction logic for ScheduleView.xaml
-    /// </summary>
+
     public partial class ScheduleView : UserControl
     {
         private DataConnection dataConnection;
@@ -36,9 +34,19 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID";
+
+                    if (!string.IsNullOrEmpty(employeeName))
+                    {
+                        query += " WHERE Employee.fName LIKE '%' OR Employee.lName LIKE '%' OR Task.taskName LIKE + '%'";
+                    }
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    if (!string.IsNullOrEmpty(employeeName))
+                    {
+                        adapter.SelectCommand.Parameters.Add(employeeName);
+                    }
+
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
@@ -116,11 +124,30 @@ namespace CTOTracker.View
 
         private void cbxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            string searchText = employeeNameTextBox.Text.Trim();
+
+            // If the search text is empty, load all data
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadScheduleData();
+                return;
+            }
+            else
+            {
+
+            }
+            //Otherwise, filter the data based on the entered initial
+            //string initial = searchText.Substring(0, 1); // Assuming you're filtering by the first character
+            LoadScheduleDataByInitial(searchText);
+        }
+
+        private void LoadScheduleDataByInitial(string initial)
+        {
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%' OR Task.taskName LIKE @Initial + '%'";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
