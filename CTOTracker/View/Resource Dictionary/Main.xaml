@@ -45,7 +45,7 @@
     <!--  Toggle Button Style Template  -->
     <ImageBrush
         x:Key="tb_mouse_over"
-        ImageSource="C:\Users\tdizon\source\repos\TrackerCTO\CTOTracker\Assets\tgbMenu_MouseOver.png"
+        ImageSource="Assets\tgbMenu_MouseOver.png"
         Stretch="Uniform" />
 
     <!--  Text font style  -->

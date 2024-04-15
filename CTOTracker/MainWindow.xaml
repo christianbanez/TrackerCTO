@@ -17,10 +17,10 @@
     MaxHeight="798"
     Padding="5,5,5,5"
     ResizeMode="NoResize"
+    Template="{StaticResource Window_template}"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
-    mc:Ignorable="d"
-    Template="{StaticResource Window_template}">
+    mc:Ignorable="d">
 
     <!--<Border CornerRadius="10" BorderThickness="20">
         <Border.BorderBrush>
@@ -117,7 +117,7 @@
                         Style="{StaticResource tb_style}"
                         Unchecked="tgbMenu_Unchecked">
                         <ToggleButton.Background>
-                            <ImageBrush ImageSource="Assets/tgbMenu.png" Stretch="Uniform" />
+                            <ImageBrush ImageSource="View/Resource Dictionary/Assets/tgbMenu.png" Stretch="Uniform" />
                         </ToggleButton.Background>
 
                         <!--  Toggle button events  -->
@@ -180,7 +180,7 @@
                             <Image
                                 Width="50"
                                 Height="50"
-                                Source="Assets/btnEmp.png"
+                                Source="View/Resource Dictionary/Assets/btnEmp.png"
                                 Stretch="Uniform" />
 
                             <Label
@@ -209,7 +209,7 @@
                                 Height="50"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Source="Assets/btnSched.png"
+                                Source="View/Resource Dictionary/Assets/btnSched.png"
                                 Stretch="Uniform" />
 
                             <Label
@@ -235,7 +235,7 @@
                                 Height="50"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Source="Assets/btnRep.png"
+                                Source="View/Resource Dictionary/Assets/btnRep.png"
                                 Stretch="Uniform" />
 
                             <Label
