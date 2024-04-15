@@ -101,7 +101,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox
-                    x:Name="tbxSearch"
+                    x:Name="employeeNameTextBox"
                     Grid.Column="0"
                     Margin="5"
                     HorizontalAlignment="Stretch"

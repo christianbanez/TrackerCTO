@@ -13,30 +13,33 @@ namespace CTOTracker.View
     {
         private DataConnection dataConnection;
 
-        public class TaskModel
-        {
-            public string EmployeeName { get; set; }
-            public string TaskName { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-        }
-
         public ScheduleView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
+            employeeNameTextBox.TextChanged += EmployeeNameTextBox_TextChanged;
             LoadScheduleData();
         }
 
-        private void LoadScheduleData()
+        private void LoadScheduleData(string employeeName = null)
         {
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID";
+
+                    if (!string.IsNullOrEmpty(employeeName))
+                    {
+                        query += " WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%'";
+                    }
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    if (!string.IsNullOrEmpty(employeeName))
+                    {
+                        adapter.SelectCommand.Parameters.AddWithValue("@Initial", employeeName.Substring(0, 1));
+                    }
+
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
@@ -49,6 +52,8 @@ namespace CTOTracker.View
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+
+
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -99,7 +104,7 @@ namespace CTOTracker.View
                 LoadScheduleData();
             }
         }
-
+                
         private void btnAssignTask_Click(object sender, RoutedEventArgs e)
         {
             // Instantiate an instance of the AddTask window
@@ -111,5 +116,46 @@ namespace CTOTracker.View
             addTaskWindow.ShowDialog();
             LoadScheduleData();
         }
+
+        private void EmployeeNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = employeeNameTextBox.Text.Trim();
+
+            // If the search text is empty, load all data
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadScheduleData();
+                return;
+            }
+
+            // Otherwise, filter the data based on the entered initial
+            string initial = searchText.Substring(0, 1); // Assuming you're filtering by the first character
+            LoadScheduleDataByInitial(initial);
+        }
+
+        private void LoadScheduleDataByInitial(string initial)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%'";
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    // Bind the DataTable to the DataGrid
+                    scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+
     }
 }
