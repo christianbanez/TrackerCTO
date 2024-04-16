@@ -461,19 +461,21 @@ namespace CTOTracker
                             DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
                             DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                             command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
-
+                            command.Parameters.AddWithValue("@completed", -1);
                             double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                             command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                             command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-                            command.Parameters.AddWithValue("@completed", -1);
+
+                            
                         }
                         else
                         {
                             command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                             command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                            command.Parameters.AddWithValue("@completed", DBNull.Value);
                             command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                             command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
-                            command.Parameters.AddWithValue("@completed", DBNull.Value);
+                            
                         }
 
                         connection.Open();
@@ -572,19 +574,20 @@ namespace CTOTracker
                                 DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
                                 DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
-
+                                command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                                 command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                 command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-                                command.Parameters.AddWithValue("@completed", -1);
+                                //command.Parameters.AddWithValue("@completed", -1);
                             }
                             else
                             {
                                 command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                                command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
-                                command.Parameters.AddWithValue("@completed", DBNull.Value);
+                                
                             }
 
                             command.Parameters.AddWithValue("@schedID", schedID);
