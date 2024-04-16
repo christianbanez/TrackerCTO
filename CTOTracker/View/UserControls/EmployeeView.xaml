@@ -141,7 +141,8 @@
                             Grid.Row="3"
                             Grid.Column="5"
                             Margin="20"
-                            IsEnabled="False" />
+                            IsEnabled="False"
+                            IsEditable="True"/>
                     </Grid>
 
                     <!--  AddEdit  -->
