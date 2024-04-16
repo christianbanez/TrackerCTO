@@ -440,8 +440,8 @@ namespace CTOTracker
                         return;
                     }
 
-                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoBalance) " +
-                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned, @ctoBalance)";
+                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, completed, ctoEarned, ctoBalance) " +
+                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @completed, @ctoEarned, @ctoBalance)";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
@@ -465,6 +465,7 @@ namespace CTOTracker
                             double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                             command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                             command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                            command.Parameters.AddWithValue("@completed", -1);
                         }
                         else
                         {
@@ -472,6 +473,7 @@ namespace CTOTracker
                             command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                             command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                             command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                            command.Parameters.AddWithValue("@completed", DBNull.Value);
                         }
 
                         connection.Open();
@@ -552,7 +554,7 @@ namespace CTOTracker
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                        string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, completed = @completed, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
 
                         using (OleDbCommand command = new OleDbCommand(query, connection))
                         {
@@ -574,6 +576,7 @@ namespace CTOTracker
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                                 command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                 command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                                command.Parameters.AddWithValue("@completed", -1);
                             }
                             else
                             {
@@ -581,6 +584,7 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                                command.Parameters.AddWithValue("@completed", DBNull.Value);
                             }
 
                             command.Parameters.AddWithValue("@schedID", schedID);
