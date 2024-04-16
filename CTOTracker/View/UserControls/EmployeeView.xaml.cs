@@ -177,6 +177,11 @@ namespace CTOTracker.View
                 MessageBox.Show("Please enter a valid Philippines contact number (09xxxxxxxxx).", "Error");
                 isValid = false;
             }
+            if (string.IsNullOrEmpty(txtRole.Text))
+            {
+                MessageBox.Show("Please enter a role.", "Error");
+                isValid = false;
+            }
 
             return isValid;
         }
@@ -316,15 +321,16 @@ namespace CTOTracker.View
             {
                 try
                 {
-                    string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
-                    string roleID = GetRoleID(selectedRole);
-                    string inforID = txtEmpID.Text;
-                    connection.Open();
                     // Validate input fields
                     if (!ValidateInput())
                     {
                         return;
                     }
+                    string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
+                    string roleID = GetRoleID(selectedRole);
+                    string inforID = txtEmpID.Text;
+                    connection.Open();
+                    
                     OleDbCommand cmd = connection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "SELECT COUNT(*) FROM Employee WHERE inforID = @inforID";
@@ -334,7 +340,7 @@ namespace CTOTracker.View
                     if (count > 0)
                     {
                         // If a record with the same infoID exists, display an error message to the user
-                        MessageBox.Show("infor ID already exists in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Infor ID already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         return; // Exit the method to prevent further execution
                     }
 
@@ -357,6 +363,7 @@ namespace CTOTracker.View
                     AddEdit.Visibility = Visibility.Visible;
                     AddPnl.Visibility = Visibility.Collapsed;
                     UpdatePnl.Visibility = Visibility.Collapsed;
+                    txtEmpID.IsEnabled = false;
                     txtFname.IsEnabled = false;
                     txtLname.IsEnabled = false;
                     txtEmail.IsEnabled = false;
@@ -458,15 +465,15 @@ namespace CTOTracker.View
 
                 // Refresh the DataGridView to reflect the changes
                 LoadEmployeeView();
-                txtEmpID.Clear();
-                txtFname.Clear();
-                txtLname.Clear();
-                txtEmail.Clear();
-                txtContact.Clear();
                 txtRole.SelectedIndex = -1;
                 AddEdit.Visibility = Visibility.Visible;
                 AddPnl.Visibility = Visibility.Collapsed;
                 UpdatePnl.Visibility = Visibility.Collapsed;
+                txtFname.IsEnabled = false;
+                txtLname.IsEnabled = false;
+                txtEmail.IsEnabled = false;
+                txtContact.IsEnabled = false;
+                txtRole.IsEnabled = false;
                 txtEmpID.Clear();
                 txtFname.Clear();
                 txtLname.Clear();
@@ -558,15 +565,26 @@ namespace CTOTracker.View
                             cmd.ExecuteNonQuery();
                             MessageBox.Show("Record Successfully Deleted");
                             LoadEmployeeView();
+                            btnEdit.IsEnabled = false;
                             txtEmpID.Clear();
                             txtFname.Clear();
                             txtLname.Clear();
                             txtEmail.Clear();
                             txtContact.Clear();
+                            txtEmpID.IsEnabled = false;
+                            txtFname.IsEnabled = false;
+                            txtLname.IsEnabled = false;
+                            txtEmail.IsEnabled = false;
+                            txtContact.IsEnabled = false;
+                            txtRole.IsEnabled = false;
                             txtRole.SelectedIndex = -1;
+                            AddEdit.Visibility = Visibility.Visible;
+                            AddPnl.Visibility = Visibility.Collapsed;
+                            UpdatePnl.Visibility = Visibility.Collapsed;
                         }
                         else
                         {
+                            btnEdit.IsEnabled = false;
                             txtEmpID.Clear();
                             txtFname.Clear();
                             txtLname.Clear();
