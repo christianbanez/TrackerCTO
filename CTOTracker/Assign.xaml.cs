@@ -220,6 +220,41 @@ namespace CTOTracker
             // Open the dropdown
             Employee_Cmbox.IsDropDownOpen = true;
         }
+        private void InsertTaskIntoDatabase(string taskName)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    string query = "INSERT INTO Task (taskName) VALUES (@taskName)";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@taskName", taskName);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        MessageBox.Show("Task has been added to the database!");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error inserting task into database: " + ex.Message);
+                }
+            }
+        }
+        private void Task_Cmbox_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Insert the entered task name into the database
+            InsertTaskIntoDatabase(Task_Cmbox.Text);
+        }
+
+        private void Task_Cmbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Insert the entered task name into the database
+            InsertTaskIntoDatabase(Task_Cmbox.Text);
+        }
+
 
         private List<string> GetDataFromTaskTable()
         {
@@ -338,7 +373,7 @@ namespace CTOTracker
 
             return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
         }
-                private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             //declare month before to blackout in datetimepicker
             //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
