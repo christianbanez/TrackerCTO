@@ -23,14 +23,18 @@ namespace CTOTracker.View.UserControls
     public partial class ReportView : UserControl
     {
         private DataConnection dataConnection;
+        private List<string> allEmployees; // Store all employee names
+        private List<string> filteredEmployees; // Store filtered employee names
         //EmployeeView employeeView=new EmployeeView();
-        
+
         public ReportView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
             EmployeeReportView();
             PopulateComboBox();
+            PopulateEmployeeComboBox();
+            filteredEmployees = new List<string>();
             cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
         }
         private void EmployeeReportView()
@@ -93,6 +97,7 @@ namespace CTOTracker.View.UserControls
                 if (cbxFilterRep.SelectedItem.ToString() == "Employee with CTO balance")
                 {
                     LoadEmployeeReportWithCTO();
+                    EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 else if (cbxFilterRep.SelectedItem.ToString() == "All Employee")
                 {
@@ -117,6 +122,101 @@ namespace CTOTracker.View.UserControls
                             WHERE Schedule.ctoBalance > 0;";
 
             LoadEmployeeReport(query);
+        }
+
+        private List<string> GetDataFromEmployeeTable()
+        {
+            // Create a list to store employee names
+            List<string> employees = new List<string>();
+
+            try
+            {
+                // Get connection from DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Define the SQL query to select first names (fName) and last names (lName) from the Employee table
+                    string query = "SELECT fName, lName FROM Employee";
+
+                    // Create a command object with the query and connection
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        // Open the connection to the database
+                        connection.Open();
+
+                        // Execute the command and retrieve data using a data reader
+                        using (OleDbDataReader reader = command.ExecuteReader())
+                        {
+                            // Iterate through the data reader to read each row
+                            while (reader.Read())
+                            {
+                                // Check if the fName and lName columns contain non-null values
+                                if (!reader.IsDBNull(reader.GetOrdinal("fName")) && !reader.IsDBNull(reader.GetOrdinal("lName")))
+                                {
+                                    // Concatenate the first name and last name to form the full name
+                                    string fullName = $"{reader["fName"]} {reader["lName"]}";
+                                    // Add the full name to the list of employees
+                                    employees.Add(fullName);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+            // Return the list of employee names retrieved from the database
+            return employees;
+        }
+        private void PopulateEmployeeComboBox()
+        {
+            try
+            {
+                // Fetch data from the Employee table
+                allEmployees = GetDataFromEmployeeTable();
+
+                // Check if 'allEmployees' is null before binding to the ComboBox
+                if (allEmployees != null)
+                {
+                    cmbxEmpName.ItemsSource = allEmployees;
+                }
+                else
+                {
+                    // Handle the case when 'allEmployees' is null
+                    MessageBox.Show("No employees found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        private void cmbxEmpName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Clear the filtered list
+            filteredEmployees.Clear();
+
+            string searchText = cmbxEmpName.Text.ToLower();
+
+            // Filter the items in the ComboBox based on the entered text
+            foreach (string employee in allEmployees)
+            {
+                if (employee.ToLower().Contains(searchText))
+                {
+                    filteredEmployees.Add(employee);
+                }
+            }
+
+            // Update the ComboBox items source with the filtered list
+            cmbxEmpName.ItemsSource = filteredEmployees;
+
+            // Open the dropdown
+            cmbxEmpName.IsDropDownOpen = true;
         }
     }
 }

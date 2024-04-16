@@ -60,7 +60,7 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True" 
-                Style="{StaticResource table_style}"/>
+                Style="{StaticResource table_style}" HorizontalAlignment="Right" Width="1350"/>
 
             <!--  Employee Filtered Panel  -->
             <Grid x:Name="EmpFilPnl" Grid.Row="1" Background="AliceBlue" Visibility="Collapsed">
@@ -94,9 +94,9 @@
                        Foreground="Black"
                        FontSize="20"
                        Margin="50,0,0,0" Height="48" VerticalContentAlignment="Center"/>
-                    <ComboBox Grid.Row="1"
+                    <ComboBox x:Name="cmbxEmpName" Grid.Row="1"
                        Grid.Column="1"
-                       Margin="10,5,50,5" VerticalContentAlignment="Center"/>
+                       Margin="10,5,50,5" VerticalContentAlignment="Center" IsEditable="True"/>
 
                     <Label Grid.Row="3"
                        Content="Infor ID:"

@@ -14,13 +14,6 @@ namespace CTOTracker.View
     {
         private DataConnection dataConnection;
 
-        public class TaskModel
-        {
-            public string EmployeeName { get; set; }
-            public string TaskName { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-        }
 
         public ScheduleView()
         {
