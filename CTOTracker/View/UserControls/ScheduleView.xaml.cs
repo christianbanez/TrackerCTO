@@ -11,26 +11,16 @@ namespace CTOTracker.View
     {
         private DataConnection dataConnection;
 
-        public class TaskModel
-        {
-            public string EmployeeName { get; set; }
-            public string TaskName { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-        }
-
         public ScheduleView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
+            employeeNameTextBox.TextChanged += EmployeeNameTextBox_TextChanged;
             LoadScheduleData();
-
-            cbxFilter.Items.Add("Completed");
         }
-
+        
         private void LoadScheduleData(string employeeName = null)
         {
-            
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
@@ -102,11 +92,11 @@ namespace CTOTracker.View
                 // Pass selected data to AddTask form, including schedID
                 addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
 
-                addTaskWindow.AddButton.Visibility = Visibility.Collapsed; 
+                addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
                 addTaskWindow.SaveButton.Visibility = Visibility.Visible;
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();
- 
+
                 LoadScheduleData();
             }
         }
@@ -123,7 +113,7 @@ namespace CTOTracker.View
             LoadScheduleData();
         }
 
-        private void cbxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void EmployeeNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string searchText = employeeNameTextBox.Text.Trim();
 
@@ -151,6 +141,7 @@ namespace CTOTracker.View
                     string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%' OR Task.taskName LIKE @Initial + '%'";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
