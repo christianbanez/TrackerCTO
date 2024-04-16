@@ -2,6 +2,7 @@
 using System.Data.OleDb;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace CTOTracker.View
@@ -34,16 +35,13 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, completed, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID;";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
-                    DataColumn completedColumn = new DataColumn("completed", typeof(bool));
-                    dataTable.Columns.Add(completedColumn);
-                    
-                    // Populate 'completed' column based on 'timeIn' and 'timeOut'
+                    //// Populate 'completed' column based on 'timeIn' and 'timeOut'
                     foreach (DataRow row in dataTable.Rows)
                     {
                         // Check if both 'timeIn' and 'timeOut' have values
@@ -71,15 +69,24 @@ namespace CTOTracker.View
 
         private void DataGrid_AutoGenerateColumns(object sender, EventArgs e)
         {
-            scheduleDataGrid.Columns[0].Header = "Infor ID";
-            scheduleDataGrid.Columns[1].Header = "First Name";
-            scheduleDataGrid.Columns[2].Header = "Last Name";
-            scheduleDataGrid.Columns[3].Header = "Task Name";
-            scheduleDataGrid.Columns[4].Header = "Planned Start Date";
-            scheduleDataGrid.Columns[5].Header = "Planned End Date";
-            scheduleDataGrid.Columns[6].Header = "Time In";
-            scheduleDataGrid.Columns[7].Header = "Time Out";
-            scheduleDataGrid.Columns[8].Header = "CTO Earned";
+            scheduleDataGrid.Columns[0].Visibility = Visibility.Collapsed;
+            scheduleDataGrid.Columns[0].Header = "Schedule ID";
+            scheduleDataGrid.Columns[1].Header = "Infor ID";
+            scheduleDataGrid.Columns[1].Width = 75;
+            scheduleDataGrid.Columns[2].Header = "First Name";
+            scheduleDataGrid.Columns[2].Width = 185;
+            scheduleDataGrid.Columns[3].Header = "Last Name";
+            scheduleDataGrid.Columns[3].Width = 185;
+            scheduleDataGrid.Columns[4].Header = "Task Name";
+            scheduleDataGrid.Columns[4].Width = 125;
+            scheduleDataGrid.Columns[5].Header = "Start Date";
+            scheduleDataGrid.Columns[6].Header = "End Date";
+            scheduleDataGrid.Columns[7].Header = "Time In";
+            scheduleDataGrid.Columns[8].Header = "Time Out";
+            scheduleDataGrid.Columns[9].Header = "Completed";
+            scheduleDataGrid.Columns[10].Header = "CTO Earned";
+            scheduleDataGrid.Columns[11].Header = "CTO Used";
+            scheduleDataGrid.Columns[12].Header = "CTO Balance";
         }
 
         // Event handler for double-clicking on a row in the DataGrid
@@ -106,11 +113,11 @@ namespace CTOTracker.View
                 // Pass selected data to AddTask form, including schedID
                 addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
 
-                addTaskWindow.AddButton.Visibility = Visibility.Collapsed; 
+                addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
                 addTaskWindow.SaveButton.Visibility = Visibility.Visible;
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();
- 
+
                 LoadScheduleData();
             }
         }
@@ -120,7 +127,7 @@ namespace CTOTracker.View
             // Instantiate an instance of the AddTask window
             AddTask addTaskWindow = new AddTask();
 
-            addTaskWindow.SaveButton.Visibility = Visibility.Collapsed;
+            addTaskWindow.Visibility = Visibility.Collapsed;
             addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
             // Show the AddTask window
             addTaskWindow.ShowDialog();

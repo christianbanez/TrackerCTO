@@ -29,20 +29,14 @@ namespace CTOTracker.View.UserControls
         {
             InitializeComponent();
             dataConnection = new DataConnection();
-            EmployeeReportView(); // This loads the initial report
-            TaskScheduleReportView();
+            EmployeeReportView();
+            PopulateComboBox();
+            cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
         }
-
         private void EmployeeReportView()
         {
-            string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName FROM Employee INNER JOIN Role ON Employee.roleID = Role.roleID";
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Employee.email, Role.roleName, Schedule.ctoBalance\r\nFROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID;\r\n";
             LoadEmployeeReport(query);
-
-        }
-        private void TaskScheduleReportView()
-        {
-            string query = "SELECT * From Schedule";
-            LoadTaskScheduleReport(query);
 
         }
         private void LoadEmployeeReport(string query)
@@ -58,7 +52,7 @@ namespace CTOTracker.View.UserControls
 
                     if (dataTable != null && dataTable.Rows.Count > 0)
                     {
-                        employee_ReportDataGrid.ItemsSource = dataTable.DefaultView;
+                        reportDataGrid.ItemsSource = dataTable.DefaultView;
                     }
                     else
                     {
@@ -75,83 +69,52 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
-        private void LoadTaskScheduleReport(string query)
+        private void PopulateComboBox()
         {
-            using (OleDbConnection connection = dataConnection.GetConnection())
+            // Create a list of strings to populate the ComboBox
+            List<string> filterOptions = new List<string>
             {
-                try
-                {
-                    connection.Open();
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
+                "Employee with CTO balance",
+                "All Employee",
+                "All Task Schedule"
+            };
 
-                    if (dataTable != null && dataTable.Rows.Count > 0)
-                    {
-                        taskSchedule_ReportDataGrid.ItemsSource = dataTable.DefaultView;
-                    }
-                    else
-                    {
-                        MessageBox.Show("No data found.", "Information");
-                    }
-                }
-                catch (Exception ex)
+            // Assign the list as the ItemsSource for the ComboBox
+            cbxFilterRep.ItemsSource = filterOptions;
+        }
+
+        private void CbxFilterRep_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cbxFilterRep.SelectedItem != null)
+            {
+                // Get the selected item
+
+                // Check if the selected item matches the specific item
+                if (cbxFilterRep.SelectedItem.ToString() == "Employee with CTO balance")
                 {
-                    MessageBox.Show("Error: " + ex.Message, "Error");
+                    LoadEmployeeReportWithCTO();
                 }
-                finally
+                else if (cbxFilterRep.SelectedItem.ToString() == "All Employee")
                 {
-                    connection.Close();
+                    // Show the Employee Filtered Panel
+                    EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    // Hide the Employee Filtered Panel
+                    EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
                 }
             }
         }
-        private void employee_ReportDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void cbxFilterBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string filterBy = ((ComboBoxItem)cbxFilterBy.SelectedItem).Content.ToString();
-
-            if (filterBy == "Remaining CTO Balance")
-            {
-                LoadEmployeeReportWithRemainingCTO();
-            }
-            else if (filterBy == "Ongoing Tasks")
-            {
-                LoadEmployeeReportWithOngoingTasks();
-            }
-        }
-        private void LoadEmployeeReportWithRemainingCTO()
+        private void LoadEmployeeReportWithCTO()
         {
             // Your code to load the report for employees with remaining CTO balance
             // Modify your query to retrieve employees with remaining CTO balance
             string query = @"SELECT Employee.inforID, Employee.fName, Employee.lName, Employee.email, Employee.contact, Role.roleName, Schedule.ctoBalance
-FROM (Employee
-INNER JOIN Role ON Employee.roleID = Role.roleID)
-INNER JOIN Schedule ON Employee.empID = Schedule.empID
-WHERE Schedule.ctoBalance > 0;";
-
-            LoadEmployeeReport(query);
-        }
-
-        /* private void EmployeeReportView(string query)
-         {
-             throw new NotImplementedException();
-         }*/
-
-        private void LoadEmployeeReportWithOngoingTasks()
-        {
-            string query = @"
-                SELECT inforID, fName, lName, email, contact, Role.roleName
-                FROM Employee
-                INNER JOIN Role ON Employee.roleID = Role.roleID
-                WHERE Employee.inforID IN (
-                    SELECT EmployeeID
-                    FROM Task
-                    WHERE TaskStatus = 'Ongoing'
-                )";
+                            FROM (Employee
+                            INNER JOIN Role ON Employee.roleID = Role.roleID)
+                            INNER JOIN Schedule ON Employee.empID = Schedule.empID
+                            WHERE Schedule.ctoBalance > 0;";
 
             LoadEmployeeReport(query);
         }

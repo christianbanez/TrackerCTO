@@ -220,7 +220,10 @@
                     </ListViewItem>
 
                     <!--  ReportView  -->
-                    <ListViewItem Margin="0,0,0,15" HorizontalAlignment="Left" Selected="ListViewItem_Selected_2">
+                    <ListViewItem
+                        Margin="0,0,0,15"
+                        HorizontalAlignment="Left"
+                        Selected="ListViewItem_Selected_2">
                         <!--  RepView Tooltip  -->
                         <ListViewItem.ToolTip>
                             <ToolTip
