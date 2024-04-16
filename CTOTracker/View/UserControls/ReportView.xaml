@@ -40,116 +40,140 @@
                     FontSize="16"
                     IsEditable="True"
                     IsReadOnly="True"
-                    Text="Filter by"/>
+                    Template="{DynamicResource ComboBoxTemplate1}"
+                    Text="Filter by" />
 
                 <Button
                     x:Name="btnExport"
                     Grid.Column="3"
                     Margin="5,5,10,5"
+                    HorizontalAlignment="Stretch"
                     Content="Export"
-                    FontSize="16" />
+                    FontSize="16"
+                    Style="{StaticResource button_style}" />
             </Grid>
 
             <!--  SCHDULE_TABLE  -->
             <DataGrid
                 x:Name="scheduleDataGrid"
-                Margin="0,0,10,5"
                 Grid.Row="1"
+                Margin="0,0,10,5"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
                 CanUserReorderColumns="False"
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
-                IsReadOnly="True" 
-                Style="{StaticResource table_style}"/>
+                IsReadOnly="True"
+                Style="{StaticResource table_style}" />
 
             <!--  Employee Filtered Panel  -->
-            <Grid x:Name="EmpFilPnl" Grid.Row="1" Background="AliceBlue" Visibility="Collapsed">
+            <Grid
+                x:Name="EmpFilPnl"
+                Grid.Row="1"
+                Background="AliceBlue"
+                Visibility="Collapsed">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="20*"/>
-                    <RowDefinition Height="80*"/>
+                    <RowDefinition Height="20*" />
+                    <RowDefinition Height="80*" />
                 </Grid.RowDefinitions>
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Employee"
-                       Foreground="Black"
-                       FontSize="20"
-                       FontWeight="Bold"
-                       Margin="25,0,0,0"/>
+                    <Label
+                        Margin="25,0,0,0"
+                        Content="Employee"
+                        FontSize="20"
+                        FontWeight="Bold"
+                        Foreground="Black" />
 
-                    <Label Grid.Row="1"
-                       Content="Name:"
-                       Foreground="Black"
-                       FontSize="20"
-                       Margin="50,0,0,0" Height="48" VerticalContentAlignment="Center"/>
-                    <ComboBox Grid.Row="1"
-                       Grid.Column="1"
-                       Margin="10,5,50,5" VerticalContentAlignment="Center"/>
+                    <Label
+                        Grid.Row="1"
+                        Height="48"
+                        Margin="50,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="Name:"
+                        FontSize="20"
+                        Foreground="Black" />
+                    <ComboBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="10,5,50,5"
+                        VerticalContentAlignment="Center" />
 
-                    <Label Grid.Row="3"
-                       Content="Infor ID:"
-                       Foreground="Black"
-                       FontSize="20"
-                       Margin="50,0,0,0" VerticalContentAlignment="Center"/>
-                    <Label x:Name="lblID"
-                       Grid.Row="3"
-                       Grid.Column="1"
-                       Content="PLACEHOLDER"
-                       Foreground="Black"
-                       FontSize="20"
-                       Margin="10,0,0,0" VerticalContentAlignment="Center"/>
-                    
-                    <Label Grid.Row="1"
-                       Grid.Column="2"
-                       Content="Contact Number:"
-                       Foreground="Black"
-                       FontSize="20" VerticalContentAlignment="Center"/>
-                    <Label x:Name="lblConNum"
-                       Grid.Row="1"
-                       Grid.Column="4"
-                       Content="PLACEHOLDER"
-                       Foreground="Black"
-                       FontSize="20"
-                       Margin="10,0,0,0" VerticalContentAlignment="Center"/>
+                    <Label
+                        Grid.Row="3"
+                        Margin="50,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="Infor ID:"
+                        FontSize="20"
+                        Foreground="Black" />
+                    <Label
+                        x:Name="lblID"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Margin="10,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="PLACEHOLDER"
+                        FontSize="20"
+                        Foreground="Black" />
 
-                    <Label Grid.Row="2"
-                       Grid.Column="2"
-                       Content="Role:"
-                       Foreground="Black"
-                       FontSize="20"/>
-                    <Label x:Name="lblRole"
-                       Grid.Row="3"
-                       Grid.Column="4"
-                       Content="PLACEHOLDER"
-                       Foreground="Black"
-                       FontSize="20"
-                       Margin="10,0,0,0" VerticalContentAlignment="Center"/>
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        VerticalContentAlignment="Center"
+                        Content="Contact Number:"
+                        FontSize="20"
+                        Foreground="Black" />
+                    <Label
+                        x:Name="lblConNum"
+                        Grid.Row="1"
+                        Grid.Column="4"
+                        Margin="10,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="PLACEHOLDER"
+                        FontSize="20"
+                        Foreground="Black" />
+
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Content="Role:"
+                        FontSize="20"
+                        Foreground="Black" />
+                    <Label
+                        x:Name="lblRole"
+                        Grid.Row="3"
+                        Grid.Column="4"
+                        Margin="10,0,0,0"
+                        VerticalContentAlignment="Center"
+                        Content="PLACEHOLDER"
+                        FontSize="20"
+                        Foreground="Black" />
 
                 </Grid>
 
 
                 <DataGrid
-                x:Name="scheduleDataGrid1"
-                Margin="0,0,10,5"
-                Grid.Row="1"
-                d:ItemsSource="{d:SampleData ItemCount=5}"
-                CanUserReorderColumns="False"
-                CanUserResizeColumns="False"
-                CanUserResizeRows="False"
-                IsReadOnly="True" 
-                Style="{StaticResource table_style}"/>            
+                    x:Name="scheduleDataGrid1"
+                    Grid.Row="1"
+                    Margin="0,0,10,5"
+                    d:ItemsSource="{d:SampleData ItemCount=5}"
+                    CanUserReorderColumns="False"
+                    CanUserResizeColumns="False"
+                    CanUserResizeRows="False"
+                    IsReadOnly="True"
+                    Style="{StaticResource table_style}" />
             </Grid>
 
 

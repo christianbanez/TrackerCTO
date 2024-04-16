@@ -2,7 +2,6 @@
 using System.Data.OleDb;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace CTOTracker.View
@@ -121,6 +120,5 @@ namespace CTOTracker.View
             addTaskWindow.ShowDialog();
             LoadScheduleData();
         }
-
     }
 }

@@ -9,6 +9,9 @@
     Title="Assign Schedule"
     Width="430"
     Height="450"
+    Template="{StaticResource Window_template}"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
     mc:Ignorable="d">
 
     <Grid Margin="20">

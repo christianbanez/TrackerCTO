@@ -108,25 +108,29 @@
                             Grid.Column="2"
                             Margin="20"
                             IsEnabled="False"
-                            PreviewTextInput="txtEmpID_PreviewTextInput" />
+                            PreviewTextInput="txtEmpID_PreviewTextInput"
+                            Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtFname"
                             Grid.Row="2"
                             Grid.Column="2"
                             Margin="20"
-                            IsEnabled="False" />
+                            IsEnabled="False"
+                            Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtLname"
                             Grid.Row="3"
                             Grid.Column="2"
                             Margin="20"
-                            IsEnabled="False" />
+                            IsEnabled="False"
+                            Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtEmail"
                             Grid.Row="1"
                             Grid.Column="5"
                             Margin="20"
-                            IsEnabled="False" />
+                            IsEnabled="False"
+                            Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtContact"
                             Grid.Row="2"
@@ -135,13 +139,15 @@
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtContact_PreviewTextInput"
+                            Style="{DynamicResource txtbx_style}"
                             TabIndex="11" />
-                        <ComboBox
+                        <ComboBox Template="{DynamicResource ComboBoxTemplate1}" 
                             x:Name="txtRole"
                             Grid.Row="3"
                             Grid.Column="5"
                             Margin="20"
-                            IsEnabled="False" />
+                            IsEnabled="False"
+                            Style="{DynamicResource ComboBoxStyle1}" />
                     </Grid>
 
                     <!--  AddEdit  -->
@@ -160,7 +166,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnAdd_Click"
-                            Content="Add" />
+                            Content="Add"
+                            Style="{StaticResource button_style}" />
                         <Button
                             x:Name="btnEdit"
                             Grid.Column="2"
@@ -168,7 +175,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnEdit_Click"
-                            Content="Update" />
+                            Content="Update"
+                            Style="{StaticResource button_style}" />
                     </Grid>
 
                     <!--  AddPnl  -->
@@ -187,7 +195,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnSaveAdd_Click"
-                            Content="Save" />
+                            Content="Save"
+                            Style="{StaticResource button_style}" />
                         <Button
                             x:Name="btnCancel"
                             Grid.Column="2"
@@ -195,7 +204,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnCancel_Click"
-                            Content="Cancel" />
+                            Content="Cancel"
+                            Style="{StaticResource button_style}" />
                     </Grid>
 
                     <!--  UpdatePnl  -->
@@ -215,7 +225,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnSaveUp_Click"
-                            Content="Save" />
+                            Content="Save"
+                            Style="{StaticResource button_style}" />
                         <Button
                             x:Name="btnDelete"
                             Grid.Column="2"
@@ -223,7 +234,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnDelete_Click_1"
-                            Content="Delete" />
+                            Content="Delete"
+                            Style="{StaticResource button_style}" />
                         <Button
                             x:Name="btnCancel2"
                             Grid.Column="3"
@@ -231,7 +243,8 @@
                             Height="30"
                             Margin="5"
                             Click="btnCancel2_Click"
-                            Content="Cancel" />
+                            Content="Cancel"
+                            Style="{StaticResource button_style}" />
                     </Grid>
                 </Grid>
             </Grid>

@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CTOTracker
 {
@@ -147,8 +137,6 @@ namespace CTOTracker
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
-
-
 
         private List<string> GetDataFromEmployeeTable()
         {
@@ -338,7 +326,7 @@ namespace CTOTracker
 
             return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
         }
-                private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             //declare month before to blackout in datetimepicker
             //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
@@ -351,7 +339,6 @@ namespace CTOTracker
                 // Check the user's response
                 if (result == MessageBoxResult.Yes)
                 {
-
                     // Get selected employee name from ComboBox
                     string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
 
@@ -378,11 +365,8 @@ namespace CTOTracker
                     string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
                     string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
 
-
-
                     // Insert data into Schedule table
                     InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
-
                 }
             }
             catch (Exception ex)
@@ -442,7 +426,7 @@ namespace CTOTracker
                         int rowsAffected = command.ExecuteNonQuery();
                         MessageBox.Show("Schedule has been added!");
                         connection.Close();
-                        this.Close();   
+                        this.Close();
                     }
                 }
                 catch (Exception ex)
@@ -575,6 +559,5 @@ namespace CTOTracker
             // Hide the time pickers panel
             addTime.Visibility = Visibility.Collapsed;
         }
-
     }
 }

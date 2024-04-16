@@ -132,6 +132,5 @@ namespace CTOTracker
         {
             this.DragMove();
         }
-
     }
 }

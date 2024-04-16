@@ -93,6 +93,13 @@ namespace CTOTracker.View
             AddEdit.Visibility = Visibility.Visible;
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
+            txtEmpID.IsEnabled = false;
+            txtFname.IsEnabled = false;
+            txtLname.IsEnabled = false;
+            txtEmail.IsEnabled = false;
+            txtContact.IsEnabled = false;
+            txtRole.IsEnabled = false;
+
             txtEmpID.Clear();
             txtFname.Clear();
             txtLname.Clear();
