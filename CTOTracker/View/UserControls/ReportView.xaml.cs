@@ -35,7 +35,7 @@ namespace CTOTracker.View.UserControls
         }
         private void EmployeeReportView()
         {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Employee.email, Role.roleName, Schedule.ctoBalance\r\nFROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID;\r\n";
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.completed, Schedule.ctoBalance\r\nFROM Task INNER JOIN ((Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID) ON Task.taskID = Schedule.taskID;\r\n";
             LoadEmployeeReport(query);
 
         }
@@ -93,11 +93,13 @@ namespace CTOTracker.View.UserControls
                 if (cbxFilterRep.SelectedItem.ToString() == "Employee with CTO balance")
                 {
                     LoadEmployeeReportWithCTO();
+                    EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 else if (cbxFilterRep.SelectedItem.ToString() == "All Employee")
                 {
                     // Show the Employee Filtered Panel
                     EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                    PopulateEmployeeListComboBox();
                 }
                 else
                 {
@@ -117,6 +119,45 @@ namespace CTOTracker.View.UserControls
                             WHERE Schedule.ctoBalance > 0;";
 
             LoadEmployeeReport(query);
+        }
+        private void PopulateEmployeeListComboBox()
+        {
+            string query = "SELECT fName + ' ' + lName AS FullName FROM Employee";
+
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    if (dataTable != null && dataTable.Rows.Count > 0)
+                    {
+                        // Clear previous items
+                        cbxEmpList.Items.Clear();
+
+                        // Populate ComboBox with employee names
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            cbxEmpList.Items.Add(row["FullName"]);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No data found.", "Information");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
         }
     }
 }

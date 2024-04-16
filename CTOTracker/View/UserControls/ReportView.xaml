@@ -29,7 +29,7 @@
 
                 <Label
                     Margin="10,0,0,0"
-                    Content="Employee"
+                    Content="Employee CTO Records"
                     FontSize="24" />
 
                 <ComboBox
@@ -40,7 +40,7 @@
                     FontSize="16"
                     IsEditable="True"
                     IsReadOnly="True"
-                    Text="Filter by"/>
+                    Text="Filter by" Visibility="Collapsed"/>
 
                 <Button
                     x:Name="btnExport"
@@ -63,7 +63,7 @@
                 Style="{StaticResource table_style}"/>
 
             <!--  Employee Filtered Panel  -->
-            <Grid x:Name="EmpFilPnl" Grid.Row="1" Background="AliceBlue" Visibility="Collapsed">
+            <Grid x:Name="EmpFilPnl" Grid.Row="1" Background="AliceBlue" Visibility="Hidden">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20*"/>
                     <RowDefinition Height="80*"/>
@@ -94,7 +94,7 @@
                        Foreground="Black"
                        FontSize="20"
                        Margin="50,0,0,0" Height="48" VerticalContentAlignment="Center"/>
-                    <ComboBox Grid.Row="1"
+                    <ComboBox x:Name="cbxEmpList" Grid.Row="1"
                        Grid.Column="1"
                        Margin="10,5,50,5" VerticalContentAlignment="Center"/>
 

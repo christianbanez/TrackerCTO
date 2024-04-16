@@ -122,10 +122,12 @@ namespace CTOTracker.View
                         if (rowsAffected > 0)
                         {
                             MessageBox.Show("Role has been added to the database!");
+                            
                         }
                         else
                         {
                             MessageBox.Show("Failed to add role to the database.");
+                            
                         }
                     }
                 }
@@ -386,6 +388,7 @@ namespace CTOTracker.View
                     string lastName = txtLname.Text;
                     string email = txtEmail.Text;
                     string contact = txtContact.Text;
+                   
 
                     InsertEmployee(infor_ID, firstName, lastName, email, contact, roleID);
                     MessageBox.Show("Employee added successfully!");
