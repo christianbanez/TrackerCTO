@@ -16,115 +16,110 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <StackPanel>
-            <!-- Employee Grid -->
-            <Grid Margin="0 0 0 10">
+            <!--  Employee Grid  -->
+            <Grid Margin="0,0,0,10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <Label
-                    Margin="10,10,0,0"
-                    Content="Employee :" />
+                <Label Margin="10,10,0,0" Content="Employee :" />
                 <ComboBox
                     x:Name="Employee_Cmbox"
+                    Grid.Row="1"
                     Width="311"
-                    Margin="10,10,10,10"
-                    Grid.Row="1" />
+                    Margin="10,10,10,10" />
             </Grid>
 
-            <!-- Task Grid -->
-            <Grid Margin="0 0 0 10">
+            <!--  Task Grid  -->
+            <Grid Margin="0,0,0,10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
-                <Label
-                    Margin="10,10,0,0"
-                    Content="Task : " />
+                <Label Margin="10,10,0,0" Content="Task : " />
                 <ComboBox
                     x:Name="Task_Cmbox"
+                    Grid.Row="1"
                     Width="311"
                     Margin="10,10,10,10"
-                    Grid.Row="1"
                     IsEditable="True" />
             </Grid>
 
-            <!-- DatePickers Grid -->
-            <Grid Margin="0 0 0 10">
+            <!--  DatePickers Grid  -->
+            <Grid Margin="0,0,0,10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50*"/>
-                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="50*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
+                <Label Margin="0,10,0,0" Content="Start Date :" />
                 <Label
+                    Grid.Column="1"
                     Margin="0,10,0,0"
-                    Content="Start Date :" />
-                <Label
-                    Margin="0,10,0,0"
-                    Content="End Date :" 
-                    Grid.Column="1"/>
+                    Content="End Date :" />
                 <DatePicker
                     x:Name="startDatePicker"
-                    Margin="5,0,5,0"
                     Grid.Row="1"
+                    Margin="5,0,5,0"
                     IsTodayHighlighted="True"
                     PreviewKeyDown="DatePicker_PreviewKeyDown"
                     SelectedDate="{x:Static sys:DateTime.Now}"
                     SelectedDateFormat="Short" />
                 <DatePicker
                     x:Name="endDatePicker"
-                    Margin="5,0,10,0"
-                    Grid.Column="1"
                     Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5,0,10,0"
                     PreviewKeyDown="DatePicker_PreviewKeyDown"
                     SelectedDate="{x:Static sys:DateTime.Now}"
                     SelectedDateFormat="Short" />
             </Grid>
 
-            <!-- Show Time CheckBox -->
+            <!--  Show Time CheckBox  -->
             <CheckBox
                 x:Name="showTimeCheckBox"
                 Margin="10,10,0,0"
-                Content="Add Time"
                 Checked="showTimeCheckBox_Checked"
+                Content="Add Time"
                 Unchecked="showTimeCheckBox_Unchecked" />
 
-            <!-- Time Labels and TextBoxes Grid -->
-            <Grid x:Name="addTime" Margin="0 0 0 10" Visibility="Collapsed">
+            <!--  Time Labels and TextBoxes Grid  -->
+            <Grid
+                x:Name="addTime"
+                Margin="0,0,0,10"
+                Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <Label Margin="10,10,0,0" Content="Time In:" />
                 <Label
+                    Grid.Column="2"
                     Margin="10,10,0,0"
-                    Content="Time In:" />
-                <Label
-                    Margin="10,10,0,0"
-                    Content="Time out :"
-                    Grid.Column="2" />
+                    Content="Time out :" />
                 <TextBox
                     x:Name="startTimeTextBox"
+                    Grid.Column="1"
                     Width="100"
                     Margin="5,10,5,0"
-                    Grid.Column="1"
                     Text="09:00 AM" />
                 <TextBox
                     x:Name="endTimeTextBox"
+                    Grid.Column="3"
                     Width="100"
                     Margin="5,10,10,0"
-                    Grid.Column="3"
                     Text="05:00 PM" />
             </Grid>
 
-            <!-- TextBox for Schedule ID -->
-            <TextBox 
+            <!--  TextBox for Schedule ID  -->
+            <TextBox
                 x:Name="schedIDTextBox"
                 Width="28"
                 Height="22"
@@ -136,7 +131,7 @@
                 Visibility="Collapsed" />
         </StackPanel>
 
-        <!-- Buttons Grid -->
+        <!--  Buttons Grid  -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -146,28 +141,28 @@
 
             <Button
                 x:Name="AddButton"
+                Grid.Column="1"
                 Width="50"
                 Height="25"
-                Margin="0 0 10 0"
-                Grid.Column="1"
+                Margin="0,0,10,0"
                 Click="Button_Click"
                 Content="ADD" />
             <Button
+                Grid.Column="2"
                 Width="50"
                 Height="25"
                 Margin="10"
-                Grid.Column="2"
                 Click="Button_Click_1"
                 Content="CANCEL" />
             <Button
                 x:Name="SaveButton"
+                Grid.Column="1"
                 Width="48"
                 Height="25"
                 Margin="10"
-                Grid.Column="1"
-                Visibility="Collapsed"
                 Click="SAVE_Click"
-                Content="Save" />
+                Content="Save"
+                Visibility="Collapsed" />
         </Grid>
     </Grid>
 </Window>

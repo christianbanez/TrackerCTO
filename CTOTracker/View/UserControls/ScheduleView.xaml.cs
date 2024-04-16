@@ -60,11 +60,15 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[0].Visibility = Visibility.Collapsed;
             scheduleDataGrid.Columns[0].Header = "Schedule ID";
             scheduleDataGrid.Columns[1].Header = "Infor ID";
+            scheduleDataGrid.Columns[1].Width = 75;
             scheduleDataGrid.Columns[2].Header = "First Name";
+            scheduleDataGrid.Columns[2].Width = 185;
             scheduleDataGrid.Columns[3].Header = "Last Name";
+            scheduleDataGrid.Columns[3].Width = 185;
             scheduleDataGrid.Columns[4].Header = "Task Name";
-            scheduleDataGrid.Columns[5].Header = "Planned Start Date";
-            scheduleDataGrid.Columns[6].Header = "Planned End Date";
+            scheduleDataGrid.Columns[4].Width = 125;
+            scheduleDataGrid.Columns[5].Header = "Start Date";
+            scheduleDataGrid.Columns[6].Header = "End Date";
             scheduleDataGrid.Columns[7].Header = "Time In";
             scheduleDataGrid.Columns[8].Header = "Time Out";
             scheduleDataGrid.Columns[9].Header = "Completed";

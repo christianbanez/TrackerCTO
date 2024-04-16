@@ -23,6 +23,44 @@ namespace CTOTracker.View.UserControls
         public ReportView()
         {
             InitializeComponent();
+            PopulateComboBox();
+            cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
+        }
+
+        private void PopulateComboBox()
+        {
+            // Create a list of strings to populate the ComboBox
+            List<string> filterOptions = new List<string>
+            {
+                "Option 1",
+                "Option 2",
+                "Option 3"
+            };
+
+            // Assign the list as the ItemsSource for the ComboBox
+            cbxFilterRep.ItemsSource = filterOptions;
+        }
+
+        private void CbxFilterRep_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Check if a specific item is selected in the ComboBox
+            if (cbxFilterRep.SelectedItem != null)
+            {
+                // Get the selected item
+                string selectedItem = cbxFilterRep.SelectedItem.ToString();
+
+                // Check if the selected item matches the specific item
+                if (selectedItem == "Option 2")
+                {
+                    // Show the Employee Filtered Panel
+                    EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    // Hide the Employee Filtered Panel
+                    EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
         }
     }
 }
