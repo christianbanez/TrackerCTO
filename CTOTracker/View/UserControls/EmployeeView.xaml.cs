@@ -98,6 +98,36 @@ namespace CTOTracker.View
             LoadEmployeeView();
         }
 
+        private void InsertRoleIntoDatabase(string roleName)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "INSERT INTO Role (roleName) VALUES (@roleName)";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@roleName", roleName);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Role has been added to the database!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to add role to the database.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error inserting task into database: " + ex.Message);
+            }
+        }
         private void LoadEmployeeView()
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
@@ -203,6 +233,7 @@ namespace CTOTracker.View
         {
             try
             {
+
                 // Fetch data from the Employee table
                 List<string> role = GetDataFromRole();
 
@@ -313,8 +344,16 @@ namespace CTOTracker.View
             {
                 try
                 {
-                    string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
+                    string selectedRole = txtRole.Text.Trim();
                     string roleID = GetRoleID(selectedRole);
+                    if (roleID == null)
+                    {
+                        // If task ID is null, insert the task into the database
+                        InsertRoleIntoDatabase(selectedRole);
+                        // Retrieve the task ID again after insertion
+                        roleID = GetRoleID(selectedRole);
+                    }
+
                     string inforID = txtEmpID.Text;
                     connection.Open();
                     // Validate input fields
@@ -361,9 +400,9 @@ namespace CTOTracker.View
                     txtRole.IsEnabled = false;
                     DataGridEmployee1.IsEnabled = true;
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    MessageBox.Show("Error");
+                    MessageBox.Show("Error: " + ex);
                 }
                 finally
                 {
@@ -384,7 +423,6 @@ namespace CTOTracker.View
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
                         command.Parameters.AddWithValue("@roleName", roleName); // Add parameter for task name
-
                         connection.Open(); // Open the connection
                         object? result = command.ExecuteScalar(); // Execute the query and get the result
 
@@ -400,7 +438,7 @@ namespace CTOTracker.View
                 MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
             }
 
-            return roleID ?? throw new Exception("Role ID not found."); // Return taskId if not null, otherwise throw an exception
+            return roleID; // Return roleID if not null, otherwise throw an exception
         }
 
         private void txtContact_PreviewTextInput(object sender, TextCompositionEventArgs e)
