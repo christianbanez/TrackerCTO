@@ -14,7 +14,7 @@ namespace CTOTracker
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += MainWindow_Loaded; // Attach Loaded event handler
+            Loaded += MainWindow_Loaded;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
