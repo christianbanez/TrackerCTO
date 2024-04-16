@@ -40,7 +40,22 @@ namespace CTOTracker.View
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
-                    // Bind the DataTable to the DataGrid
+                    DataColumn completedColumn = new DataColumn("completed", typeof(bool));
+                    dataTable.Columns.Add(completedColumn);
+                    
+                    // Populate 'completed' column based on 'timeIn' and 'timeOut'
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        // Check if both 'timeIn' and 'timeOut' have values
+                        if (!row.IsNull("timeIn") && !row.IsNull("timeOut"))
+                        {
+                            row["completed"] = true;
+                        }
+                        else
+                        {
+                            row["completed"] = false;
+                        }
+                    }
                     scheduleDataGrid.ItemsSource = dataTable.DefaultView;
                 }
             }
@@ -110,6 +125,19 @@ namespace CTOTracker.View
             // Show the AddTask window
             addTaskWindow.ShowDialog();
             LoadScheduleData();
+        }
+
+        private void scheduleDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            DataRowView? rowView = e.Row.Item as DataRowView;
+            if (rowView != null)
+            {
+                bool completed = (bool)rowView["completed"];
+                if (completed)
+                {
+                    e.Row.IsEnabled=false;
+                }
+            }
         }
     }
 }
