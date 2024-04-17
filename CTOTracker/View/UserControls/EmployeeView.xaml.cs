@@ -123,6 +123,8 @@ namespace CTOTracker.View
                         {
                             MessageBox.Show("Role has been added to the database!");
                             
+                            
+
                         }
                         else
                         {
@@ -388,6 +390,7 @@ namespace CTOTracker.View
                     string lastName = txtLname.Text;
                     string email = txtEmail.Text;
                     string contact = txtContact.Text;
+
                    
 
                     InsertEmployee(infor_ID, firstName, lastName, email, contact, roleID);
@@ -399,6 +402,7 @@ namespace CTOTracker.View
                     txtLname.Clear();
                     txtEmail.Clear();
                     txtContact.Clear();
+                    txtRole.Text = "";
                     txtRole.SelectedIndex = -1;
                     AddEdit.Visibility = Visibility.Visible;
                     AddPnl.Visibility = Visibility.Collapsed;
@@ -409,6 +413,7 @@ namespace CTOTracker.View
                     txtContact.IsEnabled = false;
                     txtRole.IsEnabled = false;
                     DataGridEmployee1.IsEnabled = true;
+
                 }
                 catch (Exception ex) 
                 {
