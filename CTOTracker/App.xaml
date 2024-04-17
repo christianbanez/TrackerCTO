@@ -8,7 +8,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="View/Resource Dictionary/Main.xaml" />
-                <ResourceDictionary Source="View/Resource Dictionary/Combobox.xaml"/>
+                <ResourceDictionary Source="View/Resource Dictionary/Combobox.xaml" />
+                <ResourceDictionary Source="View/Resource Dictionary/Checkbox.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
