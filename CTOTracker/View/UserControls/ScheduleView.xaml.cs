@@ -35,8 +35,8 @@ namespace CTOTracker.View
             dataConnection = new DataConnection();
             allEmployees = new List<string>();
             filteredEmployees = new List<string>();
-            LoadScheduleData();
-            LoadCTOuseData();
+            //LoadScheduleData();
+            //LoadCTOuseData();
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
         }
@@ -202,10 +202,10 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[6].Header = "End Date";
             scheduleDataGrid.Columns[7].Header = "Time In";
             scheduleDataGrid.Columns[8].Header = "Time Out";
-            scheduleDataGrid.Columns[9].Header = "Completed";
-            scheduleDataGrid.Columns[10].Header = "CTO Earned";
-            scheduleDataGrid.Columns[11].Header = "CTO Used";
-            scheduleDataGrid.Columns[12].Header = "CTO Balance";
+            scheduleDataGrid.Columns[9].Header = "CTO Earned";
+            scheduleDataGrid.Columns[10].Header = "CTO Used";
+            scheduleDataGrid.Columns[11].Header = "CTO Balance";
+            scheduleDataGrid.Columns[12].Header = "Completed";
         }
 
         // Event handler for double-clicking on a row in the DataGrid
