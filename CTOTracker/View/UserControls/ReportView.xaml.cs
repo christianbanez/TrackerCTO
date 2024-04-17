@@ -4,7 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;    
+using System.IO;
+using System.Drawing;
 
 namespace CTOTracker.View.UserControls
 {
@@ -155,18 +156,53 @@ namespace CTOTracker.View.UserControls
             try
             {
                 // Specify the output directory and file name
-                string outputPath = @"Output\output.pdf"; // Change this path to your desired directory
-
+                string outputPath = @"C:\Users\dkeh\source\repos\TrackerCTO\output.pdf"; // Change this path to your desired directory
+                
                 // Create a PDF document
                 Document doc = new Document();
                 PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
                 doc.Open();
-
+                // Add Header with Company Information
+                PdfPTable headerTable = new PdfPTable(1);
+                headerTable.WidthPercentage = 100;
+                // Add current date and time
+                DateTime currentDate = DateTime.Now;
+                doc.Add(new Paragraph("Date generated: " + currentDate.ToString()));
+                //doc.Add(new Paragraph.Alignment = Element.ALIGN_RIGHT);
+                
+                // Add company logo (assuming logoPath is the path to the company logo)
+                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\dkeh\source\repos\TrackerCTO\CTOTracker\Images\logo.png");
+                logo.ScaleToFit(50f, 50f); // Adjust size as needed
+                PdfPCell logoCell = new PdfPCell(logo);
+                logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                logoCell.Border = PdfPCell.NO_BORDER;
+                headerTable.AddCell(logoCell);
+                doc.Add(new Paragraph(" "));
+                // Add company name
+                PdfPCell companyNameCell = new PdfPCell(new Phrase("EMPLOYEE CTO TRACKER RECORD"));
+                companyNameCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                companyNameCell.Border = PdfPCell.NO_BORDER;
+                headerTable.AddCell(companyNameCell);
+                // Add empty cell to create space between header and table
+                PdfPCell emptyCell = new PdfPCell(new Phrase(" "));
+                emptyCell.Border = PdfPCell.NO_BORDER;
+                headerTable.AddCell(emptyCell);
+                doc.Add(headerTable);
+                // Define a style for the header column
+                Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
+                Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 9); // Adjust font size here
+                PdfPCell headerCell = new PdfPCell();
+                headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                headerCell.Padding = 3;
                 // Add DataGrid content to the PDF document
                 PdfPTable pdfTable = new PdfPTable(dataGrid.Columns.Count);
+                pdfTable.SetWidths(new float[] { 2f, 2f, 2f, 2f, 2f, 2f, 2f }); // Adjust column widths here
                 foreach (DataGridColumn column in dataGrid.Columns)
                 {
-                    pdfTable.AddCell(new Phrase(column.Header.ToString()));
+                    headerCell.Phrase = new Phrase(column.Header.ToString(), headerFont);
+                    pdfTable.AddCell(headerCell);
                 }
 
                 foreach (var item in dataGrid.Items)
@@ -177,10 +213,14 @@ namespace CTOTracker.View.UserControls
                         DataRow row = rowView.Row;
                         foreach (var cell in row.ItemArray)
                         {
-                            pdfTable.AddCell(new Phrase(cell.ToString()));
+                            PdfPCell cellToAdd = new PdfPCell(new Phrase(cell.ToString(), cellFont));
+                            pdfTable.AddCell(cellToAdd);
                         }
                     }
                 }
+                // Set position of PDF table
+                //pdfTable.SetTotalWidth(doc.PageSize.Width - doc.LeftMargin - doc.RightMargin);
+                pdfTable.HorizontalAlignment = Element.ALIGN_CENTER;
 
                 doc.Add(pdfTable);
                 doc.Close();
