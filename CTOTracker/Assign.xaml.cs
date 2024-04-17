@@ -338,7 +338,7 @@ namespace CTOTracker
 
             return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
         }
-                private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             //declare month before to blackout in datetimepicker
             //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
