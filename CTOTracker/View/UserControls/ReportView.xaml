@@ -59,8 +59,8 @@
                 CanUserReorderColumns="False"
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
-                IsReadOnly="True" 
-                Style="{StaticResource table_style}"/>
+                IsReadOnly="True"
+                Style="{StaticResource table_style}" HorizontalAlignment="Right" Width="1350" MouseDoubleClick="reportDG_DoubleMouseClick"/>
 
             <!--  Employee Filtered Panel  -->
             <Grid x:Name="EmpFilPnl" Grid.Row="1" Background="AliceBlue" Visibility="Hidden">
@@ -96,7 +96,7 @@
                        Margin="50,0,0,0" Height="48" VerticalContentAlignment="Center"/>
                     <ComboBox x:Name="cbxEmpList" Grid.Row="1"
                        Grid.Column="1"
-                       Margin="10,5,50,5" VerticalContentAlignment="Center"/>
+                       Margin="10,5,50,5" VerticalContentAlignment="Center" IsEditable="True" Visibility="Hidden"/>
 
                     <Label Grid.Row="3"
                        Content="Infor ID:"
@@ -106,7 +106,7 @@
                     <Label x:Name="lblID"
                        Grid.Row="3"
                        Grid.Column="1"
-                       Content="PLACEHOLDER"
+                       Content="ID PLACEHOLDER"
                        Foreground="Black"
                        FontSize="20"
                        Margin="10,0,0,0" VerticalContentAlignment="Center"/>
@@ -116,13 +116,12 @@
                        Content="Contact Number:"
                        Foreground="Black"
                        FontSize="20" VerticalContentAlignment="Center"/>
-                    <Label x:Name="lblConNum"
-                       Grid.Row="1"
-                       Grid.Column="4"
-                       Content="PLACEHOLDER"
+                    <Label x:Name="lblEmpName"
+                       Grid.Column="1"
+                       Content="NAME PLACEHOLDER"
                        Foreground="Black"
                        FontSize="20"
-                       Margin="10,0,0,0" VerticalContentAlignment="Center"/>
+                       Margin="10,45,0,3" VerticalContentAlignment="Center" Grid.RowSpan="2"/>
 
                     <Label Grid.Row="2"
                        Grid.Column="2"
@@ -132,7 +131,7 @@
                     <Label x:Name="lblRole"
                        Grid.Row="3"
                        Grid.Column="4"
-                       Content="PLACEHOLDER"
+                       Content="ROLE PLACEHOLDER"
                        Foreground="Black"
                        FontSize="20"
                        Margin="10,0,0,0" VerticalContentAlignment="Center"/>

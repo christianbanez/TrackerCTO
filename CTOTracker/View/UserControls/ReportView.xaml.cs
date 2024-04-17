@@ -15,6 +15,8 @@ namespace CTOTracker.View.UserControls
     public partial class ReportView : UserControl
     {
         private DataConnection dataConnection;
+        private List<string> allEmployees; // Store all employee names
+        private List<string> filteredEmployees; // Store filtered employee names
         //EmployeeView employeeView=new EmployeeView();
 
         public ReportView()
@@ -23,6 +25,8 @@ namespace CTOTracker.View.UserControls
             dataConnection = new DataConnection();
             EmployeeReportView();
             PopulateComboBox();
+            PopulateEmployeeComboBox();
+            filteredEmployees = new List<string>();
             cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
         }
         private void EmployeeReportView()
@@ -67,7 +71,7 @@ namespace CTOTracker.View.UserControls
             List<string> filterOptions = new List<string>
             {
                 "Employee with CTO balance",
-                "All Employee",
+                "Employee",
                 "All Task Schedule"
             };
 
@@ -82,12 +86,12 @@ namespace CTOTracker.View.UserControls
                 // Get the selected item
 
                 // Check if the selected item matches the specific item
-                if (cbxFilterRep.SelectedItem.ToString() == "Employee with CTO balance")
+                if (cbxFilterRep.SelectedItem.ToString() == "Employees with CTO balance")
                 {
                     LoadEmployeeReportWithCTO();
                     EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
                 }
-                else if (cbxFilterRep.SelectedItem.ToString() == "All Employee")
+                else if (cbxFilterRep.SelectedItem.ToString() == "Employee")
                 {
                     // Show the Employee Filtered Panel
                     EmpFilPnl.Visibility = System.Windows.Visibility.Visible;

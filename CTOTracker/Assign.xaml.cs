@@ -388,7 +388,16 @@ namespace CTOTracker
                         MessageBox.Show("Please select an employee and enter a task.");
                         return;
                     }
-
+                    if (string.IsNullOrEmpty(selectedEmployee))
+                    {
+                        MessageBox.Show("Please select an employee.");
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(selectedTask))
+                    {
+                        MessageBox.Show("Please select a task.");
+                        return;
+                    }
                     string employeeId = GetEmployeeId(selectedEmployee);
 
                     // Check if the task exists in the database
@@ -619,5 +628,9 @@ namespace CTOTracker
             addTime.Visibility = Visibility.Collapsed;
         }
 
+        private void Employee_Cmbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

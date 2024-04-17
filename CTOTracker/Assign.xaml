@@ -29,7 +29,7 @@
                     x:Name="Employee_Cmbox"
                     Grid.Row="1"
                     Width="311"
-                    Margin="10,10,10,10" />
+                    Margin="10,10,10,10" SelectionChanged="Employee_Cmbox_SelectionChanged"/>
             </Grid>
 
             <!--  Task Grid  -->
