@@ -35,8 +35,8 @@ namespace CTOTracker.View
             dataConnection = new DataConnection();
             allEmployees = new List<string>();
             filteredEmployees = new List<string>();
-            //LoadScheduleData();
-            //LoadCTOuseData();
+            LoadScheduleData();
+            LoadCTOuseData();
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
         }
@@ -237,6 +237,7 @@ namespace CTOTracker.View
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();
 
+                
                 LoadScheduleData();
                 LoadCTOuseData();
             }
@@ -251,6 +252,7 @@ namespace CTOTracker.View
             addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
             // Show the AddTask window
             addTaskWindow.ShowDialog();
+
             LoadScheduleData();
             LoadCTOuseData();
         }
