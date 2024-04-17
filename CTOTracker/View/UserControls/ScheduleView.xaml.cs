@@ -84,16 +84,16 @@ namespace CTOTracker.View
             }
         }
 
-        private void LoadEmployeeQuery(string employeeName)
+        private void LoadEmployeeQuery(string empID)
         { 
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName  & ' ' & Employee.lName = ?;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.empID = ?;";
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
-                        command.Parameters.AddWithValue("@employeeName", employeeName);
+                        command.Parameters.AddWithValue("@empID", empID);
                         OleDbDataAdapter adapter = new OleDbDataAdapter(command);
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
@@ -181,6 +181,38 @@ namespace CTOTracker.View
             // Return the list of employee names retrieved from the database
             return employees;
         }
+        private string GetEmployeeId(string employeeName)
+        {
+            string? employeeId = null; // Initialize employeeId to null
+
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    // Modified query to concatenate fName and lName
+                    string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ?";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
+
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            employeeId = result.ToString(); // Assign the employee ID to employeeId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+            }
+
+            return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
+        }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -261,12 +293,12 @@ namespace CTOTracker.View
         {
             string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
 
-            //string employeeId = GetEmployeeId(selectedEmployee);
+            string employeeId = GetEmployeeId(selectedEmployee);
             if (cbxEmployee.SelectedItem != null)
             {
                 if (cbxEmployee.SelectedItem.ToString() == selectedEmployee)
                 {
-                    LoadEmployeeQuery(selectedEmployee);
+                    LoadEmployeeQuery(employeeId);
                 }
                 
             }
