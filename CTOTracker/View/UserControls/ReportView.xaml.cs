@@ -79,7 +79,7 @@ namespace CTOTracker.View.UserControls
             List<string> filterOptions = new List<string>
             {
                 "Employee with CTO balance",
-                "All Employee",
+                "Employee",
                 "All Task Schedule"
             };
 
@@ -94,12 +94,12 @@ namespace CTOTracker.View.UserControls
                 // Get the selected item
 
                 // Check if the selected item matches the specific item
-                if (cbxFilterRep.SelectedItem.ToString() == "Employee with CTO balance")
+                if (cbxFilterRep.SelectedItem.ToString() == "Employees with CTO balance")
                 {
                     LoadEmployeeReportWithCTO();
                     EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
                 }
-                else if (cbxFilterRep.SelectedItem.ToString() == "All Employee")
+                else if (cbxFilterRep.SelectedItem.ToString() == "Employee")
                 {
                     // Show the Employee Filtered Panel
                     EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
@@ -217,6 +217,23 @@ namespace CTOTracker.View.UserControls
 
             // Open the dropdown
             cmbxEmpName.IsDropDownOpen = true;
+        }
+
+        private void reportDG_DoubleMouseClick(object sender, MouseButtonEventArgs e)
+        {
+            // Retrieve the selected row (data item)
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
+
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate labels
+                EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                lblID.Content = row_selected["inforID"].ToString();
+                string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //fullname
+                lblEmpName.Content = fullName.ToString();
+                lblRole.Content = row_selected["roleName"].ToString();
+            }
         }
     }
 }

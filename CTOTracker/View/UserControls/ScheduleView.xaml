@@ -89,7 +89,7 @@
                 CanUserResizeRows="False"
                 HeadersVisibility="Column"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" MouseDoubleClick="DataGridRow_MouseDoubleClick_1" LoadingRow="scheduleDataGrid_LoadingRow" />
+                Style="{StaticResource table_style}" MouseDoubleClick="DataGridRow_MouseDoubleClick_1"/>
 
             <!--  TOTAL_SELECTED_PANEL  -->
             <Grid Grid.Row="2">

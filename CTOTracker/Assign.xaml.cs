@@ -363,6 +363,16 @@ namespace CTOTracker
                         MessageBox.Show("Please select an employee and a task.");
                         return;
                     }
+                    if (string.IsNullOrEmpty(selectedEmployee))
+                    {
+                        MessageBox.Show("Please select an employee.");
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(selectedTask))
+                    {
+                        MessageBox.Show("Please select a task.");
+                        return;
+                    }
                     string employeeId = GetEmployeeId(selectedEmployee);
                     string taskId = GetTaskId(selectedTask);
 
@@ -576,6 +586,11 @@ namespace CTOTracker
         {
             // Hide the time pickers panel
             addTime.Visibility = Visibility.Collapsed;
+        }
+
+        private void Employee_Cmbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
