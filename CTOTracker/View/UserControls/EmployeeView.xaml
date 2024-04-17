@@ -104,6 +104,7 @@
                         <!--  Fields  -->
                         <TextBox
                             x:Name="txtEmpID"
+                            MaxLength="11"
                             Grid.Row="1"
                             Grid.Column="2"
                             Margin="20"
