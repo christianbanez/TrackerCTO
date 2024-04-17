@@ -45,9 +45,9 @@
                 <Button
                     x:Name="btnExport"
                     Grid.Column="3"
-                    Margin="5,5,10,5"
+                    Margin="5,0,10,5"
                     Content="Export"
-                    FontSize="16" />
+                    FontSize="16" Height="35" VerticalAlignment="Bottom" Click="btnExport_Click" />
             </Grid>
 
             <!--  SCHDULE_TABLE  -->
@@ -110,7 +110,7 @@
                        Foreground="Black"
                        FontSize="20"
                        Margin="10,0,0,0" VerticalContentAlignment="Center"/>
-                    
+
                     <Label Grid.Row="1"
                        Grid.Column="2"
                        Content="Contact Number:"
@@ -149,7 +149,7 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True" 
-                Style="{StaticResource table_style}"/>            
+                Style="{StaticResource table_style}"/>
             </Grid>
 
 

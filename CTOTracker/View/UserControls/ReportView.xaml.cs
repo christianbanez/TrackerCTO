@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Data.OleDb;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;    
 
 namespace CTOTracker.View.UserControls
 {
@@ -24,7 +15,7 @@ namespace CTOTracker.View.UserControls
     {
         private DataConnection dataConnection;
         //EmployeeView employeeView=new EmployeeView();
-        
+
         public ReportView()
         {
             InitializeComponent();
@@ -158,6 +149,53 @@ namespace CTOTracker.View.UserControls
                     connection.Close();
                 }
             }
+        }
+        private void ExportToPdf(DataGrid dataGrid)
+        {
+            try
+            {
+                // Specify the output directory and file name
+                string outputPath = @"Output\output.pdf"; // Change this path to your desired directory
+
+                // Create a PDF document
+                Document doc = new Document();
+                PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+                doc.Open();
+
+                // Add DataGrid content to the PDF document
+                PdfPTable pdfTable = new PdfPTable(dataGrid.Columns.Count);
+                foreach (DataGridColumn column in dataGrid.Columns)
+                {
+                    pdfTable.AddCell(new Phrase(column.Header.ToString()));
+                }
+
+                foreach (var item in dataGrid.Items)
+                {
+                    if (item is DataRowView)
+                    {
+                        DataRowView rowView = item as DataRowView;
+                        DataRow row = rowView.Row;
+                        foreach (var cell in row.ItemArray)
+                        {
+                            pdfTable.AddCell(new Phrase(cell.ToString()));
+                        }
+                    }
+                }
+
+                doc.Add(pdfTable);
+                doc.Close();
+
+                MessageBox.Show("PDF exported successfully! Output path: " + outputPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error exporting PDF: " + ex.Message);
+            }
+        }
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            ExportToPdf(reportDataGrid);
         }
     }
 }
