@@ -121,15 +121,13 @@ namespace CTOTracker.View.UserControls
 
         private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
         {
-            //dtPnl.Height += FilterPnl.ActualHeight;
-
+            dtPnl.Height -= FilterPnl.ActualHeight;
         }
 
         private void tgb_FilterPnl_Unchecked(object sender, RoutedEventArgs e)
         {
-            //dtPnl.Height -= FilterPnl.ActualHeight;            
+            dtPnl.Height += FilterPnl.ActualHeight;
         }
-
 
 
         /*        private void ToggleFilterPanelButton_Checked(object sender, RoutedEventArgs e)
