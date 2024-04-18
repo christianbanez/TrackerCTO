@@ -142,7 +142,7 @@ namespace CTOTracker
                 // Display an error message if an exception occurs
                 MessageBox.Show("Error: " + ex.Message);
             }
-        }
+            }
 
         private void PopulateTaskComboBox()
         {

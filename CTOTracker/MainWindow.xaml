@@ -30,7 +30,7 @@
             </LinearGradientBrush>
         </Border.BorderBrush>-->
 
-    <Grid>
+    <Grid Focusable="True">
 
         <!--  BG  -->
         <Grid.Background>

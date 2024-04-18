@@ -9,10 +9,11 @@
     Title="Assign Schedule"
     Width="430"
     Height="450"
+    ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
-    mc:Ignorable="d" ResizeMode="NoResize">
+    mc:Ignorable="d">
     <Grid>
         <!--  BG  -->
         <Grid.Background>
@@ -21,9 +22,9 @@
                 <GradientStop Offset="1" Color="#FFD1D6EA" />
             </LinearGradientBrush>
         </Grid.Background>
-        
+
         <Grid Margin="20,50,20,10">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -34,30 +35,46 @@
                 <Grid Margin="0,0,0,5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="40" />
                     </Grid.RowDefinitions>
-                    <Label Margin="10,10,0,0" Content="Employee :" Foreground="Black" FontSize="14" Style="{DynamicResource font_style}" />
+                    <Label
+                        Margin="10,10,0,0"
+                        Content="Employee :"
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <ComboBox
                         x:Name="Employee_Cmbox"
                         Grid.Row="1"
                         Width="311"
-                        Text="Select an Employee..."
-                        Margin="10,10,10,5" Template="{DynamicResource ComboBoxTemplate1}" />
+                        Margin="10,10,10,5"
+                        FontSize="12"
+                        IsReadOnly="True"
+                        Template="{DynamicResource ComboBoxTemplate1}"
+                        Tag="Select an Employee..."  />
                 </Grid>
 
                 <!--  Task Grid  -->
                 <Grid Margin="0,0,0,5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="40" />
                     </Grid.RowDefinitions>
-                    <Label Margin="10,10,0,0" Content="Task : " Foreground="Black" FontSize="14" Style="{DynamicResource font_style}" />
+                    <Label
+                        Margin="10,10,0,0"
+                        Content="Task : "
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <ComboBox
                         x:Name="Task_Cmbox"
                         Grid.Row="1"
                         Width="311"
                         Margin="10,10,10,5"
-                        IsEditable="True" Template="{DynamicResource ComboBoxTemplate1}" />
+                        FontSize="12"
+                        IsEditable="True"
+                        Tag="Select a Task..."
+                        Template="{DynamicResource ComboBoxTemplate1}"/>
                 </Grid>
 
                 <!--  DatePickers Grid  -->
@@ -70,11 +87,19 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Label Margin="0,10,0,0" Content="Start Date :" Foreground="Black" FontSize="14" Style="{DynamicResource font_style}" />
+                    <Label
+                        Margin="0,10,0,0"
+                        Content="Start Date :"
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <Label
                         Grid.Column="1"
                         Margin="0,10,0,0"
-                        Content="End Date :" Foreground="Black" FontSize="14" Style="{DynamicResource font_style}" />
+                        Content="End Date :"
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <DatePicker
                         x:Name="startDatePicker"
                         Grid.Row="1"
@@ -99,8 +124,10 @@
                     Margin="10,10,0,0"
                     Checked="showTimeCheckBox_Checked"
                     Content="Add Time"
-                    Unchecked="showTimeCheckBox_Unchecked"
-                    Foreground="Black" FontSize="14" FontFamily="Roboto"/>
+                    FontFamily="Roboto"
+                    FontSize="14"
+                    Foreground="Black"
+                    Unchecked="showTimeCheckBox_Unchecked" />
 
                 <!--  Time Labels and TextBoxes Grid  -->
                 <Grid
@@ -113,11 +140,19 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Label Margin="10,10,0,0" Content="Time In:"  Foreground="Black" FontSize="14" Style="{DynamicResource font_style}"/>
+                    <Label
+                        Margin="10,10,0,0"
+                        Content="Time In:"
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <Label
                         Grid.Column="2"
                         Margin="10,10,0,0"
-                        Content="Time out :" Foreground="Black" FontSize="14" Style="{DynamicResource font_style}"/>
+                        Content="Time out :"
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <TextBox
                         x:Name="startTimeTextBox"
                         Grid.Column="1"
@@ -160,14 +195,16 @@
                     Height="25"
                     Margin="0,0,10,0"
                     Click="Button_Click"
-                    Content="ADD" Style="{DynamicResource button_style}" />
+                    Content="ADD"
+                    Style="{DynamicResource button_style}" />
                 <Button
                     Grid.Column="2"
                     Width="50"
                     Height="25"
                     Margin="10"
                     Click="Button_Click_1"
-                    Content="CANCEL" Style="{DynamicResource button_style}" />
+                    Content="CANCEL"
+                    Style="{DynamicResource button_style}" />
                 <Button
                     x:Name="SaveButton"
                     Grid.Column="1"

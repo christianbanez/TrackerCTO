@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media.Animation;
+using System.Diagnostics;
 
 namespace CTOTracker.View.UserControls
 {
@@ -29,6 +31,7 @@ namespace CTOTracker.View.UserControls
             InitializeComponent();
             dataConnection = new DataConnection();
             LoadScheduleData();
+            originalDtPnlHeight = dtPnl.Height;
             //PopulateComboBox();
             //cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
         }
@@ -119,14 +122,70 @@ namespace CTOTracker.View.UserControls
             }
         }
 
+        private double originalDtPnlHeight; // Store the original height of dtPnl
+        private double filterPnlHeight = 110;
+
         private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
         {
-            dtPnl.Height -= FilterPnl.ActualHeight;
+            //filter panel animation
+            DoubleAnimation showAnimation = new DoubleAnimation();
+            showAnimation.From = 45;
+            showAnimation.To = 150;
+            showAnimation.Duration = TimeSpan.FromSeconds(0.3);
+            FilterPnl.BeginAnimation(HeightProperty, showAnimation);
+
+            //dtpnl animation
+            ThicknessAnimation animation = new ThicknessAnimation();
+            animation.From = new Thickness(0, 45, 0, 0);
+            animation.To = new Thickness(0, 90, 0, 0); // Adjust this value as needed
+            animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
+            dtPnl.BeginAnimation(MarginProperty, animation);
+            //dtPnl.Height -= filterPnlHeight;
         }
 
         private void tgb_FilterPnl_Unchecked(object sender, RoutedEventArgs e)
         {
-            dtPnl.Height += FilterPnl.ActualHeight;
+            //filter panel animation
+            DoubleAnimation hideAnimation = new DoubleAnimation();
+            hideAnimation.From = 150;
+            hideAnimation.To = 45;
+            hideAnimation.Duration = TimeSpan.FromSeconds(0.2);
+            FilterPnl.BeginAnimation(HeightProperty, hideAnimation);
+
+            //dtpnl animation
+            ThicknessAnimation animation = new ThicknessAnimation();
+            animation.From = new Thickness(0, 90, 0, 0); // Adjust this value as needed
+            animation.To = new Thickness(0, 45, 0, 0);
+            animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
+            dtPnl.BeginAnimation(MarginProperty, animation);
+            //dtPnl.Height = originalDtPnlHeight;
+        }
+
+        private void txtbx_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (textBox.Text == textBox.Tag?.ToString()) // Check if the current text matches the placeholder
+            {
+                textBox.Text = ""; // Clear the text
+                textBox.Foreground = Brushes.Black; // Change the text color back to black
+            }
+        }
+
+        private void txtbx_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (string.IsNullOrWhiteSpace(textBox.Text)) // If the TextBox is empty
+            {
+                textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text back
+                textBox.Foreground = Brushes.Gray; // Change the text color to gray to indicate it's a placeholder
+            }
+        }
+
+        private void txtbx_Loaded(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text
+            textBox.Foreground = Brushes.Gray;
         }
 
 
