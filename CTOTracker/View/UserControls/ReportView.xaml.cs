@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Security.Policy;
 
 namespace CTOTracker.View.UserControls
 {
@@ -43,7 +44,7 @@ namespace CTOTracker.View.UserControls
             LoadEmployeeReport(query);
 
         }
-        private void LoadEmployeeReport(string query)
+        private void LoadEmployeeReport(string query) //loads the employee report to report data grid
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
@@ -86,7 +87,6 @@ namespace CTOTracker.View.UserControls
             // Assign the list as the ItemsSource for the ComboBox
             cbxFilterRep.ItemsSource = filterOptions;
         }
-
         private void CbxFilterRep_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbxFilterRep.SelectedItem != null)
@@ -123,7 +123,6 @@ namespace CTOTracker.View.UserControls
 
             LoadEmployeeReport(query);
         }
-
         private List<string> GetDataFromEmployeeTable()
         {
             // Create a list to store employee names
@@ -195,7 +194,6 @@ namespace CTOTracker.View.UserControls
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
-
         private void cmbxEmpName_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Clear the filtered list
@@ -230,10 +228,74 @@ namespace CTOTracker.View.UserControls
                 // Extract values from the row and populate labels
                 EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
                 lblID.Content = row_selected["inforID"].ToString();
-                string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //fullname
+                string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //get fullname of the selected employee
                 lblEmpName.Content = fullName.ToString();
                 lblRole.Content = row_selected["roleName"].ToString();
+                /*kulang pa ng contact number & email*/
+                LoadEmployeeReportHistory(fullName);
             }
         }
+        private string GetEmployeeId(string employeeName)
+        {
+            string? employeeId = null; // Initialize employeeId to null
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    // Modified query to concatenate fName and lName
+                    string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ?";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
+
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            employeeId = result.ToString(); // Assign the employee ID to employeeId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+            }
+            // Return employeeId if not null, otherwise throw an exception
+            return employeeId ?? throw new Exception("Employee ID not found.");
+        }
+  
+        private void LoadEmployeeReportHistory(string fullName)
+        {
+            string employeeId = GetEmployeeId(fullName);
+            // Your code to load the report for employees' history
+            // Modify your query to retrieve employees' history
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = @"SELECT timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID) WHERE Employee.empID = ?;";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@employeeId", employeeId);
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+        }
+
     }
 }
