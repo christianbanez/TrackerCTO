@@ -22,6 +22,7 @@ namespace CTOTracker.View
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
+            btnEdit.IsEnabled = false;
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -65,6 +66,7 @@ namespace CTOTracker.View
             //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
             //if (msgRes == MessageBoxResult.Yes)
             //{
+            btnEdit.IsEnabled = false;
             AddEdit.Visibility = Visibility.Visible;
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
@@ -90,6 +92,7 @@ namespace CTOTracker.View
             //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
             //if (msgRes == MessageBoxResult.Yes)
             //{
+            btnEdit.IsEnabled = false;
             AddEdit.Visibility = Visibility.Visible;
             AddPnl.Visibility = Visibility.Collapsed;
             UpdatePnl.Visibility = Visibility.Collapsed;
@@ -112,6 +115,40 @@ namespace CTOTracker.View
             LoadEmployeeView();
         }
 
+        private void InsertRoleIntoDatabase(string roleName)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "INSERT INTO Role (roleName) VALUES (@roleName)";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@roleName", roleName);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Role has been added to the database!");
+                            
+                            
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to add role to the database.");
+                            
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error inserting task into database: " + ex.Message);
+            }
+        }
         private void LoadEmployeeView()
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
@@ -217,6 +254,7 @@ namespace CTOTracker.View
         {
             try
             {
+
                 // Fetch data from the Employee table
                 List<string> role = GetDataFromRole();
 
@@ -327,8 +365,16 @@ namespace CTOTracker.View
             {
                 try
                 {
-                    string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
+                    string selectedRole = txtRole.Text.Trim();
                     string roleID = GetRoleID(selectedRole);
+                    if (roleID == null)
+                    {
+                        // If task ID is null, insert the task into the database
+                        InsertRoleIntoDatabase(selectedRole);
+                        // Retrieve the task ID again after insertion
+                        roleID = GetRoleID(selectedRole);
+                    }
+
                     string inforID = txtEmpID.Text;
                     connection.Open();
                     // Validate input fields
@@ -364,20 +410,23 @@ namespace CTOTracker.View
                     txtLname.Clear();
                     txtEmail.Clear();
                     txtContact.Clear();
+                    txtRole.Text = "";
                     txtRole.SelectedIndex = -1;
                     AddEdit.Visibility = Visibility.Visible;
                     AddPnl.Visibility = Visibility.Collapsed;
                     UpdatePnl.Visibility = Visibility.Collapsed;
+                    txtEmpID.IsEnabled = false;
                     txtFname.IsEnabled = false;
                     txtLname.IsEnabled = false;
                     txtEmail.IsEnabled = false;
                     txtContact.IsEnabled = false;
                     txtRole.IsEnabled = false;
                     DataGridEmployee1.IsEnabled = true;
+
                 }
-                catch
+                catch (Exception ex) 
                 {
-                    MessageBox.Show("Error");
+                    MessageBox.Show("Error: " + ex);
                 }
                 finally
                 {
@@ -398,7 +447,6 @@ namespace CTOTracker.View
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
                         command.Parameters.AddWithValue("@roleName", roleName); // Add parameter for task name
-
                         connection.Open(); // Open the connection
                         object? result = command.ExecuteScalar(); // Execute the query and get the result
 
@@ -414,7 +462,7 @@ namespace CTOTracker.View
                 MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
             }
 
-            return roleID ?? throw new Exception("Role ID not found."); // Return taskId if not null, otherwise throw an exception
+            return roleID; // Return roleID if not null, otherwise throw an exception
         }
 
         private void txtContact_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -436,6 +484,7 @@ namespace CTOTracker.View
             if (row_selected != null)
             {
                 // Extract values from the row and populate textboxes
+                btnEdit.IsEnabled = true;
                 txtEmpID.Text = row_selected["inforID"].ToString();
                 txtEmpID.IsEnabled = false;
                 txtFname.Text = row_selected["fName"].ToString();
@@ -465,18 +514,19 @@ namespace CTOTracker.View
 
                 // Update the employee record in the database
                 UpdateEmployee(inforID, firstName, lastName, email, contact, roleID);
+                btnEdit.IsEnabled = false;
 
                 // Refresh the DataGridView to reflect the changes
                 LoadEmployeeView();
-                txtEmpID.Clear();
-                txtFname.Clear();
-                txtLname.Clear();
-                txtEmail.Clear();
-                txtContact.Clear();
                 txtRole.SelectedIndex = -1;
                 AddEdit.Visibility = Visibility.Visible;
                 AddPnl.Visibility = Visibility.Collapsed;
                 UpdatePnl.Visibility = Visibility.Collapsed;
+                txtFname.IsEnabled = false;
+                txtLname.IsEnabled = false;
+                txtEmail.IsEnabled = false;
+                txtContact.IsEnabled = false;
+                txtRole.IsEnabled = false;
                 txtEmpID.Clear();
                 txtFname.Clear();
                 txtLname.Clear();
@@ -568,15 +618,26 @@ namespace CTOTracker.View
                             cmd.ExecuteNonQuery();
                             MessageBox.Show("Record Successfully Deleted");
                             LoadEmployeeView();
+                            btnEdit.IsEnabled = false;
                             txtEmpID.Clear();
                             txtFname.Clear();
                             txtLname.Clear();
                             txtEmail.Clear();
                             txtContact.Clear();
+                            txtEmpID.IsEnabled = false;
+                            txtFname.IsEnabled = false;
+                            txtLname.IsEnabled = false;
+                            txtEmail.IsEnabled = false;
+                            txtContact.IsEnabled = false;
+                            txtRole.IsEnabled = false;
                             txtRole.SelectedIndex = -1;
+                            AddEdit.Visibility = Visibility.Visible;
+                            AddPnl.Visibility = Visibility.Collapsed;
+                            UpdatePnl.Visibility = Visibility.Collapsed;
                         }
                         else
                         {
+                            btnEdit.IsEnabled = false;
                             txtEmpID.Clear();
                             txtFname.Clear();
                             txtLname.Clear();

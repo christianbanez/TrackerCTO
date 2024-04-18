@@ -19,16 +19,16 @@
             <!--  Employee HEADER  -->
             <Grid Focusable="True">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="425*" />
+                    <ColumnDefinition Width="390*" />
+                    <ColumnDefinition Width="247*"/>
+                    <ColumnDefinition Width="213*" />
+                    <ColumnDefinition Width="85*" />
                 </Grid.ColumnDefinitions>
 
                 <Label
                     Margin="10,0,0,0"
-                    Content="Report"
+                    Content="Employee CTO Records"
                     FontSize="24" />
 
                 <CheckBox

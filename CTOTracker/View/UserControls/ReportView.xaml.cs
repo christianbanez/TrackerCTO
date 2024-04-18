@@ -183,6 +183,10 @@ namespace CTOTracker.View.UserControls
                 textBox.Foreground = Brushes.Black; // Change the text color back to black
             }
         }
+        private void EmployeeReportView()
+        {
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.completed, Schedule.ctoBalance\r\nFROM Task INNER JOIN ((Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID) ON Task.taskID = Schedule.taskID;\r\n";
+            LoadEmployeeReport(query);
 
         private void txtbx_LostFocus(object sender, RoutedEventArgs e)
         {

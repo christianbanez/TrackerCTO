@@ -30,29 +30,20 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel>
-                <!--  Employee Grid  -->
-                <Grid Margin="0,0,0,5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="40" />
-                    </Grid.RowDefinitions>
-                    <Label
-                        Margin="10,10,0,0"
-                        Content="Employee :"
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{DynamicResource font_style}" />
-                    <ComboBox
-                        x:Name="Employee_Cmbox"
-                        Grid.Row="1"
-                        Width="311"
-                        Margin="10,10,10,5"
-                        FontSize="12"
-                        IsReadOnly="True"
-                        Template="{DynamicResource ComboBoxTemplate1}"
-                        Tag="Select an Employee..."  />
-                </Grid>
+        <StackPanel>
+            <!--  Employee Grid  -->
+            <Grid Margin="0,0,0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Label Margin="10,10,0,0" Content="Employee :" />
+                <ComboBox
+                    x:Name="Employee_Cmbox"
+                    Grid.Row="1"
+                    Width="311"
+                    Margin="10,10,10,10" SelectionChanged="Employee_Cmbox_SelectionChanged"/>
+            </Grid>
 
                 <!--  Task Grid  -->
                 <Grid Margin="0,0,0,5">

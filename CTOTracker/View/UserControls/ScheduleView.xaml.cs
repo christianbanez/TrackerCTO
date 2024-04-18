@@ -10,45 +10,43 @@ using System.Windows.Input;
 
 namespace CTOTracker.View
 {
-    /// <summary>
-    /// Interaction logic for ScheduleView.xaml
-    /// </summary>
+
     public partial class ScheduleView : UserControl
     {
         private DataConnection dataConnection;
         private List<string> allEmployees; // Store all employee names
         private List<string> filteredEmployees; //store filtered employee
 
-        public class TaskModel
-        {
-            public string EmployeeName { get; set; }
-            public string TaskName { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-
-        }
-
         public ScheduleView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
-            allEmployees = new List<string>();
-            filteredEmployees = new List<string>();
+            tbxSearch.TextChanged += EmployeeNameTextBox_TextChanged;
             LoadScheduleData();
             LoadCTOuseData();
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
         }
 
-        private void LoadScheduleData()
+        private void LoadScheduleData(string employeeName = null)
         {
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoBalance > 0.0 OR ctoBalance IS Null;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, completed, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoBalance > 0.0 OR ctoBalance Is Null;";
+
+                    if (!string.IsNullOrEmpty(employeeName))
+                    {
+                        query += " WHERE Employee.fName LIKE '%' OR Employee.lName LIKE '%' OR Task.taskName LIKE + '%'";
+                    }
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    if (!string.IsNullOrEmpty(employeeName))
+                    {
+                        adapter.SelectCommand.Parameters.Add(employeeName);
+                    }
+
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
@@ -195,23 +193,7 @@ namespace CTOTracker.View
                     {
                         command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
 
-                        connection.Open(); // Open the connection
-                        object? result = command.ExecuteScalar(); // Execute the query and get the result
 
-                        if (result != null) // Check if the result is not null
-                        {
-                            employeeId = result.ToString(); // Assign the employee ID to employeeId
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
-            }
-
-            return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
-        }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -219,24 +201,15 @@ namespace CTOTracker.View
 
         private void DataGrid_AutoGenerateColumns(object sender, EventArgs e)
         {
-            scheduleDataGrid.Columns[0].Visibility = Visibility.Collapsed;
-            scheduleDataGrid.Columns[0].Header = "Schedule ID";
-            scheduleDataGrid.Columns[1].Header = "Infor ID";
-            scheduleDataGrid.Columns[1].Width = 75;
-            scheduleDataGrid.Columns[2].Header = "First Name";
-            scheduleDataGrid.Columns[2].Width = 185;
-            scheduleDataGrid.Columns[3].Header = "Last Name";
-            scheduleDataGrid.Columns[3].Width = 185;
-            scheduleDataGrid.Columns[4].Header = "Task Name";
-            scheduleDataGrid.Columns[4].Width = 125;
-            scheduleDataGrid.Columns[5].Header = "Start Date";
-            scheduleDataGrid.Columns[6].Header = "End Date";
-            scheduleDataGrid.Columns[7].Header = "Time In";
-            scheduleDataGrid.Columns[8].Header = "Time Out";
-            scheduleDataGrid.Columns[9].Header = "CTO Earned";
-            scheduleDataGrid.Columns[10].Header = "CTO Used";
-            scheduleDataGrid.Columns[11].Header = "CTO Balance";
-            scheduleDataGrid.Columns[12].Header = "Completed";
+            scheduleDataGrid.Columns[0].Header = "Infor ID";
+            scheduleDataGrid.Columns[1].Header = "First Name";
+            scheduleDataGrid.Columns[2].Header = "Last Name";
+            scheduleDataGrid.Columns[3].Header = "Task Name";
+            scheduleDataGrid.Columns[4].Header = "Planned Start Date";
+            scheduleDataGrid.Columns[5].Header = "Planned End Date";
+            scheduleDataGrid.Columns[6].Header = "Time In";
+            scheduleDataGrid.Columns[7].Header = "Time Out";
+            scheduleDataGrid.Columns[8].Header = "CTO Earned";
         }
 
         // Event handler for double-clicking on a row in the DataGrid
@@ -247,6 +220,14 @@ namespace CTOTracker.View
             {
                 // Retrieve the selected row (data item)
                 DataRowView selectedRow = (DataRowView)scheduleDataGrid.SelectedItem;
+
+                bool completed = Convert.ToBoolean(selectedRow["completed"]); // Check if the task is completed
+                // If the task is completed, do not open the Add Task window
+                if (completed)
+                {
+                    MessageBox.Show("This task is already completed. You cannot update it.");
+                    return;
+                }
 
                 // Extract relevant data from the selected row
                 string fullName = selectedRow["fName"].ToString() + " " + selectedRow["lName"].ToString();
@@ -279,13 +260,53 @@ namespace CTOTracker.View
             // Instantiate an instance of the AddTask window
             AddTask addTaskWindow = new AddTask();
 
-            addTaskWindow.Visibility = Visibility.Collapsed;
+            addTaskWindow.SaveButton.Visibility = Visibility.Collapsed;
             addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
             // Show the AddTask window
             addTaskWindow.ShowDialog();
 
             LoadScheduleData();
-            LoadCTOuseData();
+        }
+
+        private void EmployeeNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = tbxSearch.Text.Trim();
+
+            // If the search text is empty, load all data
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadScheduleData();
+                return;
+            }
+            else
+            {
+
+            }
+            //Otherwise, filter the data based on the entered initial
+            LoadScheduleDataByInitial(searchText);
+        }
+
+        private void LoadScheduleDataByInitial(string initial)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%' OR Task.taskName LIKE @Initial + '%'";
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    // Bind the DataTable to the DataGrid
+                    scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
         }
 
         private void cbxEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
