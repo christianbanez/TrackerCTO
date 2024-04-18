@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Security.Policy;
+using Xceed.Wpf.AvalonDock.Themes;
 
 namespace CTOTracker.View.UserControls
 {
@@ -122,7 +123,7 @@ namespace CTOTracker.View.UserControls
                             WHERE Schedule.ctoBalance > 0;";
 
             LoadEmployeeReport(query);
-        }
+        } //filter combo box (prev version)
         private List<string> GetDataFromEmployeeTable()
         {
             // Create a list to store employee names
@@ -222,17 +223,23 @@ namespace CTOTracker.View.UserControls
             // Retrieve the selected row (data item)
             DataGrid gd = (DataGrid)sender;
             DataRowView row_selected = (DataRowView)gd.SelectedItem;
-
-            if (row_selected != null)
+           
+            try
             {
-                // Extract values from the row and populate labels
-                EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
-                lblID.Content = row_selected["inforID"].ToString();
-                string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //get fullname of the selected employee
-                lblEmpName.Content = fullName.ToString();
-                lblRole.Content = row_selected["roleName"].ToString();
-                /*kulang pa ng contact number & email*/
-                LoadEmployeeReportHistory(fullName);
+                if (row_selected != null)
+                {
+                    // Extract values from the row and populate labels
+                    lblID.Content = row_selected["inforID"].ToString();
+                    string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //get fullname of the selected employee
+                    lblEmpName.Content = fullName.ToString();
+                    lblRole.Content = row_selected["roleName"].ToString();
+                    /*kulang pa ng contact number & email*/
+                    LoadEmployeeReportHistory(fullName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
             }
         }
         private string GetEmployeeId(string employeeName)
@@ -248,7 +255,6 @@ namespace CTOTracker.View.UserControls
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
                         command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
-
                         connection.Open(); // Open the connection
                         object? result = command.ExecuteScalar(); // Execute the query and get the result
 
@@ -266,17 +272,18 @@ namespace CTOTracker.View.UserControls
             // Return employeeId if not null, otherwise throw an exception
             return employeeId ?? throw new Exception("Employee ID not found.");
         }
-  
         private void LoadEmployeeReportHistory(string fullName)
         {
             string employeeId = GetEmployeeId(fullName);
-            // Your code to load the report for employees' history
-            // Modify your query to retrieve employees' history
+            
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = @"SELECT timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID) WHERE Employee.empID = ?;";
+                    // Your code to load the report for employees' history
+                    // Modify your query to retrieve employees' history
+                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, dateUsed, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
+                                   "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
@@ -285,8 +292,28 @@ namespace CTOTracker.View.UserControls
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
 
-                        // Bind the DataTable to the DataGrid
-                        scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                        bool allTasksComplete = true;
+
+                        // Modify the data table for display
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            // Check for null values in timeIn and timeOut
+                            if (row["timeIn"] == DBNull.Value || row["timeOut"] == DBNull.Value)
+                            {
+                                allTasksComplete = false; 
+                            }
+                        }
+                        if (!allTasksComplete)
+                        {
+                            // Display a message indicating the task is not yet completed
+                            MessageBox.Show("This task not yet completed.", "Information");
+                        }
+                        else
+                        {
+                            // Bind the DataTable to the DataGrid
+                            scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                            EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                        }
                     }
                 }
             }
@@ -294,8 +321,6 @@ namespace CTOTracker.View.UserControls
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-
         }
-
     }
 }
