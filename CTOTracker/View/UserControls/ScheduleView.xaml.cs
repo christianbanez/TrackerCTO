@@ -344,6 +344,7 @@ namespace CTOTracker.View
 
             addTaskWindow.Visibility = Visibility.Collapsed;
             addTaskWindow.schedIDTextBox.Visibility = Visibility.Collapsed;
+            addTaskWindow.DeleteButton.Visibility = Visibility.Collapsed;
             // Show the AddTask window
             addTaskWindow.ShowDialog();
 

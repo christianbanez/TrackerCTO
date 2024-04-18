@@ -186,34 +186,45 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Button
                     x:Name="AddButton"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Width="50"
                     Height="25"
                     Margin="0,0,10,0"
                     Click="Button_Click"
                     Content="ADD"
-                    Style="{DynamicResource button_style}" />
+                    Style="{DynamicResource button_style}" RenderTransformOrigin="0.483,-1.501" />
                 <Button
-                    Grid.Column="2"
-                    Width="50"
+                    Grid.Column="3"
+                    Width="63"
                     Height="25"
-                    Margin="10"
                     Click="Button_Click_1"
                     Content="CANCEL"
                     Style="{DynamicResource button_style}" />
                 <Button
                     x:Name="SaveButton"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     Width="48"
                     Height="25"
                     Margin="10"
                     Click="SAVE_Click"
                     Content="Save"
-                    Visibility="Collapsed" />
+                    Visibility="Collapsed"
+                    Style="{DynamicResource button_style}"/>
+                <Button
+                    x:Name="DeleteButton"
+                    Grid.Column="1"
+                    Width="50"
+                    Height="25"
+                    Margin="0,0,10,0"
+                    Click="DeleteButton_click"
+                    Content="Delete"
+                    Style="{DynamicResource button_style}"/>
+
             </Grid>
         </Grid>
     </Grid>

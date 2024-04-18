@@ -1,4 +1,5 @@
-﻿using System.Data.OleDb;
+﻿using System.Data;
+using System.Data.OleDb;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -596,6 +597,43 @@ namespace CTOTracker
         {
             // Hide the time pickers panel
             addTime.Visibility = Visibility.Collapsed;
+        }
+
+        private void DeleteButton_click(object sender, RoutedEventArgs e)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    MessageBoxResult msgRes = MessageBox.Show("Are you sure you want to delete this?", "Cancel", MessageBoxButton.YesNo);
+                    int schedID = Convert.ToInt32(schedIDTextBox.Text);
+                    if (msgRes == MessageBoxResult.Yes)
+                    {
+                        OleDbCommand cmd = connection.CreateCommand();
+                        connection.Open();
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "Delete from Schedule where schedID = @schedID ";
+                        cmd.Parameters.AddWithValue("@schedID", schedID);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Record Successfully Deleted");
+                        
+                    }
+                    else
+                    {
+                           
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting employee: " + ex);
+                }
+                finally
+                {
+                    connection.Close();
+                    this.Close();
+                }
+            }
         }
     }
 }
