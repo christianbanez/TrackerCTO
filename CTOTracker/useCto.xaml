@@ -1,0 +1,20 @@
+﻿<Window x:Class="CTOTracker.useCto"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CTOTracker"
+        mc:Ignorable="d"
+        Title="useCto" Height="450" Width="800">
+    <Grid>
+        <DataGrid x:Name="SelectedScheduleView"  Margin="0,36,0,261" SelectionChanged="SelectedScheduleView_SelectionChanged"/>
+        <DataGrid x:Name="ChangesGridView" Margin="0,199,0,80"/>
+        <Label Content="SELECTED SCHEDULE :" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="TOTAL CTO :" HorizontalAlignment="Left" Margin="10,359,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="Total" Content="Label" HorizontalAlignment="Left" Margin="89,359,0,0" VerticalAlignment="Top"/>
+        <Label Content="CHANGES :" HorizontalAlignment="Left" Margin="10,173,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="useCtoBttn" Content="Use" HorizontalAlignment="Left" Margin="696,396,0,0" VerticalAlignment="Top" Click="useCtoBttn_Click"/>
+        <Button x:Name="cancelBttn" Content="Cancel" HorizontalAlignment="Left" Margin="750,396,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="confirmChangesBttn" Content="Confirm" HorizontalAlignment="Left" Margin="750,176,0,0" VerticalAlignment="Top" Click="confirmChangesBttn_Click"/>
+    </Grid>
+</Window>

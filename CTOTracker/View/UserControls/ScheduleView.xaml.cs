@@ -19,6 +19,7 @@ namespace CTOTracker.View
             LoadScheduleData();
         }
 
+
         private void LoadScheduleData(string employeeName = null)
         {
             try
@@ -156,6 +157,40 @@ namespace CTOTracker.View
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+
+        private void btnUseCtoUsed_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Check if any rows are selected in the scheduleDataGrid
+                if (scheduleDataGrid.SelectedItems.Count > 0)
+                {
+                    // Create a list to hold selected schedule data
+                    List<DataRowView> selectedRows = new List<DataRowView>();
+
+                    // Iterate through each selected row in the scheduleDataGrid
+                    foreach (DataRowView selectedRow in scheduleDataGrid.SelectedItems)
+                    {
+                        selectedRows.Add(selectedRow);
+                    }
+
+                    // Pass the selected rows to the useCto window
+                    useCto useCtoWindow = new useCto();
+                    useCtoWindow.LoadSelectedSchedule(selectedRows);
+                    useCtoWindow.Show();
+                }
+                else
+                {
+                    MessageBox.Show("No rows selected.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+
 
 
     }
