@@ -24,10 +24,10 @@ namespace CTOTracker.View.UserControls
             InitializeComponent();
             dataConnection = new DataConnection();
             EmployeeReportView();
-            PopulateComboBox();
-            PopulateEmployeeComboBox();
+            //();
+            //PopulateEmployeeComboBox();
             filteredEmployees = new List<string>();
-            cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
+            //cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
         }
         private void EmployeeReportView()
         {
@@ -65,57 +65,8 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
-        private void PopulateComboBox()
-        {
-            // Create a list of strings to populate the ComboBox
-            List<string> filterOptions = new List<string>
-            {
-                "Employee with CTO balance",
-                "Employee",
-                "All Task Schedule"
-            };
-
-            // Assign the list as the ItemsSource for the ComboBox
-            cbxFilterRep.ItemsSource = filterOptions;
-        }
-
-        private void CbxFilterRep_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cbxFilterRep.SelectedItem != null)
-            {
-                // Get the selected item
-
+        
                 // Check if the selected item matches the specific item
-                if (cbxFilterRep.SelectedItem.ToString() == "Employees with CTO balance")
-                {
-                    LoadEmployeeReportWithCTO();
-                    EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
-                }
-                else if (cbxFilterRep.SelectedItem.ToString() == "Employee")
-                {
-                    // Show the Employee Filtered Panel
-                    EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
-                    PopulateEmployeeListComboBox();
-                }
-                else
-                {
-                    // Hide the Employee Filtered Panel
-                    EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
-                }
-            }
-        }
-        private void LoadEmployeeReportWithCTO()
-        {
-            // Your code to load the report for employees with remaining CTO balance
-            // Modify your query to retrieve employees with remaining CTO balance
-            string query = @"SELECT Employee.inforID, Employee.fName, Employee.lName, Employee.email, Employee.contact, Role.roleName, Schedule.ctoBalance
-                            FROM (Employee
-                            INNER JOIN Role ON Employee.roleID = Role.roleID)
-                            INNER JOIN Schedule ON Employee.empID = Schedule.empID
-                            WHERE Schedule.ctoBalance > 0;";
-
-            LoadEmployeeReport(query);
-        }
         private void PopulateEmployeeListComboBox()
         {
             string query = "SELECT fName + ' ' + lName AS FullName FROM Employee";
@@ -240,6 +191,23 @@ namespace CTOTracker.View.UserControls
         private void btnExport_Click(object sender, RoutedEventArgs e)
         {
             ExportToPdf(reportDataGrid);
+        }
+
+        private void reportDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Retrieve the selected row (data item)
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
+
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate labels
+                EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                lblID.Content = row_selected["inforID"].ToString();
+                string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //fullname
+                lblEmpName.Content = fullName.ToString();
+                lblRole.Content = row_selected["roleName"].ToString();
+            }
         }
     }
 }

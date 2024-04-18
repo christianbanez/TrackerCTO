@@ -114,8 +114,7 @@
                             x:Name="txtFname"
                             Grid.Row="2"
                             Grid.Column="2"
-                            Margin="20"
-                            IsEnabled="False" />
+                            Margin="20" IsEnabled="False" />
                         <TextBox
                             x:Name="txtLname"
                             Grid.Row="3"

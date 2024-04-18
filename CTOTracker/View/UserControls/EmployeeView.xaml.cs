@@ -375,11 +375,6 @@ namespace CTOTracker.View
                     {
                         return;
                     }
-                    string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
-                    string roleID = GetRoleID(selectedRole);
-                    string inforID = txtEmpID.Text;
-                    connection.Open();
-                    
                     OleDbCommand cmd = connection.CreateCommand();
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = "SELECT COUNT(*) FROM Employee WHERE inforID = @inforID";
@@ -398,8 +393,6 @@ namespace CTOTracker.View
                     string lastName = txtLname.Text;
                     string email = txtEmail.Text;
                     string contact = txtContact.Text;
-
-                   
 
                     InsertEmployee(infor_ID, firstName, lastName, email, contact, roleID);
                     MessageBox.Show("Employee added successfully!");
