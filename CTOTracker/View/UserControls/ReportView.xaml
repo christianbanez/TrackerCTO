@@ -63,7 +63,7 @@
                     HorizontalAlignment="Stretch"
                     Content="Export"
                     FontSize="16"
-                    Style="{StaticResource button_style}" />
+                    Style="{StaticResource button_style}" Click="btnExport_Click_1" />
 
             </Grid>
         </Grid>
@@ -75,7 +75,7 @@
             Focusable="True">
             <!--  SCHDULE_TABLE  -->
             <DataGrid
-                x:Name="scheduleDataGrid"
+                x:Name="reportDataGrid"
                 Height="718"
                 Margin="0,0,10,5"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
@@ -132,7 +132,7 @@
                             Loaded="txtbx_Loaded"
                             LostFocus="txtbx_LostFocus"
                             Style="{StaticResource txtbx_style}"
-                            Tag="First Name" />
+                            Tag="First Name" TextChanged="txtschFname_TextChanged" />
                         <TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
