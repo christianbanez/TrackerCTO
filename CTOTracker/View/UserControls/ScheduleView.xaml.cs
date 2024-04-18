@@ -79,6 +79,14 @@ namespace CTOTracker.View
                 // Retrieve the selected row (data item)
                 DataRowView selectedRow = (DataRowView)scheduleDataGrid.SelectedItem;
 
+                bool completed = Convert.ToBoolean(selectedRow["completed"]); // Check if the task is completed
+                // If the task is completed, do not open the Add Task window
+                if (completed)
+                {
+                    MessageBox.Show("This task is already completed. You cannot update it.");
+                    return;
+                }
+
                 // Extract relevant data from the selected row
                 string fullName = selectedRow["fName"].ToString() + " " + selectedRow["lName"].ToString();
                 string taskName = selectedRow["taskName"].ToString();
@@ -130,7 +138,6 @@ namespace CTOTracker.View
 
             }
             //Otherwise, filter the data based on the entered initial
-            //string initial = searchText.Substring(0, 1); // Assuming you're filtering by the first character
             LoadScheduleDataByInitial(searchText);
         }
 
@@ -157,6 +164,9 @@ namespace CTOTracker.View
             }
         }
 
-
+        private void tbxSearch_GotFocus(object sender, RoutedEventArgs e)
+        {
+            tbxSearch.Text = "";
+        }
     }
 }

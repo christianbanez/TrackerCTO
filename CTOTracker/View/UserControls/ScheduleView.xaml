@@ -40,7 +40,8 @@
                     HorizontalAlignment="Stretch"
                     FontSize="18"
                     Text="Search"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap" 
+                    GotFocus="tbxSearch_GotFocus" />
 
                 <ComboBox
                     x:Name="cbxSearch"
