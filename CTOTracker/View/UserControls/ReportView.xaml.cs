@@ -51,69 +51,69 @@ namespace CTOTracker.View.UserControls
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
-                    DataView dataView = new DataView(dataTable);
-                    scheduleDataGrid.ItemsSource = dataView;
+                    //DataView dataView = new DataView(dataTable);
+                    //reportDataGrid.ItemsSource = dataView;
 
                     // Create DataGrid columns
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "Infor ID",
                         Binding = new Binding("inforID"),
                         Width = 75
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "First Name",
                         Binding = new Binding("fName"),
                         Width = 185
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "Last Name",
                         Binding = new Binding("lName"),
                         Width = 185
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "Role",
                         Binding = new Binding("roleName"),
                         Width = 125
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "Task",
                         Binding = new Binding("taskName"),
                         Width = 125
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "Date Earned",
                         Binding = new Binding("plannedEnd")
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "CTO Earned",
                         Binding = new Binding("ctoEarned")
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "Date Used",
                         Binding = new Binding("dateUsed")
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "CTO Used",
                         Binding = new Binding("ctoUsed")
                     });
-                    scheduleDataGrid.Columns.Add(new DataGridTextColumn
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
                     {
                         Header = "CTO Balance",
                         Binding = new Binding("ctoBalance")
                     });
 
                     // Bind the DataTable to the DataGrid
-                    dataView = new DataView(dataTable);
-                    scheduleDataGrid.ItemsSource = dataView;
+                    DataView dataView = new DataView(dataTable);
+                    reportDataGrid.ItemsSource = dataView;
                 }
             }
             catch (Exception ex)
@@ -186,6 +186,26 @@ namespace CTOTracker.View.UserControls
             TextBox textBox = (TextBox)sender;
             textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text
             textBox.Foreground = Brushes.Gray;
+        }
+
+        private void txtschFname_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchFname = txtschFname.Text.Trim();
+            if (string.IsNullOrEmpty(searchFname))
+            {
+                LoadScheduleData();
+                return;
+            }
+            else
+            {
+                // Filter the data based on the entered first name
+                DataView dataView = (DataView)reportDataGrid.ItemsSource;
+                if (dataView != null)
+                {
+                    dataView.RowFilter = $"fName LIKE '%{searchFname}%'";
+                }
+            }
+            LoadScheduleData();
         }
 
 
