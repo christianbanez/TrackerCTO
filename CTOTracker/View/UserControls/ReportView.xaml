@@ -128,11 +128,12 @@
                             HorizontalAlignment="Stretch"
                             FontSize="14"
                             Foreground="Gray"
-                            GotFocus="txtbx_GotFocus"
-                            Loaded="txtbx_Loaded"
-                            LostFocus="txtbx_LostFocus"
-                            Style="{StaticResource txtbx_style}"
-                            Tag="First Name" TextChanged="txtschFname_TextChanged" />
+                            
+                            Text="First Name"
+                            
+                            Style="{StaticResource txtbx_style}" GotFocus="txtschFname_GotFocus" LostFocus="txtschFname_LostFocus"
+                            
+                            />
                         <TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
@@ -140,11 +141,10 @@
                             HorizontalAlignment="Stretch"
                             FontSize="14"
                             Foreground="Gray"
-                            GotFocus="txtbx_GotFocus"
-                            Loaded="txtbx_Loaded"
-                            LostFocus="txtbx_LostFocus"
-                            Style="{StaticResource txtbx_style}"
-                            Tag="Last Name" />
+                            Text="Last Name"
+                            
+                            Style="{StaticResource txtbx_style}" LostFocus="txtschLname_LostFocus" GotFocus="txtschLname_GotFocus"
+                             />
                         <ComboBox
                             x:Name="cmbxTask"
                             Grid.Column="2"

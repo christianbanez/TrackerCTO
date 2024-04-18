@@ -35,12 +35,15 @@ namespace CTOTracker.View.UserControls
         {
             InitializeComponent();
             dataConnection = new DataConnection();
-            LoadData();
+            //txtschFname.TextChanged += txtschFname_TextChanged;
+            LoadAllData();
+            //LoadData();
+            txtschFname.TextChanged += txtschFname_TextChanged;
             //PopulateComboBox();
             //cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
         }
 
-        private void LoadData(string fName=null)
+/*        private void LoadData(string fName=null)
         {
             try
             {
@@ -65,6 +68,95 @@ namespace CTOTracker.View.UserControls
                     adapter.Fill(dataTable);
                     reportDataGrid.Columns.Clear();
                     reportDataGrid.ItemsSource = dataTable.DefaultView;
+
+                    #region
+                    //DataView dataView = new DataView(dataTable);
+                    reportDataGrid.ItemsSource = dataTable.DefaultView;
+
+                    // Create DataGrid columns
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "Infor ID",
+                        Binding = new Binding("inforID"),
+                        Width = 75
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "First Name",
+                        Binding = new Binding("fName"),
+                        Width = 185
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "Last Name",
+                        Binding = new Binding("lName"),
+                        Width = 185
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "Role",
+                        Binding = new Binding("roleName"),
+                        Width = 125
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "Task",
+                        Binding = new Binding("taskName"),
+                        Width = 125
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "Date Earned",
+                        Binding = new Binding("plannedEnd")
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "CTO Earned",
+                        Binding = new Binding("ctoEarned")
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "Date Used",
+                        Binding = new Binding("dateUsed")
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "CTO Used",
+                        Binding = new Binding("ctoUsed")
+                    });
+                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    {
+                        Header = "CTO Balance",
+                        Binding = new Binding("ctoBalance")
+                    });
+                    #endregion
+                    // Bind the DataTable to the DataGrid
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }*/
+        private void LoadAllData()
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
+                                    "ctoUsed, ctoBalance FROM (((Schedule " +
+                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
+                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
+                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID);";
+
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    reportDataGrid.Columns.Clear();
+                    reportDataGrid.ItemsSource = dataTable.DefaultView;
+
                     #region
                     //DataView dataView = new DataView(dataTable);
                     reportDataGrid.ItemsSource = dataTable.DefaultView;
@@ -174,7 +266,7 @@ namespace CTOTracker.View.UserControls
             //dtPnl.Height = originalDtPnlHeight;
         }
 
-        private void txtbx_GotFocus(object sender, RoutedEventArgs e)
+        /*private void txtbx_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
             if (textBox.Text == textBox.Tag?.ToString()) // Check if the current text matches the placeholder
@@ -182,29 +274,25 @@ namespace CTOTracker.View.UserControls
                 textBox.Text = ""; // Clear the text
                 textBox.Foreground = Brushes.Black; // Change the text color back to black
             }
-        }
-        private void EmployeeReportView()
-        {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.completed, Schedule.ctoBalance\r\nFROM Task INNER JOIN ((Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID) ON Task.taskID = Schedule.taskID;\r\n";
-            LoadEmployeeReport(query);
+        }*/
 
-        private void txtbx_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            if (string.IsNullOrWhiteSpace(textBox.Text)) // If the TextBox is empty
+            /*private void txtbx_LostFocus(object sender, RoutedEventArgs e)
             {
-                textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text back
-                textBox.Foreground = Brushes.Gray; // Change the text color to gray to indicate it's a placeholder
-            }
-        }
+                TextBox textBox = (TextBox)sender;
+                if (string.IsNullOrWhiteSpace(textBox.Text)) // If the TextBox is empty
+                {
+                    textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text back
+                    textBox.Foreground = Brushes.Gray; // Change the text color to gray to indicate it's a placeholder
+                }
+            }*/
 
-        private void txtbx_Loaded(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text
-            textBox.Foreground = Brushes.Gray;
-        }
-        private void ExportToPdf(DataGrid dataGrid, string outputPath)
+            /*private void txtbx_Loaded(object sender, RoutedEventArgs e)
+            {
+                TextBox textBox = (TextBox)sender;
+                textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text
+                textBox.Foreground = Brushes.Gray;
+            }*/
+            private void ExportToPdf(DataGrid dataGrid, string outputPath)
         {
             try
             {
@@ -298,12 +386,69 @@ namespace CTOTracker.View.UserControls
         {
             ExportToPdf(reportDataGrid, null);
         }
+        private void LoadScheduleDataByInitial(string initial)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
+                                    "ctoUsed, ctoBalance FROM (((Schedule " +
+                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
+                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
+                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID) WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%'";
 
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    // Bind the DataTable to the DataGrid
+                    reportDataGrid.ItemsSource = dataTable.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
         private void txtschFname_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchFname = txtschFname.Text.Trim();
-            
-            LoadData(searchFname);
+            string name = txtschFname.Text.ToString();
+            //LoadAllData();
+            if (string.IsNullOrEmpty(name))
+            {
+                LoadAllData();
+                return;
+            }
+            else
+            {
+
+            }
+            //Otherwise, filter the data based on the entered initial
+            LoadScheduleDataByInitial(txtschFname.Text);
+        }
+
+        private void txtschFname_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtschFname.Text = "";
+        }
+
+        private void txtschLname_LostFocus(object sender, RoutedEventArgs e)
+        {
+            txtschFname.Text = "First Name";
+            LoadAllData();
+        }
+
+        private void txtschFname_LostFocus(object sender, RoutedEventArgs e)
+        {
+            txtschFname.Text = "First Name";
+            LoadAllData();
+        }
+
+        private void txtschLname_GotFocus(object sender, RoutedEventArgs e)
+        {
+            txtschLname.Text = "";
         }
     }
 }
