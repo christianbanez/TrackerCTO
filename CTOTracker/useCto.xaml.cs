@@ -34,20 +34,6 @@ namespace CTOTracker
         {
 
         }
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox comboBox = sender as ComboBox;
-            if (comboBox != null && comboBox.SelectedItem != null)
-            {
-                // Update the ctoUsed property of the corresponding row
-                DataRowView rowView = SelectedScheduleView.SelectedItem as DataRowView;
-                if (rowView != null)
-                {
-                    rowView["ctoUsed"] = comboBox.SelectedItem;
-                }
-            }
-        }
-
         public void LoadSelectedSchedule(List<DataRowView> selectedRows)
         {
             try
@@ -61,7 +47,7 @@ namespace CTOTracker
                 selectedScheduleDataTable.Columns.Add("fName", typeof(string));
                 selectedScheduleDataTable.Columns.Add("lName", typeof(string));
                 selectedScheduleDataTable.Columns.Add("completed", typeof(bool));
-                selectedScheduleDataTable.Columns.Add("ctoEarned", typeof(int));
+                selectedScheduleDataTable.Columns.Add("ctoEarned", typeof(double));
                 selectedScheduleDataTable.Columns.Add("ctoUsed", typeof(double)); // Change type to double for decimal values
                 selectedScheduleDataTable.Columns.Add("ctoBalance", typeof(double)); // Change type to double for decimal values
 
@@ -111,7 +97,29 @@ namespace CTOTracker
             }
         }
 
-
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            if (comboBox != null && comboBox.SelectedItem != null)
+            {
+                // Update the ctoUsed property of the corresponding row
+                DataRowView rowView = SelectedScheduleView.SelectedItem as DataRowView;
+                if (rowView != null)
+                {
+                    // Convert the selected item to a double
+                    double ctoUsedValue;
+                    if (comboBox.SelectedItem.ToString() == "0.5")
+                    {
+                        ctoUsedValue = 0.5;
+                    }
+                    else
+                    {
+                        ctoUsedValue = Convert.ToDouble(comboBox.SelectedItem);
+                    }
+                    rowView["ctoUsed"] = ctoUsedValue;
+                }
+            }
+        }
 
         private void confirmChangesBttn_Click(object sender, RoutedEventArgs e)
         {
@@ -126,26 +134,42 @@ namespace CTOTracker
                 changesDataTable.Columns.Add("fName", typeof(string));
                 changesDataTable.Columns.Add("lName", typeof(string));
                 changesDataTable.Columns.Add("completed", typeof(bool));
-                changesDataTable.Columns.Add("ctoEarned", typeof(int));
+                changesDataTable.Columns.Add("ctoEarned", typeof(double));
                 changesDataTable.Columns.Add("ctoUsed", typeof(double));
-                changesDataTable.Columns.Add("ctoBalance", typeof(int));
+                changesDataTable.Columns.Add("ctoBalance", typeof(double)); // Change type to double
 
                 // Calculate the CTO balance and add rows to the changesDataTable
                 foreach (var item in SelectedScheduleView.Items)
                 {
                     if (item is DataRowView rowView)
                     {
-                        int ctoEarned = Convert.ToInt32(rowView["ctoEarned"]);
+                        double ctoEarned = Convert.ToDouble(rowView["ctoEarned"]);
                         double ctoUsed = Convert.ToDouble(rowView["ctoUsed"]);
-                        double ctoBalance = ctoEarned - ctoUsed;
+                        double ctoBalance = Convert.ToDouble(rowView["ctoBalance"]);
 
-                        // If the balance is 0.5 and the used is also 0.5, update used to 1 and balance to 0
-                        if (ctoBalance == 0.5 && ctoUsed == 0.5)
+                        // Check if ctoUsed is greater than ctoEarned
+                        if (ctoUsed > ctoBalance)
                         {
-                            ctoUsed = 1;
-                            ctoBalance = 0;
+                            MessageBox.Show("CTO Used cannot be greater than CTO Earned for schedule ID: " + rowView["schedID"], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return; // Exit the method if error
                         }
 
+                        
+                         
+                        if(ctoEarned == 1 && ctoBalance == 1)
+                        {
+                            ctoUsed = Math.Max(0, ctoUsed - ctoBalance);
+                        }
+                        if (ctoEarned == 0.5 && ctoBalance == 0.5)
+                        {
+                            ctoUsed = Math.Max(0, ctoUsed - ctoBalance);
+                        }
+                        if(ctoEarned == 1 && ctoBalance == 0.5)
+                        {
+                            ctoUsed = Math.Max(0, ctoUsed + ctoUsed);
+                        }
+
+                        ctoBalance = Math.Max(0, ctoBalance - ctoUsed); // Fix variable redeclaration
                         DataRow newRow = changesDataTable.NewRow();
                         newRow["schedID"] = Convert.ToInt32(rowView["schedID"]);
                         newRow["inforID"] = Convert.ToInt32(rowView["inforID"]);
@@ -170,6 +194,7 @@ namespace CTOTracker
                 MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
 
 
