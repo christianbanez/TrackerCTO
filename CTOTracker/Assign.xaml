@@ -42,7 +42,7 @@
                         Grid.Row="1"
                         Width="311"
                         Text="Select an Employee..."
-                        Margin="10,10,10,5" Template="{DynamicResource ComboBoxTemplate1}" />
+                        Margin="10,10,10,5"/>
                 </Grid>
 
                 <!--  Task Grid  -->
@@ -57,7 +57,7 @@
                         Grid.Row="1"
                         Width="311"
                         Margin="10,10,10,5"
-                        IsEditable="True" Template="{DynamicResource ComboBoxTemplate1}" />
+                        IsEditable="True"/>
                 </Grid>
 
                 <!--  DatePickers Grid  -->

@@ -34,8 +34,9 @@ namespace CTOTracker.View
             dataConnection = new DataConnection();
             allEmployees = new List<string>();
             filteredEmployees = new List<string>();
-            LoadScheduleData();
-            LoadCTOuseData();
+            showallChkBox.IsChecked = true;
+            //LoadScheduleData();
+            //LoadCTOuseData();
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
         }
@@ -46,7 +47,12 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoBalance > 0.0 OR ctoBalance IS Null;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoBalance > 0.0 OR ctoBalance IS Null;";
+
+
+
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
@@ -67,7 +73,9 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoUsed > 0.0;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoUsed > 0.0;";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
@@ -89,7 +97,10 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoUsed, ctoBalance, completed FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.empID = ?;";
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (Employee.empID = ?) AND (ctoBalance > 0.0 OR ctoBalance IS Null);";
+
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
                         command.Parameters.AddWithValue("@empID", empID);
@@ -108,7 +119,48 @@ namespace CTOTracker.View
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+        private void LoadCtoEmployeeQuery(string empID)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoUsed > 0.0 AND Employee.empID = ?;";
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@empID", empID);
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
 
+                        // Bind the DataTable to the DataGrid
+                        ctoUseDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+        private void FilterDataByEmployee()
+        {
+            string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
+            string employeeId = GetEmployeeId(selectedEmployee);
+            if (!string.IsNullOrEmpty(employeeId))
+            {
+                LoadCtoEmployeeQuery(employeeId);
+                LoadEmployeeQuery(employeeId);  // Load data for the selected employee
+                
+            }
+            else
+            {
+                MessageBox.Show("Employee not found.");
+            }
+        }
         private void PopulateEmployeeComboBox()
         {
             try
@@ -121,11 +173,11 @@ namespace CTOTracker.View
                 {
                     cbxEmployee.ItemsSource = allEmployees;
                 }
-                else
-                {
-                    // Handle the case when 'allEmployees' is null
-                    MessageBox.Show("No employees found.");
-                }
+                //else
+                //{
+                //    // Handle the case when 'allEmployees' is null
+                //    MessageBox.Show("No employees found.");
+                //}
             }
             catch (Exception ex)
             {
@@ -183,7 +235,7 @@ namespace CTOTracker.View
         private string GetEmployeeId(string employeeName)
         {
             string? employeeId = null; // Initialize employeeId to null
-
+          
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
@@ -210,7 +262,10 @@ namespace CTOTracker.View
                 MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
             }
 
-            return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
+                // Return employeeId if not null, otherwise throw an exception
+          
+            return employeeId ?? throw new Exception("Employee ID not found.");
+
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -229,14 +284,15 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[3].Width = 185;
             scheduleDataGrid.Columns[4].Header = "Task Name";
             scheduleDataGrid.Columns[4].Width = 125;
-            scheduleDataGrid.Columns[5].Header = "Start Date";
-            scheduleDataGrid.Columns[6].Header = "End Date";
-            scheduleDataGrid.Columns[7].Header = "Time In";
-            scheduleDataGrid.Columns[8].Header = "Time Out";
-            scheduleDataGrid.Columns[9].Header = "CTO Earned";
-            scheduleDataGrid.Columns[10].Header = "CTO Used";
-            scheduleDataGrid.Columns[11].Header = "CTO Balance";
-            scheduleDataGrid.Columns[12].Header = "Completed";
+            scheduleDataGrid.Columns[5].Header = "Completed";
+            scheduleDataGrid.Columns[6].Header = "Start Date";
+            scheduleDataGrid.Columns[7].Header = "End Date";
+            scheduleDataGrid.Columns[8].Header = "Time In";
+            scheduleDataGrid.Columns[9].Header = "Time Out";
+            scheduleDataGrid.Columns[10].Header = "CTO Earned";
+            scheduleDataGrid.Columns[11].Header = "CTO Used";
+            scheduleDataGrid.Columns[12].Header = "CTO Balance";
+            
         }
 
         // Event handler for double-clicking on a row in the DataGrid
@@ -268,9 +324,16 @@ namespace CTOTracker.View
                 // Show the AddTask form
                 addTaskWindow.ShowDialog();
 
-                
-                LoadScheduleData();
-                LoadCTOuseData();
+
+                if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
+                {
+                    FilterDataByEmployee();  // Filter data when a new employee is selected
+                }
+                else
+                {
+                    LoadScheduleData();
+                    LoadCTOuseData();
+                }
             }
         }
 
@@ -284,26 +347,22 @@ namespace CTOTracker.View
             // Show the AddTask window
             addTaskWindow.ShowDialog();
 
-            LoadScheduleData();
-            LoadCTOuseData();
+            if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
+            {
+                FilterDataByEmployee();  // Filter data when a new employee is selected
+            }
+            else
+            {
+                LoadScheduleData();
+                LoadCTOuseData();
+            }
         }
 
         private void cbxEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-
-            string employeeId = GetEmployeeId(selectedEmployee);
-            if (cbxEmployee.SelectedItem != null)
+            if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
             {
-                if (cbxEmployee.SelectedItem.ToString() == selectedEmployee)
-                {
-                    LoadEmployeeQuery(employeeId);
-                }
-                
-            }
-            else
-            {
-                MessageBox.Show("No employees found.");
+                FilterDataByEmployee();  // Filter data when a new employee is selected
             }
         }
 
@@ -312,17 +371,44 @@ namespace CTOTracker.View
             ctoUseDataGrid.Columns[0].Visibility = Visibility.Collapsed;
             ctoUseDataGrid.Columns[0].Header = "Schedule ID";
             ctoUseDataGrid.Columns[1].Header = "Infor ID";
+            ctoUseDataGrid.Columns[1].Width = 75;
             ctoUseDataGrid.Columns[2].Header = "First Name";
+            ctoUseDataGrid.Columns[2].Width = 185;
             ctoUseDataGrid.Columns[3].Header = "Last Name";
+            ctoUseDataGrid.Columns[3].Width = 185;
             ctoUseDataGrid.Columns[4].Header = "Task Name";
-            ctoUseDataGrid.Columns[5].Header = "Planned Start Date";
-            ctoUseDataGrid.Columns[6].Header = "Planned End Date";
-            ctoUseDataGrid.Columns[7].Header = "Time In";
-            ctoUseDataGrid.Columns[8].Header = "Time Out";
-            ctoUseDataGrid.Columns[9].Header = "CTO Earned";
-            ctoUseDataGrid.Columns[10].Header = "CTO Used";
-            ctoUseDataGrid.Columns[11].Header = "CTO Balance";
-            ctoUseDataGrid.Columns[12].Header = "Completed";
+            ctoUseDataGrid.Columns[4].Width = 125;
+            ctoUseDataGrid.Columns[5].Header = "Completed";
+            ctoUseDataGrid.Columns[6].Header = "Start Date";
+            ctoUseDataGrid.Columns[7].Header = "End Date";
+            ctoUseDataGrid.Columns[8].Header = "Time In";
+            ctoUseDataGrid.Columns[9].Header = "Time Out";
+            ctoUseDataGrid.Columns[10].Header = "CTO Earned";
+            ctoUseDataGrid.Columns[11].Header = "CTO Used";
+            ctoUseDataGrid.Columns[12].Header = "CTO Balance";
+        }
+
+        private void showallChecked(object sender, RoutedEventArgs e)
+        {
+            LoadScheduleData();
+            LoadCTOuseData();
+            cbxEmployee.SelectedIndex = -1;
+            cbxEmployee.IsEnabled = false;
+            cbxEmployee.Text = "";
+        }
+
+        private void showallUnchecked(object sender, RoutedEventArgs e)
+        {
+            cbxEmployee.IsEnabled = true;  // Enable employee combo box
+            if (cbxEmployee.SelectedItem != null)
+            {
+                FilterDataByEmployee();  // Call a function to filter data based on selected employee
+            }
+            else
+            {
+                scheduleDataGrid.ItemsSource = null;  // Clear the DataGrid if no employee is selected
+                ctoUseDataGrid.ItemsSource = null;
+            }
         }
     }
 }
