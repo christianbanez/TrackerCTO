@@ -361,6 +361,7 @@ namespace CTOTracker.View
 
         private void cbxEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            monthPicker.SelectedDate = null;
             if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
             {
                 FilterDataByEmployee();  // Filter data when a new employee is selected
@@ -525,11 +526,14 @@ namespace CTOTracker.View
             cbxEmployee.SelectedIndex = -1;
             cbxEmployee.IsEnabled = false;
             cbxEmployee.Text = "";
-
+            monthPicker.SelectedDate = null;
         }
+
+    
 
         private void showallUnchecked(object sender, RoutedEventArgs e)
         {
+            monthPicker.SelectedDate = null;
             cbxEmployee.IsEnabled = true;  // Enable employee combo box
             if (cbxEmployee.SelectedItem != null)
             {

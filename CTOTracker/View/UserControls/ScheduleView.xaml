@@ -145,15 +145,15 @@
             DisplayDate="{x:Static sys:DateTime.Now}"
             HorizontalAlignment="Left"
             Margin="598,10,0,10"
-            SelectedDateChanged="monthPicker_SelectedDateChanged" Grid.Row="1">
+            SelectedDateChanged="monthPicker_SelectedDateChanged" Grid.Row="1"> 
                 <DatePicker.Resources>
                     <Style TargetType="DatePickerTextBox">
                         <Setter Property="Control.Template">
                             <Setter.Value>
                                 <ControlTemplate>
                                     <TextBox x:Name="PART_TextBox"
-                                 IsReadOnly="True"
-                                 Text="{Binding SelectedDate, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, StringFormat='{}{0:MMMM yyyy}'}"/>
+                                    IsReadOnly="True"
+                                    Text="{Binding SelectedDate, RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}, StringFormat='{}{0:MMMM yyyy}'}"/>
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
