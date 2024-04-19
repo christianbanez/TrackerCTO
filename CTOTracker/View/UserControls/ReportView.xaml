@@ -46,7 +46,7 @@
                     Content="CTO Balance"
                     FontFamily="Roboto-Light"
                     FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" />
+                    Style="{DynamicResource CheckBoxStyle1}" Checked="chkbxBalance_Checked" />
                 <CheckBox
                     x:Name="chkbxUsed"
                     Grid.Column="3"
@@ -73,6 +73,10 @@
             Height="723"
             Margin="0,45,0,0"
             Focusable="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="413*"/>
+                <ColumnDefinition Width="267*"/>
+            </Grid.ColumnDefinitions>
             <!--  SCHDULE_TABLE  -->
             <DataGrid
                 x:Name="reportDataGrid"
@@ -84,7 +88,7 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" />
+                Style="{StaticResource table_style}" Grid.ColumnSpan="2" />
 
         </Grid>
         <!--  Filter Panel  -->
@@ -99,14 +103,7 @@
                 Orientation="Vertical">
                 <Grid Width="1360" Height="40">
                     <!--  Filter Panel Toggle Button  -->
-                    <ToggleButton
-                        x:Name="tgb_FilterPnl"
-                        Margin="0,0,775,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Checked="tgb_FilterPnl_Checked"
-                        Content="Show Filter Panel"
-                        Unchecked="tgb_FilterPnl_Unchecked" />
+                    
                 </Grid>
                 <StackPanel Width="1360" Orientation="Horizontal">
                     <Grid Width="1360" Focusable="True">
@@ -131,7 +128,9 @@
                             
                             Text="First Name"
                             
-                            Style="{StaticResource txtbx_style}" GotFocus="txtschFname_GotFocus" LostFocus="txtschFname_LostFocus"
+                            Style="{StaticResource txtbx_style}" 
+                            GotFocus="txtschFname_GotFocus" 
+                            LostFocus="txtschFname_LostFocus"
                             
                             />
                         <TextBox
@@ -152,7 +151,7 @@
                             HorizontalAlignment="Stretch"
                             FontSize="14"
                             Foreground="Gray"
-                            Tag="Role"
+                            Tag="Task"
                             Template="{DynamicResource ComboBoxTemplate1}" />
                         <ComboBox
                             x:Name="cmbxRole"
@@ -162,7 +161,7 @@
                             FontSize="14"
                             Foreground="Gray"
                             Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Template="{DynamicResource ComboBoxTemplate1}"  />
                         <DatePicker
                             x:Name="dtEDate"
                             Grid.Column="4"

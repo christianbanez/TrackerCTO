@@ -30,269 +30,131 @@ namespace CTOTracker.View.UserControls
     public partial class ReportView : UserControl
     {
         private DataConnection dataConnection;
-
+        private List<string> allEmployees;
         public ReportView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
-            //txtschFname.TextChanged += txtschFname_TextChanged;
-            LoadAllData();
-            //LoadData();
+            DataReportView();
             txtschFname.TextChanged += txtschFname_TextChanged;
-            //PopulateComboBox();
-            //cbxFilterRep.SelectionChanged += CbxFilterRep_SelectionChanged;
+            chkbxBalance.Checked += (sender, e) => FilterAndLoadData();
+            chkbxBalance.Unchecked += (sender, e) => FilterAndLoadData();
+            
         }
-
-/*        private void LoadData(string fName=null)
+        private void DataReportView()
         {
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection())
-                {
-                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
-                                    "ctoUsed, ctoBalance FROM (((Schedule " +
-                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
-                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
-                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID);";
-                    if (!string.IsNullOrEmpty(fName))
-                    {
-                        query += " WHERE Employee.fName LIKE '%'";
-                    }
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
+                "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
+                "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
+                "ON Employee.empID = Schedule.empID;";
+            LoadAllData(query);
 
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                    if (!string.IsNullOrEmpty(fName))
-                    {
-                        adapter.SelectCommand.Parameters.AddWithValue("?", "%" + fName + "%");
-                    }
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    reportDataGrid.Columns.Clear();
-                    reportDataGrid.ItemsSource = dataTable.DefaultView;
-
-                    #region
-                    //DataView dataView = new DataView(dataTable);
-                    reportDataGrid.ItemsSource = dataTable.DefaultView;
-
-                    // Create DataGrid columns
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Infor ID",
-                        Binding = new Binding("inforID"),
-                        Width = 75
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "First Name",
-                        Binding = new Binding("fName"),
-                        Width = 185
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Last Name",
-                        Binding = new Binding("lName"),
-                        Width = 185
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Role",
-                        Binding = new Binding("roleName"),
-                        Width = 125
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Task",
-                        Binding = new Binding("taskName"),
-                        Width = 125
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Date Earned",
-                        Binding = new Binding("plannedEnd")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "CTO Earned",
-                        Binding = new Binding("ctoEarned")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Date Used",
-                        Binding = new Binding("dateUsed")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "CTO Used",
-                        Binding = new Binding("ctoUsed")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "CTO Balance",
-                        Binding = new Binding("ctoBalance")
-                    });
-                    #endregion
-                    // Bind the DataTable to the DataGrid
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-        }*/
-        private void LoadAllData()
+        }
+        private bool columnsAdded = false;
+        private void LoadAllData(string query)
         {
-            try
+            using (OleDbConnection connection = dataConnection.GetConnection())
             {
-                using (OleDbConnection connection = dataConnection.GetConnection())
+                try
                 {
-                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
-                                    "ctoUsed, ctoBalance FROM (((Schedule " +
-                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
-                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
-                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID);";
-
-
+                    connection.Open();
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
-                    reportDataGrid.Columns.Clear();
+                    reportDataGrid.ItemsSource = null;
+                    reportDataGrid.Items.Clear();
+                    dataTable.Clear();
+
+                    adapter.Fill(dataTable);
                     reportDataGrid.ItemsSource = dataTable.DefaultView;
 
-                    #region
-                    //DataView dataView = new DataView(dataTable);
-                    reportDataGrid.ItemsSource = dataTable.DefaultView;
-
-                    // Create DataGrid columns
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                    if (dataTable != null && dataTable.Rows.Count > 0)
                     {
-                        Header = "Infor ID",
-                        Binding = new Binding("inforID"),
-                        Width = 75
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                        reportDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+                    else
                     {
-                        Header = "First Name",
-                        Binding = new Binding("fName"),
-                        Width = 185
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
+                        MessageBox.Show("No data found.", "Information");
+                    }
+                    if (!columnsAdded)
                     {
-                        Header = "Last Name",
-                        Binding = new Binding("lName"),
-                        Width = 185
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Role",
-                        Binding = new Binding("roleName"),
-                        Width = 125
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Task",
-                        Binding = new Binding("taskName"),
-                        Width = 125
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Date Earned",
-                        Binding = new Binding("plannedEnd")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "CTO Earned",
-                        Binding = new Binding("ctoEarned")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "Date Used",
-                        Binding = new Binding("dateUsed")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "CTO Used",
-                        Binding = new Binding("ctoUsed")
-                    });
-                    reportDataGrid.Columns.Add(new DataGridTextColumn
-                    {
-                        Header = "CTO Balance",
-                        Binding = new Binding("ctoBalance")
-                    });
-                    #endregion
-                    // Bind the DataTable to the DataGrid
+                        AddDataGridColumns();
+                        columnsAdded = true; // Set the flag to true after adding columns
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
                 }
             }
-            catch (Exception ex)
+        }
+        private void AddDataGridColumns()
+        {
+            // Create DataGrid columns
+            reportDataGrid.Columns.Add(new DataGridTextColumn
             {
-                Console.WriteLine("Error: " + ex.Message);
-            }
+                Header = "Infor ID",
+                Binding = new Binding("inforID"),
+                Width = 75
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "First Name",
+                Binding = new Binding("fName"),
+                Width = 185
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Last Name",
+                Binding = new Binding("lName"),
+                Width = 185
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Role",
+                Binding = new Binding("roleName"),
+                Width = 125
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Task",
+                Binding = new Binding("taskName"),
+                Width = 125
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Date Earned",
+                Binding = new Binding("plannedEnd")
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Earned",
+                Binding = new Binding("ctoEarned")
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Date Used",
+                Binding = new Binding("dateUsed")
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Used",
+                Binding = new Binding("ctoUsed")
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Balance",
+                Binding = new Binding("ctoBalance")
+            });
         }
 
         private double originalDtPnlHeight; // Store the original height of dtPnl
         private double filterPnlHeight = 110;
-
-        private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
-        {
-            //filter panel animation
-            DoubleAnimation showAnimation = new DoubleAnimation();
-            showAnimation.From = 45;
-            showAnimation.To = 150;
-            showAnimation.Duration = TimeSpan.FromSeconds(0.3);
-            FilterPnl.BeginAnimation(HeightProperty, showAnimation);
-
-            //dtpnl animation
-            ThicknessAnimation animation = new ThicknessAnimation();
-            animation.From = new Thickness(0, 45, 0, 0);
-            animation.To = new Thickness(0, 90, 0, 0); // Adjust this value as needed
-            animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
-            dtPnl.BeginAnimation(MarginProperty, animation);
-            //dtPnl.Height -= filterPnlHeight;
-        }
-
-        private void tgb_FilterPnl_Unchecked(object sender, RoutedEventArgs e)
-        {
-            //filter panel animation
-            DoubleAnimation hideAnimation = new DoubleAnimation();
-            hideAnimation.From = 150;
-            hideAnimation.To = 45;
-            hideAnimation.Duration = TimeSpan.FromSeconds(0.2);
-            FilterPnl.BeginAnimation(HeightProperty, hideAnimation);
-
-            //dtpnl animation
-            ThicknessAnimation animation = new ThicknessAnimation();
-            animation.From = new Thickness(0, 90, 0, 0); // Adjust this value as needed
-            animation.To = new Thickness(0, 45, 0, 0);
-            animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
-            dtPnl.BeginAnimation(MarginProperty, animation);
-            //dtPnl.Height = originalDtPnlHeight;
-        }
-
-        /*private void txtbx_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            if (textBox.Text == textBox.Tag?.ToString()) // Check if the current text matches the placeholder
-            {
-                textBox.Text = ""; // Clear the text
-                textBox.Foreground = Brushes.Black; // Change the text color back to black
-            }
-        }*/
-
-            /*private void txtbx_LostFocus(object sender, RoutedEventArgs e)
-            {
-                TextBox textBox = (TextBox)sender;
-                if (string.IsNullOrWhiteSpace(textBox.Text)) // If the TextBox is empty
-                {
-                    textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text back
-                    textBox.Foreground = Brushes.Gray; // Change the text color to gray to indicate it's a placeholder
-                }
-            }*/
-
-            /*private void txtbx_Loaded(object sender, RoutedEventArgs e)
-            {
-                TextBox textBox = (TextBox)sender;
-                textBox.Text = textBox.Tag?.ToString(); // Set the placeholder text
-                textBox.Foreground = Brushes.Gray;
-            }*/
-            private void ExportToPdf(DataGrid dataGrid, string outputPath)
+        private void ExportToPdf(DataGrid dataGrid, string outputPath)
         {
             try
             {
@@ -346,7 +208,7 @@ namespace CTOTracker.View.UserControls
                     headerCell.Padding = 3;
                     // Add DataGrid content to the PDF document
                     PdfPTable pdfTable = new PdfPTable(dataGrid.Columns.Count);
-                    pdfTable.SetWidths(new float[] { 3f, 2f, 2f, 2f, 2f, 4f, 2f, 4f, 2f, 2f }); // Adjust column widths here
+                    pdfTable.SetWidths(new float[] { 3f, 3f, 3f, 2f, 2f, 4f, 2f, 4f, 3f, 4f }); // Adjust column widths here
                     foreach (DataGridColumn column in dataGrid.Columns)
                     {
                         headerCell.Phrase = new Phrase(column.Header.ToString(), headerFont);
@@ -418,7 +280,7 @@ namespace CTOTracker.View.UserControls
             //LoadAllData();
             if (string.IsNullOrEmpty(name))
             {
-                LoadAllData();
+                DataReportView();
                 return;
             }
             else
@@ -436,19 +298,99 @@ namespace CTOTracker.View.UserControls
 
         private void txtschLname_LostFocus(object sender, RoutedEventArgs e)
         {
-            txtschFname.Text = "First Name";
-            LoadAllData();
+            if (string.IsNullOrWhiteSpace(txtschLname.Text))
+            {
+                txtschLname.Text = "Last Name";
+            }
+            DataReportView();
         }
 
         private void txtschFname_LostFocus(object sender, RoutedEventArgs e)
         {
-            txtschFname.Text = "First Name";
-            LoadAllData();
+            if (string.IsNullOrWhiteSpace(txtschFname.Text))
+            {
+                txtschFname.Text = "First Name";
+            }
+            DataReportView();
         }
 
         private void txtschLname_GotFocus(object sender, RoutedEventArgs e)
         {
             txtschLname.Text = "";
         }
+        private void LoadEmployeeReportWithCTO()
+        {
+            // Modify your query to retrieve employees with remaining CTO balance
+            string query = @"SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName,Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, " +
+                "Schedule.ctoUsed, Schedule.ctoBalance FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
+                "INNER JOIN(Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
+                "ON Employee.empID = Schedule.empID\r\nWHERE (((Schedule.ctoBalance)>0));";
+
+            LoadAllData(query);
+        }
+        private void FilterAndLoadData()
+        {
+            // Check the state of the CheckBox
+            if (chkbxBalance.IsChecked == true)
+            {
+                // Load data with remaining CTO balance
+                LoadEmployeeReportWithCTO();
+            }
+            else 
+            {
+                // Load all data
+                DataReportView();
+            }
+        }
+        private void chkbxBalance_Checked(object sender, RoutedEventArgs e)
+        {
+            FilterAndLoadData();         }
+
+        /*private void PopulateEmployeeListComboBox(string selectedRole)
+        {
+            string query = "SELECT * FROM Employees WHERE Role = @Role";
+
+            //string query = "SELECT roleName FROM Role";
+
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    OleDbCommand cmd = new OleDbCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@Role", selectedRole);
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    if (dataTable != null && dataTable.Rows.Count > 0)
+                    {
+                        // Clear previous items
+                        cmbxRole.Items.Clear();
+
+                        // Populate ComboBox with employee names
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            cmbxRole.Items.Add(row["roleName"]);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("No data found.", "Information");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }*/
+
+
     }
 }
