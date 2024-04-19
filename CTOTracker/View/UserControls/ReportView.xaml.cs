@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Security.Policy;
 using Xceed.Wpf.AvalonDock.Themes;
+using System.Reflection;
 
 namespace CTOTracker.View.UserControls
 {
@@ -283,7 +284,7 @@ namespace CTOTracker.View.UserControls
                     // Your code to load the report for employees' history
                     // Modify your query to retrieve employees' history
                     string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, dateUsed, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
-                                   "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE Employee.empID = ?;";
+                                   "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE completed = -1 AND Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
@@ -292,28 +293,30 @@ namespace CTOTracker.View.UserControls
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
 
-                        bool allTasksComplete = true;
+                        
 
-                        // Modify the data table for display
-                        foreach (DataRow row in dataTable.Rows)
-                        {
-                            // Check for null values in timeIn and timeOut
-                            if (row["timeIn"] == DBNull.Value || row["timeOut"] == DBNull.Value)
-                            {
-                                allTasksComplete = false; 
-                            }
-                        }
-                        if (!allTasksComplete)
-                        {
-                            // Display a message indicating the task is not yet completed
-                            MessageBox.Show("This task not yet completed.", "Information");
-                        }
-                        else
-                        {
-                            // Bind the DataTable to the DataGrid
-                            scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                        //bool allTasksComplete = true;
+                        //
+                        //// Modify the data table for display
+                        //foreach (DataRow row in dataTable.Rows)
+                        //{
+                        //    // Check for null values in timeIn and timeOut
+                        //    if (row["timeIn"] == DBNull.Value || row["timeOut"] == DBNull.Value)
+                        //    {
+                        //        allTasksComplete = false; 
+                        //    }
+                        //}
+                        //if (!allTasksComplete)
+                        //{
+                        //    // Display a message indicating the task is not yet completed
+                        //    MessageBox.Show("This task not yet completed.", "Information");
+                        //}
+                        //else
+                        //{
+                        // Bind the DataTable to the DataGrid
+                        scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
                             EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
-                        }
+                        //}
                     }
                 }
             }
