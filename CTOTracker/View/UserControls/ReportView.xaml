@@ -144,7 +144,7 @@
                             Loaded="txtbx_Loaded"
                             LostFocus="txtbx_LostFocus"
                             Style="{StaticResource txtbx_style}"
-                            Tag="Last Name" />
+                            Tag="Last Name" TextChanged="txtschLname_TextChanged" />
                         <ComboBox
                             x:Name="cmbxTask"
                             Grid.Column="2"

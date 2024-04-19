@@ -47,12 +47,11 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
-                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'hh:mm:ss') AS timeIn, Format(timeOut, 'hh:mm:ss') AS timeOut, ctoEarned, ctoUsed, " +
+                        "ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoBalance > 0.0 OR ctoBalance IS Null;";
-
-
-
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
@@ -73,8 +72,10 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
-                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'hh:mm:ss') AS timeIn, Format(timeOut, 'hh:mm:ss') AS timeOut, ctoEarned, ctoUsed, " +
+                        "ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoUsed > 0.0;";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
@@ -97,8 +98,10 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
-                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'hh:mm:ss') AS timeIn, Format(timeOut, 'hh:mm:ss') AS timeOut, ctoEarned, ctoUsed, " +
+                        "ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (Employee.empID = ?) AND (ctoBalance > 0.0 OR ctoBalance IS Null);";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
@@ -125,8 +128,10 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
-                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedstart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'hh:mm:ss') AS timeIn, Format(timeOut, 'hh:mm:ss') AS timeOut, ctoEarned, ctoUsed, " +
+                        "ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoUsed > 0.0 AND Employee.empID = ?;";
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
@@ -307,32 +312,46 @@ namespace CTOTracker.View
                 // Extract relevant data from the selected row
                 string fullName = selectedRow["fName"].ToString() + " " + selectedRow["lName"].ToString();
                 string taskName = selectedRow["taskName"].ToString();
-                DateTime startDate = (DateTime)selectedRow["plannedStart"];
-                DateTime endDate = (DateTime)selectedRow["plannedEnd"];
+                string startDateString = selectedRow["plannedStart"].ToString();
+                string endDateString = selectedRow["plannedEnd"].ToString();
                 string timeIn = selectedRow["timeIn"].ToString();
                 string timeOut = selectedRow["timeOut"].ToString();
                 int schedID = Convert.ToInt32(selectedRow["schedID"]); // Assuming schedID is an integer
 
-                // Create an instance of AddTask form
-                AddTask addTaskWindow = new AddTask();
+                DateTime startDate, endDate;
 
-                // Pass selected data to AddTask form, including schedID
-                addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
-
-                addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
-                addTaskWindow.SaveButton.Visibility = Visibility.Visible;
-                // Show the AddTask form
-                addTaskWindow.ShowDialog();
-
-
-                if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
+                // Parse the strings to DateTime
+                if (DateTime.TryParse(startDateString, out startDate) && DateTime.TryParse(endDateString, out endDate))
                 {
-                    FilterDataByEmployee();  // Filter data when a new employee is selected
+                    // Create an instance of AddTask form
+                    AddTask addTaskWindow = new AddTask();
+
+                    // Pass selected data to AddTask form, including schedID
+                    addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
+
+                    // Ensure the buttons are configured properly
+                    addTaskWindow.AddButton.Visibility = Visibility.Collapsed;
+                    addTaskWindow.SaveButton.Visibility = Visibility.Visible;
+
+                    // Show the AddTask form
+                    addTaskWindow.ShowDialog();
+
+                    // Reload data based on employee selection or show all
+                    if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
+                    {
+                        FilterDataByEmployee();  // Filter data when a new employee is selected
+                    }
+                    else
+                    {
+                        LoadScheduleData();
+                        LoadCTOuseData();
+                    }
                 }
                 else
                 {
-                    LoadScheduleData();
-                    LoadCTOuseData();
+                    // Handle the case where parsing fails
+                    MessageBox.Show("Error parsing start or end date.");
+                    return; // or any appropriate action
                 }
             }
         }

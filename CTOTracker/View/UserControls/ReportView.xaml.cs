@@ -25,6 +25,7 @@ namespace CTOTracker.View.UserControls
     public partial class ReportView : UserControl
     {
         private DataConnection dataConnection;
+        private DataView dataView;
 
         public ReportView()
         {
@@ -53,6 +54,7 @@ namespace CTOTracker.View.UserControls
                     adapter.Fill(dataTable);
                     //DataView dataView = new DataView(dataTable);
                     //reportDataGrid.ItemsSource = dataView;
+                    reportDataGrid.Columns.Clear();
 
                     // Create DataGrid columns
                     reportDataGrid.Columns.Add(new DataGridTextColumn
@@ -112,7 +114,7 @@ namespace CTOTracker.View.UserControls
                     });
 
                     // Bind the DataTable to the DataGrid
-                    DataView dataView = new DataView(dataTable);
+                    dataView = new DataView(dataTable);
                     reportDataGrid.ItemsSource = dataView;
                 }
             }
@@ -193,8 +195,7 @@ namespace CTOTracker.View.UserControls
             string searchFname = txtschFname.Text.Trim();
             if (string.IsNullOrEmpty(searchFname))
             {
-                LoadScheduleData();
-                return;
+                dataView.RowFilter = " ";
             }
             else
             {
@@ -205,7 +206,24 @@ namespace CTOTracker.View.UserControls
                     dataView.RowFilter = $"fName LIKE '%{searchFname}%'";
                 }
             }
-            LoadScheduleData();
+        }
+
+        private void txtschLname_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchLname = txtschLname.Text.Trim();
+            if (string.IsNullOrEmpty(searchLname))
+            {
+                dataView.RowFilter = " ";
+            }
+            else
+            {
+                // Filter the data based on the entered first name
+                DataView dataView = (DataView)reportDataGrid.ItemsSource;
+                if (dataView != null)
+                {
+                    dataView.RowFilter = $"fName LIKE '%{searchLname}%'";
+                }
+            }
         }
 
 
