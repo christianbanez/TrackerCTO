@@ -14,7 +14,9 @@
         <Label x:Name="Total" Content="Label" HorizontalAlignment="Left" Margin="89,359,0,0" VerticalAlignment="Top"/>
         <Label Content="CHANGES :" HorizontalAlignment="Left" Margin="10,173,0,0" VerticalAlignment="Top"/>
         <Button x:Name="useCtoBttn" Content="Use" HorizontalAlignment="Left" Margin="696,396,0,0" VerticalAlignment="Top" Click="useCtoBttn_Click"/>
-        <Button x:Name="cancelBttn" Content="Cancel" HorizontalAlignment="Left" Margin="750,396,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="cancelBttn" Content="Cancel" HorizontalAlignment="Left" Margin="750,396,0,0" VerticalAlignment="Top" Click="cancelBttn_Click"/>
         <Button x:Name="confirmChangesBttn" Content="Confirm" HorizontalAlignment="Left" Margin="750,176,0,0" VerticalAlignment="Top" Click="confirmChangesBttn_Click"/>
+        <TextBox x:Name="useDescTextBox" HorizontalAlignment="Left" Margin="10,406,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400"/>
+        <Label Content="Usage Description :" HorizontalAlignment="Left" Margin="10,380,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

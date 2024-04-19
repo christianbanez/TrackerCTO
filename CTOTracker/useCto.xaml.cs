@@ -154,22 +154,28 @@ namespace CTOTracker
                             return; // Exit the method if error
                         }
 
-                        
-                         
-                        if(ctoEarned == 1 && ctoBalance == 1)
+                        ctoBalance = Math.Max(0, ctoBalance - ctoUsed);
+
+                        if (ctoEarned == 1)
                         {
-                            ctoUsed = Math.Max(0, ctoUsed - ctoBalance);
+                            if (ctoBalance == 0.5)
+                            {
+                                ctoUsed = 0.5;
+                            }
+                            if (ctoBalance == 0)
+                            {
+                                ctoUsed = 1;
+                            }
                         }
-                        if (ctoEarned == 0.5 && ctoBalance == 0.5)
+                        else
                         {
-                            ctoUsed = Math.Max(0, ctoUsed - ctoBalance);
-                        }
-                        if(ctoEarned == 1 && ctoBalance == 0.5)
-                        {
-                            ctoUsed = Math.Max(0, ctoUsed + ctoUsed);
+                            ctoUsed = Math.Max(0, ctoUsed - ctoBalance); // Otherwise, use the regular logic
                         }
 
-                        ctoBalance = Math.Max(0, ctoBalance - ctoUsed); // Fix variable redeclaration
+                        
+
+
+
                         DataRow newRow = changesDataTable.NewRow();
                         newRow["schedID"] = Convert.ToInt32(rowView["schedID"]);
                         newRow["inforID"] = Convert.ToInt32(rowView["inforID"]);
@@ -195,9 +201,6 @@ namespace CTOTracker
             }
         }
 
-
-
-
         private void useCtoBttn_Click(object sender, RoutedEventArgs e)
         {
             // Ask for confirmation
@@ -217,8 +220,13 @@ namespace CTOTracker
                         int schedID = Convert.ToInt32(row["schedID"]);
                         double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
                         double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
-                        // Update the database record with the new ctoUsed and ctoBalance values
-                        UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance);
+                        string useDesc = ""; // Placeholder for useDesc input
+
+                        // Get useDesc input from the user (assuming you have a textbox named useDescTextBox)
+                        useDesc = useDescTextBox.Text;
+
+                        // Update the database record with the new ctoUsed, ctoBalance, and useDesc values
+                        UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc);
                     }
 
                     MessageBox.Show("Database updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -232,14 +240,13 @@ namespace CTOTracker
             }
         }
 
-
-        // Method to update the ctoUsed and ctoBalance values in the database
-        private void UpdateCtoUsedInDatabase(int schedID, double ctoUsed, double ctoBalance)
+        // Method to update the ctoUsed, ctoBalance, and useDesc values in the database
+        private void UpdateCtoUsedInDatabase(int schedID, double ctoUsed, double ctoBalance, string useDesc)
         {
             try
             {
-                // Create a SQL query to update the ctoUsed and ctoBalance values
-                string query = "UPDATE Schedule SET ctoUsed = @ctoUsed, ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                // Create a SQL query to update the ctoUsed, ctoBalance, and useDesc values
+                string query = "UPDATE Schedule SET ctoUsed = @ctoUsed, ctoBalance = @ctoBalance, useDesc = @useDesc WHERE schedID = @schedID";
 
                 // Execute the query with the provided parameters
                 using (OleDbConnection connection = dataConnection.GetConnection())
@@ -247,6 +254,7 @@ namespace CTOTracker
                 {
                     command.Parameters.AddWithValue("@ctoUsed", ctoUsed);
                     command.Parameters.AddWithValue("@ctoBalance", ctoBalance);
+                    command.Parameters.AddWithValue("@useDesc", useDesc);
                     command.Parameters.AddWithValue("@schedID", schedID);
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -258,5 +266,10 @@ namespace CTOTracker
             }
         }
 
+
+        private void cancelBttn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();  
+        }
     }
 }
