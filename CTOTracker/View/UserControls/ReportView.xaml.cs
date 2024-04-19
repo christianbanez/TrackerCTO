@@ -39,7 +39,8 @@ namespace CTOTracker.View.UserControls
             txtschFname.TextChanged += txtschFname_TextChanged;
             chkbxBalance.Checked += (sender, e) => FilterAndLoadData();
             chkbxBalance.Unchecked += (sender, e) => FilterAndLoadData();
-            
+            PopulateRoleComboBox();
+            PopulateTaskComboBox();
         }
         private void DataReportView()
         {
@@ -50,6 +51,8 @@ namespace CTOTracker.View.UserControls
             LoadAllData(query);
 
         }
+
+
         private bool columnsAdded = false;
         private void LoadAllData(string query)
         {
@@ -291,6 +294,311 @@ namespace CTOTracker.View.UserControls
             LoadScheduleDataByInitial(txtschFname.Text);
         }
 
+        //------------------------------Task------------------------------------
+        private void PopulateTaskComboBox()
+        {
+            try
+            {
+                // Fetch data from the Employee table
+                List<string> task = GetDataFromTask();
+
+                // Check if 'allEmployees' is null before binding to the ComboBox
+                if (task != null)
+                {
+                    cmbxTask.ItemsSource = task;
+                }
+                //else
+                //{
+                //    // Handle the case when 'allEmployees' is null
+                //    MessageBox.Show("No employees found.");
+                //}
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+        }
+        private List<string> GetDataFromTask()
+        {
+            // Create a list to store employee names
+            List<string> task = new List<string>();
+
+            try
+            {
+                // Get connection from DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Define the Access query to select first names (fName) and last names (lName) from the Employee table
+                    string query = "SELECT taskID, taskName FROM Task";
+
+                    // Create a command object with the query and connection
+                    OleDbCommand command = new OleDbCommand(query, connection);
+
+                    // Open the connection to the database
+                    connection.Open();
+
+                    // Execute the command and retrieve data using a data reader
+                    OleDbDataReader reader = command.ExecuteReader();
+
+                    // Iterate through the data reader to read each row
+                    while (reader.Read())
+                    {
+                        // Check if the fName and lName columns contain non-null values
+                        if (!reader.IsDBNull(reader.GetOrdinal("taskName")))
+                        {
+                            // Concatenate the first name and last name to form the full name
+                            string taskName = $"{reader["taskName"]}";
+
+                            // Add the full name to the list of employees
+                            task.Add(taskName);
+                        }
+                    }
+
+                    // Close the data reader
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+            // Return the list of employee names retrieved from the database
+            return task;
+        }
+
+        private string GetTaskID(string taskName)
+        {
+            string? taskID = null; // Initialize taskId to null
+
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    string query = "SELECT taskID FROM Task WHERE taskName = ?"; // SQL query to retrieve task ID based on task name
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@taskName", taskName); // Add parameter for task name
+
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            taskID = result.ToString(); // Assign the task ID to taskId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
+            }
+
+            return taskID ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
+        }
+
+        private void LoadTaskQuery(string taskId)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
+                                    "ctoUsed, ctoBalance FROM (((Schedule " +
+                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
+                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
+                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID) WHERE Task.taskID = ?;";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@taskId", taskId);
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        reportDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+        private void FilterDataByTask()
+        {
+            string selectedTask = cmbxTask.SelectedItem?.ToString() ?? string.Empty;
+            string taskId = GetTaskID(selectedTask);
+            if (!string.IsNullOrEmpty(taskId))
+            {
+                LoadTaskQuery(taskId);
+            }
+            else
+            {
+                MessageBox.Show("Employee not found.");
+            }
+        }
+
+        //------------------------------Role------------------------------------
+        private void PopulateRoleComboBox()
+        {
+            try
+            {
+                // Fetch data from the Employee table
+                List<string> role = GetDataFromRole();
+
+                // Check if 'allEmployees' is null before binding to the ComboBox
+                if (role != null)
+                {
+                    cmbxRole.ItemsSource = role;
+                }
+                //else
+                //{
+                //    // Handle the case when 'allEmployees' is null
+                //    MessageBox.Show("No employees found.");
+                //}
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+        }
+        private List<string> GetDataFromRole()
+        {
+            // Create a list to store employee names
+            List<string> role = new List<string>();
+
+            try
+            {
+                // Get connection from DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Define the Access query to select first names (fName) and last names (lName) from the Employee table
+                    string query = "SELECT roleID, roleName FROM Role";
+
+                    // Create a command object with the query and connection
+                    OleDbCommand command = new OleDbCommand(query, connection);
+
+                    // Open the connection to the database
+                    connection.Open();
+
+                    // Execute the command and retrieve data using a data reader
+                    OleDbDataReader reader = command.ExecuteReader();
+
+                    // Iterate through the data reader to read each row
+                    while (reader.Read())
+                    {
+                        // Check if the fName and lName columns contain non-null values
+                        if (!reader.IsDBNull(reader.GetOrdinal("roleName")))
+                        {
+                            // Concatenate the first name and last name to form the full name
+                            string roleName = $"{reader["roleName"]}";
+
+                            // Add the full name to the list of employees
+                            role.Add(roleName);
+                        }
+                    }
+
+                    // Close the data reader
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+            // Return the list of employee names retrieved from the database
+            return role;
+        }
+
+        private string GetRoleID(string roleName)
+        {
+            string? roleID = null; // Initialize taskId to null
+
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    string query = "SELECT roleID FROM Role WHERE roleName = ?"; // SQL query to retrieve task ID based on task name
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@roleName", roleName); // Add parameter for task name
+
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            roleID = result.ToString(); // Assign the task ID to taskId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
+            }
+
+            return roleID ?? throw new Exception("Role ID not found."); // Return taskId if not null, otherwise throw an exception
+        }
+
+        private void LoadRoleQuery(string roleId)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
+                                    "ctoUsed, ctoBalance FROM (((Schedule " +
+                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
+                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
+                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID) WHERE Role.roleID = ?;";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@empID", roleId);
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        reportDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+        private void FilterDataByRole()
+        {
+            string selectedRole = cmbxRole.SelectedItem?.ToString() ?? string.Empty;
+            string roleId = GetRoleID(selectedRole);
+            if (!string.IsNullOrEmpty(roleId))
+            {
+                LoadRoleQuery(roleId);
+            }
+            else
+            {
+                MessageBox.Show("Employee not found.");
+            }
+        }
+
+
         private void txtschFname_GotFocus(object sender, RoutedEventArgs e)
         {
             txtschFname.Text = "";
@@ -318,6 +626,7 @@ namespace CTOTracker.View.UserControls
         {
             txtschLname.Text = "";
         }
+
         private void LoadEmployeeReportWithCTO()
         {
             // Modify your query to retrieve employees with remaining CTO balance
@@ -380,6 +689,23 @@ namespace CTOTracker.View.UserControls
             animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
             dtPnl.BeginAnimation(MarginProperty, animation);
             //dtPnl.Height = originalDtPnlHeight;
+        }
+
+        private void cmbxRole_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbxRole.SelectedItem != null)
+            {
+                FilterDataByRole();
+            }   
+
+        }
+
+        private void cmbxTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbxTask.SelectedItem != null)
+            {
+                FilterDataByTask();
+            }
         }
 
         /*private void PopulateEmployeeListComboBox(string selectedRole)

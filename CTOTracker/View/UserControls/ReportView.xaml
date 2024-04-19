@@ -160,7 +160,7 @@
                             FontSize="14"
                             Foreground="Gray"
                             Tag="Task"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Template="{DynamicResource ComboBoxTemplate1}" SelectionChanged="cmbxTask_SelectionChanged" />
                         <ComboBox
                             x:Name="cmbxRole"
                             Grid.Column="3"
@@ -169,7 +169,7 @@
                             FontSize="14"
                             Foreground="Gray"
                             Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}"  />
+                            Template="{DynamicResource ComboBoxTemplate1}" SelectionChanged="cmbxRole_SelectionChanged"  />
                         <DatePicker
                             x:Name="dtEDate"
                             Grid.Column="4"
