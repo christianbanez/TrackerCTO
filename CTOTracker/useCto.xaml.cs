@@ -221,11 +221,7 @@ namespace CTOTracker
                         double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
                         double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
                         string useDesc = ""; // Placeholder for useDesc input
-
-                        // Get useDesc input from the user (assuming you have a textbox named useDescTextBox)
                         useDesc = useDescTextBox.Text;
-
-                        // Update the database record with the new ctoUsed, ctoBalance, and useDesc values
                         UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc);
                     }
 
