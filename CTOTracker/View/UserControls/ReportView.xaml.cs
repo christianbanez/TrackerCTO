@@ -346,6 +346,42 @@ namespace CTOTracker.View.UserControls
         {
             FilterAndLoadData();         }
 
+        private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
+        {
+            //filter panel animation
+            DoubleAnimation showAnimation = new DoubleAnimation();
+            showAnimation.From = 45;
+            showAnimation.To = 150;
+            showAnimation.Duration = TimeSpan.FromSeconds(0.3);
+            FilterPnl.BeginAnimation(HeightProperty, showAnimation);
+
+            //dtpnl animation
+            ThicknessAnimation animation = new ThicknessAnimation();
+            animation.From = new Thickness(0, 45, 0, 0);
+            animation.To = new Thickness(0, 90, 0, 0); // Adjust this value as needed
+            animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
+            dtPnl.BeginAnimation(MarginProperty, animation);
+            //dtPnl.Height -= filterPnlHeight;
+        }
+
+        private void tgb_FilterPnl_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //filter panel animation
+            DoubleAnimation hideAnimation = new DoubleAnimation();
+            hideAnimation.From = 150;
+            hideAnimation.To = 45;
+            hideAnimation.Duration = TimeSpan.FromSeconds(0.2);
+            FilterPnl.BeginAnimation(HeightProperty, hideAnimation);
+
+            //dtpnl animation
+            ThicknessAnimation animation = new ThicknessAnimation();
+            animation.From = new Thickness(0, 90, 0, 0); // Adjust this value as needed
+            animation.To = new Thickness(0, 45, 0, 0);
+            animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
+            dtPnl.BeginAnimation(MarginProperty, animation);
+            //dtPnl.Height = originalDtPnlHeight;
+        }
+
         /*private void PopulateEmployeeListComboBox(string selectedRole)
         {
             string query = "SELECT * FROM Employees WHERE Role = @Role";

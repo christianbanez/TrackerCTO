@@ -103,6 +103,14 @@
                 Orientation="Vertical">
                 <Grid Width="1360" Height="40">
                     <!--  Filter Panel Toggle Button  -->
+                    <ToggleButton
+                        x:Name="tgb_FilterPnl"
+                        Margin="0,0,775,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Checked="tgb_FilterPnl_Checked"
+                        Content="Show Filter Panel"
+                        Unchecked="tgb_FilterPnl_Unchecked" />
                     
                 </Grid>
                 <StackPanel Width="1360" Orientation="Horizontal">
