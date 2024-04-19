@@ -152,9 +152,10 @@ namespace CTOTracker.View
             string employeeId = GetEmployeeId(selectedEmployee);
             if (!string.IsNullOrEmpty(employeeId))
             {
+               
                 LoadCtoEmployeeQuery(employeeId);
                 LoadEmployeeQuery(employeeId);  // Load data for the selected employee
-                
+
             }
             else
             {
@@ -388,6 +389,135 @@ namespace CTOTracker.View
             ctoUseDataGrid.Columns[12].Header = "CTO Balance";
         }
 
+        private void LoadDataForMonthEmployee(DateTime date, string empID)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = @"SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (Employee.empID = ?) AND (ctoBalance > 0.0 OR ctoBalance IS Null) AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?);";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        // Add month and year as parameters
+                        command.Parameters.AddWithValue("@empID", empID);
+                        command.Parameters.AddWithValue("@Month", date.Month);
+                        command.Parameters.AddWithValue("@Year", date.Year);
+
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+        private void LoadDataForMonthCtoEmployee(DateTime date, string empID)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = @"SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (Employee.empID = ?) AND (ctoUsed > 0.0) AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?);";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        // Add month and year as parameters
+                        command.Parameters.AddWithValue("@empID", empID);
+                        command.Parameters.AddWithValue("@Month", date.Month);
+                        command.Parameters.AddWithValue("@Year", date.Year);
+
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        ctoUseDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+        private void LoadDataForMonthAll(DateTime date)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = @"SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (ctoBalance > 0.0 OR ctoBalance IS Null) AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?);";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        // Add month and year as parameters
+                        command.Parameters.AddWithValue("@Month", date.Month);
+                        command.Parameters.AddWithValue("@Year", date.Year);
+
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+        private void LoadDataForMonthCtoAll(DateTime date)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = @"SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (ctoUsed > 0.0) AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?);";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        // Add month and year as parameters
+                        command.Parameters.AddWithValue("@Month", date.Month);
+                        command.Parameters.AddWithValue("@Year", date.Year);
+
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Bind the DataTable to the DataGrid
+                        ctoUseDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
         private void showallChecked(object sender, RoutedEventArgs e)
         {
             LoadScheduleData();
@@ -395,6 +525,7 @@ namespace CTOTracker.View
             cbxEmployee.SelectedIndex = -1;
             cbxEmployee.IsEnabled = false;
             cbxEmployee.Text = "";
+
         }
 
         private void showallUnchecked(object sender, RoutedEventArgs e)
@@ -408,6 +539,33 @@ namespace CTOTracker.View
             {
                 scheduleDataGrid.ItemsSource = null;  // Clear the DataGrid if no employee is selected
                 ctoUseDataGrid.ItemsSource = null;
+            }
+        }
+
+        private void monthPicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (monthPicker.SelectedDate.HasValue)
+            {
+                DateTime selectedDate = monthPicker.SelectedDate.Value;
+
+                if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
+                {
+                    // Filter data for the selected employee and selected month/year
+                    string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
+                    string employeeId = GetEmployeeId(selectedEmployee);
+                    if (!string.IsNullOrEmpty(employeeId))
+                    {
+                        LoadDataForMonthEmployee(selectedDate, employeeId);
+                        LoadDataForMonthCtoEmployee(selectedDate, employeeId);
+                    }
+                }
+                else
+                {
+                    // Filter all data for selected month/year
+                    LoadDataForMonthAll(selectedDate);
+                    LoadDataForMonthCtoAll(selectedDate);
+
+                }
             }
         }
     }
