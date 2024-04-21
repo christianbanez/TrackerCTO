@@ -51,9 +51,6 @@ namespace CTOTracker.View
                         "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE ctoBalance > 0.0 OR ctoBalance IS Null;";
 
-
-
-
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
@@ -91,28 +88,60 @@ namespace CTOTracker.View
             }
         }
 
-        private void LoadEmployeeQuery(string empID)
+        private void LoadEmployeeQuery()
         { 
             try
             {
+                string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
+                string employeeId = GetEmployeeId(selectedEmployee);
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                    // Base query
+                    string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
                         "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
-                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (Employee.empID = ?) AND (ctoBalance > 0.0 OR ctoBalance IS Null);";
+                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    // Employee ID filter
+                    string empIdFilter = cbxEmployee.SelectedValue != null ? " WHERE Employee.empID = ?" : "";
+
+                    // CTO Balance filter
+                    string ctoBalanceFilter = " AND (ctoBalance > 0.0 OR ctoBalance IS NULL)";
+
+                    // Complete query with filters
+                    string query = baseQuery + empIdFilter + ctoBalanceFilter;
+
+                    using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
                     {
-                        command.Parameters.AddWithValue("@empID", empID);
-                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        if (cbxEmployee.SelectedValue != null)
+                        {
+                            adapter.SelectCommand.Parameters.AddWithValue("@empID", employeeId);
+                        }
+
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
 
                         // Bind the DataTable to the DataGrid
                         scheduleDataGrid.ItemsSource = dataTable.DefaultView;
                     }
-                    
                 }
+                //using (OleDbConnection connection = dataConnection.GetConnection())
+                //{
+                //    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
+                //        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                //        "LEFT JOIN Task ON Schedule.taskID = Task.taskID WHERE (Employee.empID = ?) AND (ctoBalance > 0.0 OR ctoBalance IS Null);";
+
+                //    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                //    {
+                //        command.Parameters.AddWithValue("@empID", empID);
+                //        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                //        DataTable dataTable = new DataTable();
+                //        adapter.Fill(dataTable);
+
+                //        // Bind the DataTable to the DataGrid
+                //        scheduleDataGrid.ItemsSource = dataTable.DefaultView;
+                //    }
+
+                //}
             }
             catch (Exception ex)
             {
@@ -149,11 +178,11 @@ namespace CTOTracker.View
         private void FilterDataByEmployee()
         {
             string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-            string employeeId = GetEmployeeId(selectedEmployee);
+            string employeeId =  GetEmployeeId(selectedEmployee);
             if (!string.IsNullOrEmpty(employeeId))
             {
                 LoadCtoEmployeeQuery(employeeId);
-                LoadEmployeeQuery(employeeId);  // Load data for the selected employee
+                LoadEmployeeQuery();  // Load data for the selected employee
                 
             }
             else
@@ -360,9 +389,10 @@ namespace CTOTracker.View
 
         private void cbxEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbxEmployee.IsEnabled && cbxEmployee.SelectedItem != null)
+            if (cbxEmployee.SelectedItem != null)
             {
-                FilterDataByEmployee();  // Filter data when a new employee is selected
+                LoadEmployeeQuery();
+                /*FilterDataByEmployee(); */ // Filter data when a new employee is selected
             }
         }
 
@@ -404,11 +434,11 @@ namespace CTOTracker.View
             {
                 FilterDataByEmployee();  // Call a function to filter data based on selected employee
             }
-            else
-            {
-                scheduleDataGrid.ItemsSource = null;  // Clear the DataGrid if no employee is selected
-                ctoUseDataGrid.ItemsSource = null;
-            }
+            //else
+            //{
+            //    scheduleDataGrid.ItemsSource = null;  // Clear the DataGrid if no employee is selected
+            //    ctoUseDataGrid.ItemsSource = null;
+            //}
         }
     }
 }
