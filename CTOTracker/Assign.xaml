@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Assign Schedule"
@@ -50,8 +52,9 @@
                         Margin="10,10,10,5"
                         FontSize="12"
                         IsReadOnly="True"
-                        Template="{DynamicResource ComboBoxTemplate1}"
-                        Tag="Select an Employee..."  />
+                        Tag="Select an Employee..."
+                        Style="{DynamicResource ComboBoxStyle1}"
+                        Template="{DynamicResource ComboBoxTemplate1}" />
                 </Grid>
 
                 <!--  Task Grid  -->
@@ -71,10 +74,12 @@
                         Grid.Row="1"
                         Width="311"
                         Margin="10,10,10,5"
+                        materialDesign:HintAssist.Hint="Some item"
                         FontSize="12"
                         IsEditable="True"
-                        Tag="Select a Task..."
-                        Template="{DynamicResource ComboBoxTemplate1}"/>
+                        Style="{DynamicResource ComboBoxStyle1}"
+                        Template="{DynamicResource ComboBoxTemplate1}"
+                        Tag="Select a Task..." />
                 </Grid>
 
                 <!--  DatePickers Grid  -->
@@ -107,7 +112,7 @@
                         IsTodayHighlighted="True"
                         PreviewKeyDown="DatePicker_PreviewKeyDown"
                         SelectedDate="{x:Static sys:DateTime.Now}"
-                        SelectedDateFormat="Short" />
+                        SelectedDateFormat="Short" BorderBrush="#FF5D86A4" />
                     <DatePicker
                         x:Name="endDatePicker"
                         Grid.Row="1"
@@ -115,7 +120,7 @@
                         Margin="5,0,10,0"
                         PreviewKeyDown="DatePicker_PreviewKeyDown"
                         SelectedDate="{x:Static sys:DateTime.Now}"
-                        SelectedDateFormat="Short" />
+                        SelectedDateFormat="Short" BorderBrush="#FF5D86A4" />
                 </Grid>
 
                 <!--  Show Time CheckBox  -->
@@ -133,7 +138,7 @@
                 <Grid
                     x:Name="addTime"
                     Margin="0,0,0,5"
-                    Visibility="Collapsed">
+                    Visibility="Visible">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -153,18 +158,17 @@
                         FontSize="14"
                         Foreground="Black"
                         Style="{DynamicResource font_style}" />
-                    <TextBox
+                    
+                    <materialDesign:TimePicker
                         x:Name="startTimeTextBox"
                         Grid.Column="1"
                         Width="100"
-                        Margin="5,10,5,0"
-                        Text="09:00 AM" />
-                    <TextBox
+                        Margin="5,10,10,0" BorderBrush="#FF5D86A4" />
+                    <materialDesign:TimePicker
                         x:Name="endTimeTextBox"
                         Grid.Column="3"
                         Width="100"
-                        Margin="5,10,10,0"
-                        Text="05:00 PM" />
+                        Margin="5,10,10,0" BorderBrush="#FF5D86A4" SelectedTimeFormat="Long" />
                 </Grid>
 
                 <!--  TextBox for Schedule ID  -->
@@ -199,7 +203,7 @@
                     Style="{DynamicResource button_style}" />
                 <Button
                     Grid.Column="2"
-                    Width="50"
+                    Width="55"
                     Height="25"
                     Margin="10"
                     Click="Button_Click_1"
@@ -213,6 +217,7 @@
                     Margin="10"
                     Click="SAVE_Click"
                     Content="Save"
+                    Style="{DynamicResource button_style}"
                     Visibility="Collapsed" />
             </Grid>
         </Grid>

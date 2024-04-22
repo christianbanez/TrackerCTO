@@ -141,13 +141,14 @@
                             PreviewTextInput="txtContact_PreviewTextInput"
                             Style="{DynamicResource txtbx_style}"
                             TabIndex="11" />
-                        <ComboBox Template="{DynamicResource ComboBoxTemplate1}" 
+                        <ComboBox
                             x:Name="txtRole"
                             Grid.Row="3"
                             Grid.Column="5"
                             Margin="20"
                             IsEnabled="False"
-                            Style="{DynamicResource ComboBoxStyle1}" />
+                            Style="{DynamicResource ComboBoxStyle1}"
+                            Template="{DynamicResource ComboBoxTemplate1}" />
                     </Grid>
 
                     <!--  AddEdit  -->

@@ -80,7 +80,7 @@ namespace CTOTracker
             // Extract only time component from the selected time strings
             if (!string.IsNullOrEmpty(timeIn))
             {
-                startTimeTextBox.Text = DateTime.Parse(timeIn).ToString("hh:mm tt");
+                startTimeTextBox.SelectedTime = DateTime.Parse(timeIn);
             }
 
             if (!string.IsNullOrEmpty(timeOut))
@@ -363,9 +363,6 @@ namespace CTOTracker
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //declare month before to blackout in datetimepicker
-            //DateTime oneMonthBefore = DateTime.Today.AddMonths(-1);
-
             try
             {
                 // Display a confirmation dialog
@@ -385,12 +382,9 @@ namespace CTOTracker
                         MessageBox.Show("Please select an employee and a task.");
                         return;
                     }
+
                     string employeeId = GetEmployeeId(selectedEmployee);
                     string taskId = GetTaskId(selectedTask);
-
-                    // Add the blackout date
-                    //startDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
-                    //endDatePicker.BlackoutDates.Add(new CalendarDateRange(DateTime.MinValue, oneMonthBefore));
 
                     // Get selected dates from date pickers
                     DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
@@ -412,63 +406,64 @@ namespace CTOTracker
 
         private void InsertIntoSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
         {
-            using (OleDbConnection connection = dataConnection.GetConnection())
             {
-                try
+                using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    // Validate that planned start date is not greater than planned end date
-                    if (startDate > endDate)
+                    try
                     {
-                        MessageBox.Show("Planned start date cannot be greater than planned end date.");
-                        return;
-                    }
-
-                    string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, completed, ctoEarned, ctoBalance) " +
-                                   "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @completed, @ctoEarned, @ctoBalance)";
-
-                    using (OleDbCommand command = new OleDbCommand(query, connection))
-                    {
-                        // Add parameters to the command
-                        command.Parameters.AddWithValue("@empID", employeeId);
-                        command.Parameters.AddWithValue("@taskID", taskId);
-                        command.Parameters.AddWithValue("@plannedStart", startDate);
-                        command.Parameters.AddWithValue("@plannedEnd", endDate);
-
-                        // Concatenate the date portion of the start date with the timeIn value
-                        if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                        // Validate that planned start date is not greater than planned end date
+                        if (startDate > endDate)
                         {
-                            DateTime timeInDateTime = DateTime.ParseExact(timeIn, "hh:mm tt", CultureInfo.InvariantCulture);
-                            DateTime dateTimeInWithDate = startDate.Date + timeInDateTime.TimeOfDay;
-                            command.Parameters.AddWithValue("@timeIn", dateTimeInWithDate);
-
-                            DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
-                            DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
-                            command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
-                            command.Parameters.AddWithValue("@completed", -1);
-                            double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                            command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
-                            command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-                            
-                        }
-                        else
-                        {
-                            command.Parameters.AddWithValue("@timeIn", DBNull.Value);
-                            command.Parameters.AddWithValue("@timeOut", DBNull.Value);
-                            command.Parameters.AddWithValue("@completed", DBNull.Value);
-                            command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
-                            command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                            MessageBox.Show("Planned start date cannot be greater than planned end date.");
+                            return;
                         }
 
-                        connection.Open();
-                        int rowsAffected = command.ExecuteNonQuery();
-                        MessageBox.Show("Schedule has been added!");
-                        connection.Close();
-                        this.Close();
+                        string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, completed, ctoEarned, ctoBalance) " +
+                                       "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @completed, @ctoEarned, @ctoBalance)";
+
+                        using (OleDbCommand command = new OleDbCommand(query, connection))
+                        {
+                            // Add parameters to the command
+                            command.Parameters.AddWithValue("@empID", employeeId);
+                            command.Parameters.AddWithValue("@taskID", taskId);
+                            command.Parameters.AddWithValue("@plannedStart", startDate);
+                            command.Parameters.AddWithValue("@plannedEnd", endDate);
+
+                            // Concatenate the date portion of the start date with the timeIn value
+                            if (!string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                            {
+                                DateTime timeInDateTime = DateTime.ParseExact(timeIn, "h:mm tt", CultureInfo.InvariantCulture);
+                                DateTime dateTimeInWithDate = startDate.Date + timeInDateTime.TimeOfDay;
+                                command.Parameters.AddWithValue("@timeIn", dateTimeInWithDate.ToString("MM/dd/yyyy hh:mm tt"));
+
+                                DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "h:mm tt", CultureInfo.InvariantCulture);
+                                DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
+                                command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate.ToString("MM/dd/yyyy hh:mm tt"));
+                                command.Parameters.AddWithValue("@completed", -1);
+                                double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
+                                command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                                command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                            }
+                            else
+                            {
+                                command.Parameters.AddWithValue("@timeIn", DBNull.Value);
+                                command.Parameters.AddWithValue("@timeOut", DBNull.Value);
+                                command.Parameters.AddWithValue("@completed", DBNull.Value);
+                                command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
+                                command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                            }
+
+                            connection.Open();
+                            int rowsAffected = command.ExecuteNonQuery();
+                            MessageBox.Show("Schedule has been added!");
+                            connection.Close();
+                            this.Close();
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error inserting into Schedule table: " + ex.Message);
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error inserting into Schedule table: " + ex.Message);
+                    }
                 }
             }
         }

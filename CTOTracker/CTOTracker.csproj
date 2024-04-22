@@ -31,8 +31,8 @@
     <Resource Include="View\Resource Dictionary\Assets\Roboto-Regular.ttf" />
     <Resource Include="View\Resource Dictionary\Assets\tgbMenu.png" />
     <Resource Include="View\Resource Dictionary\Assets\tgbMenu_MouseOver.png" />
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
-    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.1-ci598" />
+    <PackageReference Include="System.Data.OleDb" Version="9.0.0-preview.3.24172.9" />
   </ItemGroup>
 
 </Project>

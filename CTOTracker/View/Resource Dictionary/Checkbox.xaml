@@ -14,7 +14,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="OptionMarkFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -41,36 +41,39 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border x:Name="checkBoxBorder"
+                        <Border
+                            x:Name="checkBoxBorder"
                             Grid.Column="0"
                             Background="Transparent"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid Width="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}" 
-                                  Height="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}">
-                                <Rectangle x:Name="CheckMarkBackground"
-                                       Fill="WhiteSmoke"
-                                       Width="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}"
-                                       Height="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <Path x:Name="CheckMark"
-                                  Data="M1,5 L3,10 L9,1"
-                                  Stretch="Uniform"
-                                  Stroke="{TemplateBinding Foreground}"
-                                  StrokeThickness="1"
-                                  StrokeEndLineCap="Round"
-                                  StrokeStartLineCap="Round"
-                                  StrokeLineJoin="Round"
-                                  Opacity="0" />
+                            <Grid Width="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}" Height="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Rectangle
+                                    x:Name="CheckMarkBackground"
+                                    Width="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Height="{Binding FontSize, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Fill="WhiteSmoke" />
+                                <Path
+                                    x:Name="CheckMark"
+                                    Data="M1,5 L3,10 L9,1"
+                                    Opacity="0"
+                                    Stretch="Uniform"
+                                    Stroke="{TemplateBinding Foreground}"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="1" />
                             </Grid>
                         </Border>
-                        <ContentPresenter x:Name="contentPresenter"
-                                      Grid.Column="1"
-                                      Margin="4,0,0,0"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      RecognizesAccessKey="True"
-                                      ContentSource="Content" />
+                        <ContentPresenter
+                            x:Name="contentPresenter"
+                            Grid.Column="1"
+                            Margin="4,0,0,0"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            ContentSource="Content"
+                            RecognizesAccessKey="True"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">

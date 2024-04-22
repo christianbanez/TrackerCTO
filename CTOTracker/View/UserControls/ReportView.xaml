@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker.View.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     d:DesignHeight="768"
     d:DesignWidth="1360"
     Focusable="True"
@@ -99,14 +100,25 @@
                 Orientation="Vertical">
                 <Grid Width="1360" Height="40">
                     <!--  Filter Panel Toggle Button  -->
+                    <!--<Label
+                        Margin="0,5,840,0"
+                        HorizontalAlignment="Right"
+                        Content="Filters"
+                        FontSize="16" />-->
                     <ToggleButton
                         x:Name="tgb_FilterPnl"
                         Margin="0,0,775,0"
+                        Padding="0,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
                         Checked="tgb_FilterPnl_Checked"
-                        Content="Show Filter Panel"
-                        Unchecked="tgb_FilterPnl_Unchecked" />
+                        materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=MenuDown}"
+                        Content="{materialDesign:PackIcon Kind=MenuUp}"
+                        Style="{DynamicResource MaterialDesignFlatButton}"
+                        Unchecked="tgb_FilterPnl_Unchecked">
+                        <!--<materialDesign:PackIcon Kind="MenuDown" />-->
+                    </ToggleButton>
                 </Grid>
                 <StackPanel Width="1360" Orientation="Horizontal">
                     <Grid Width="1360" Focusable="True">
@@ -132,7 +144,8 @@
                             Loaded="txtbx_Loaded"
                             LostFocus="txtbx_LostFocus"
                             Style="{StaticResource txtbx_style}"
-                            Tag="First Name" TextChanged="txtschFname_TextChanged" />
+                            Tag="First Name"
+                            TextChanged="txtschFname_TextChanged" />
                         <TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
@@ -144,7 +157,8 @@
                             Loaded="txtbx_Loaded"
                             LostFocus="txtbx_LostFocus"
                             Style="{StaticResource txtbx_style}"
-                            Tag="Last Name" TextChanged="txtschLname_TextChanged" />
+                            Tag="Last Name"
+                            TextChanged="txtschLname_TextChanged" />
                         <ComboBox
                             x:Name="cmbxTask"
                             Grid.Column="2"
