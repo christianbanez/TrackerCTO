@@ -49,8 +49,10 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
-                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoUsed, ctoBalance " +
+                        "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
                     // CTO Balance filter
@@ -97,8 +99,10 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, timeOut, " +
-                        " ctoEarned, useDesc, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoUsed, ctoBalance " +
+                        "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
                     // CTO Balance filter
@@ -149,8 +153,10 @@ namespace CTOTracker.View
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
                     // Base query
-                    string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, plannedStart, plannedEnd, timeIn, " +
-                        "timeOut, ctoEarned, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoUsed, ctoBalance " +
+                        "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
                     // Initialize the complete query with base query only
@@ -220,8 +226,10 @@ namespace CTOTracker.View
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
                     // Base query
-                    string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, timeOut, " +
-                        " ctoEarned, useDesc, ctoUsed, ctoBalance FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
+                    string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
+                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoUsed, ctoBalance " +
+                        "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
                     // Initialize the complete query with base query only
@@ -434,15 +442,16 @@ namespace CTOTracker.View
                     addTaskWindow.ShowDialog();
 
 
-                if (cbxEmployee.SelectedItem != null)
-                {
-                    LoadEmployeeQuery();  // Filter data when a new employee is selected
-                    LoadCtoEmployeeQuery();
-                }
-                else
-                {
-                    LoadScheduleData();
-                    LoadCTOuseData();
+                    if (cbxEmployee.SelectedItem != null)
+                    {
+                        LoadEmployeeQuery();  // Filter data when a new employee is selected
+                        LoadCtoEmployeeQuery();
+                    }
+                    else
+                    {
+                        LoadScheduleData();
+                        LoadCTOuseData();
+                    }
                 }
             }
         }
@@ -679,9 +688,9 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[1].Header = "Infor ID";
             scheduleDataGrid.Columns[1].Width = 75;
             scheduleDataGrid.Columns[2].Header = "First Name";
-            scheduleDataGrid.Columns[2].Width = 185;
+            scheduleDataGrid.Columns[2].Width = 165;
             scheduleDataGrid.Columns[3].Header = "Last Name";
-            scheduleDataGrid.Columns[3].Width = 185;
+            scheduleDataGrid.Columns[3].Width = 165;
             scheduleDataGrid.Columns[4].Header = "Task Name";
             scheduleDataGrid.Columns[4].Width = 125;
             scheduleDataGrid.Columns[5].Header = "Completed";

@@ -187,8 +187,9 @@
     </Style>
 
 
+   <!--  Style for DataGrid  -->
     <!--  Table styler  -->
-    <Style x:Key="table_style" TargetType="DataGrid">
+    <!--<Style x:Key="table_style" TargetType="DataGrid">
         <Setter Property="RowHeight" Value="30" />
         <Setter Property="ColumnWidth" Value="*" />
         <Setter Property="Background" Value="Transparent" />
@@ -196,7 +197,7 @@
         <Setter Property="HorizontalGridLinesBrush" Value="Transparent" />
         <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
 
-        <!--  Row background color on mouse over and selection  -->
+        --><!--  Row background color on mouse over and selection  --><!--
         <Setter Property="RowStyle">
             <Setter.Value>
                 <Style TargetType="DataGridRow">
@@ -238,7 +239,7 @@
             </Setter.Value>
         </Setter>
 
-        <!--  Cell style  -->
+        --><!--  Cell style  --><!--
         <Setter Property="CellStyle">
             <Setter.Value>
                 <Style TargetType="DataGridCell">
@@ -249,7 +250,7 @@
                     <Setter Property="VerticalAlignment" Value="Center" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Style.Triggers>
-                        <!--  Highlight selected and focused rows  -->
+                        --><!--  Highlight selected and focused rows  --><!--
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="#FFBBDEFB" />
                             <Setter Property="Foreground" Value="#FF333333" />
@@ -263,7 +264,7 @@
             </Setter.Value>
         </Setter>
 
-        <!--  Column headers  -->
+        --><!--  Column headers  --><!--
         <Setter Property="ColumnHeaderStyle">
             <Setter.Value>
                 <Style TargetType="DataGridColumnHeader">
@@ -293,10 +294,13 @@
                 </Style>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     
-    <!--Checkboxes-->
-
+    
+    
+    
+    
+    
 
 </ResourceDictionary>
