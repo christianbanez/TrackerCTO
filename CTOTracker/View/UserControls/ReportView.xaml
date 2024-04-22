@@ -38,24 +38,7 @@
                     VerticalAlignment="Center"
                     Content="All Employees"
                     FontFamily="Roboto-Light"
-                    FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" />
-                <CheckBox
-                    x:Name="chkbxBalance"
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
-                    Content="CTO Balance"
-                    FontFamily="Roboto-Light"
-                    FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" Checked="chkbxBalance_Checked" />
-                <CheckBox
-                    x:Name="chkbxUsed"
-                    Grid.Column="3"
-                    VerticalAlignment="Center"
-                    Content="CTO Used"
-                    FontFamily="Roboto-Light"
-                    FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" Checked="chkbxUsed_Checked" />
+                    FontSize="14"/>
 
                 <Button
                     x:Name="btnExport"
@@ -89,7 +72,10 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" Grid.ColumnSpan="2" />
+                Style="{DynamicResource MaterialDesignDataGrid}" 
+                RowStyle="{DynamicResource MaterialDesignDataGridRow}" 
+                CellStyle="{DynamicResource MaterialDesignDataGridCell}" 
+                ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}" Grid.ColumnSpan="2" />
 
         </Grid>
         <!--  Filter Panel  -->
@@ -103,24 +89,31 @@
                 Focusable="True"
                 Orientation="Vertical">
                 <Grid Width="1360" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="175"/>
+                    </Grid.ColumnDefinitions>
                     <!--  Filter Panel Toggle Button  -->
-                    <!--<Label
-                        Margin="0,5,840,0"
-                        HorizontalAlignment="Right"
-                        Content="Filters"
-                        FontSize="16" />-->
                     <ToggleButton
                         x:Name="tgb_FilterPnl"
-                        Margin="0,0,775,0"
-                        Padding="0,0,0,0"
+                        Grid.Column="1"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
                         Checked="tgb_FilterPnl_Checked"
-                        materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=MenuDown}"
-                        Content="{materialDesign:PackIcon Kind=MenuUp}"
                         Style="{DynamicResource MaterialDesignFlatButton}"
                         Unchecked="tgb_FilterPnl_Unchecked">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Filters"
+                                   FontSize="18"
+                                   Padding="0"
+                                   FontWeight="Normal"
+                                   VerticalAlignment="Top"/>
+                            <materialDesign:PackIcon Kind="MenuDownOutline"
+                                                     Margin="10,0,0,0"
+                                                     VerticalAlignment="Center"/>
+                        </StackPanel>
                         <!--<materialDesign:PackIcon Kind="MenuDown" />-->
                     </ToggleButton>
                 </Grid>
@@ -131,6 +124,9 @@
                             <ColumnDefinition Width="190" />
                             <ColumnDefinition Width="125" />
                             <ColumnDefinition Width="125" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
@@ -193,6 +189,23 @@
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
                             FontSize="14" />
+                        <CheckBox
+                            x:Name="chkbxBalance"
+                            Grid.Column="6"
+                            VerticalAlignment="Center"
+                            Content="CTO Balance"
+                            FontFamily="Roboto-Light"
+                            FontSize="14" 
+                            Checked="chkbxBalance_Checked" />
+                        <CheckBox
+                            x:Name="chkbxUsed"
+                            Grid.Column="7"
+                            VerticalAlignment="Center"
+                            Content="CTO Used"
+                            FontFamily="Roboto-Light"
+                            FontSize="14"
+                            Checked="chkbxUsed_Checked" />
+
                     </Grid>
                 </StackPanel>
             </StackPanel>
@@ -307,7 +320,10 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" />
+                Style="{DynamicResource MaterialDesignDataGrid}" 
+                RowStyle="{DynamicResource MaterialDesignDataGridRow}" 
+                CellStyle="{DynamicResource MaterialDesignDataGridCell}" 
+                ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"/>
         </Grid>
 
     </Grid>

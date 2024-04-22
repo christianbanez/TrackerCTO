@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:usercontrol="clr-namespace:CTOTracker.View"
     xmlns:usercontrols="clr-namespace:CTOTracker.View.UserControls"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     x:Name="Employee_Tracker"
     Title="Employee Tracker"
     Width="1360"

@@ -266,7 +266,10 @@
                 HeadersVisibility="Column"
                 SelectionChanged="DataGridEmployee1_SelectionChanged_1"
                 SelectionMode="Single"
-                Style="{StaticResource table_style}" />
+                Style="{DynamicResource MaterialDesignDataGrid}" 
+                RowStyle="{DynamicResource MaterialDesignDataGridRow}" 
+                CellStyle="{DynamicResource MaterialDesignDataGridCell}" 
+                ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}" />
         </Grid>
     </Grid>
 </UserControl>
