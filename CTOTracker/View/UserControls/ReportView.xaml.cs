@@ -1,24 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-//using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Media.Animation;
-//using iTextParagraph = iTextSharp.text.Paragraph;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
 
@@ -31,14 +18,20 @@ namespace CTOTracker.View.UserControls
     {
         private DataConnection dataConnection;
         private List<string> allEmployees;
+
+        private string nameFilter = "";
+        private string taskFilter = "";
+        private string roleFilter = "";
         public ReportView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
             DataReportView();
             txtschFname.TextChanged += txtschFname_TextChanged;
-            chkbxBalance.Checked += (sender, e) => FilterAndLoadData();
-            chkbxBalance.Unchecked += (sender, e) => FilterAndLoadData();
+            chkbxBalance.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            chkbxBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
+            cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
             PopulateRoleComboBox();
             PopulateTaskComboBox();
         }
@@ -64,12 +57,9 @@ namespace CTOTracker.View.UserControls
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
-                    reportDataGrid.ItemsSource = null;
+                    /*reportDataGrid.ItemsSource = null;
                     reportDataGrid.Items.Clear();
-                    dataTable.Clear();
-
-                    adapter.Fill(dataTable);
-                    reportDataGrid.ItemsSource = dataTable.DefaultView;
+                    dataTable.Clear();*/
 
                     if (dataTable != null && dataTable.Rows.Count > 0)
                     {
@@ -94,6 +84,35 @@ namespace CTOTracker.View.UserControls
                     connection.Close();
                 }
             }
+        }
+        private void ApplyFiltersAndUpdateDataGrid()
+        {
+            // Construct the query based on the selected filters
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
+                           "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
+                           "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
+                           "ON Employee.empID = Schedule.empID WHERE 1=1"; // Start with a dummy condition
+
+            // Add filter conditions based on the selected filters
+            if (!string.IsNullOrEmpty(nameFilter))
+            {
+                query += $" AND (Employee.fName LIKE '{nameFilter}%' OR Employee.lName LIKE '{nameFilter}%')";
+            }
+            if (!string.IsNullOrEmpty(taskFilter))
+            {
+                query += $" AND Task.taskName = '{taskFilter}'";
+            }
+            if (!string.IsNullOrEmpty(roleFilter))
+            {
+                query += $" AND Role.roleName = '{roleFilter}'";
+            }
+            if (chkbxBalance.IsChecked == true)
+            {
+                query += " AND Schedule.ctoBalance > 0";
+            }
+
+            // Execute the query and update the DataGrid
+            LoadAllData(query);
         }
         private void AddDataGridColumns()
         {
@@ -157,8 +176,15 @@ namespace CTOTracker.View.UserControls
 
         private double originalDtPnlHeight; // Store the original height of dtPnl
         private double filterPnlHeight = 110;
-        private void ExportToPdf(DataGrid dataGrid, string outputPath)
+        private void ExportToPdf(DataTable dataTable, string outputPath)
         {
+            // Check if there is data to export
+            if (dataTable == null || dataTable.Rows.Count == 0)
+            {
+                MessageBox.Show("No data available for export.", "Information");
+                return;
+            }
+
             try
             {
                 // Create a PDF document
@@ -175,13 +201,14 @@ namespace CTOTracker.View.UserControls
                     // Proceed with PDF creation
                     PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
                     doc.Open();
+
                     // Add Header with Company Information
                     PdfPTable headerTable = new PdfPTable(1);
                     headerTable.WidthPercentage = 100;
+
                     // Add current date and time
                     DateTime currentDate = DateTime.Now;
                     doc.Add(new Paragraph("Date generated: " + currentDate.ToString()));
-                    //doc.Add(new Paragraph.Alignment = Element.ALIGN_RIGHT);
 
                     // Add company logo (assuming logoPath is the path to the company logo)
                     iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\dkeh\source\repos\TrackerCTO\CTOTracker\Images\logo.png");
@@ -191,50 +218,51 @@ namespace CTOTracker.View.UserControls
                     logoCell.Border = PdfPCell.NO_BORDER;
                     headerTable.AddCell(logoCell);
                     doc.Add(new Paragraph(" "));
+
                     // Add company name
                     PdfPCell companyNameCell = new PdfPCell(new Phrase("EMPLOYEE CTO TRACKER RECORD"));
                     companyNameCell.HorizontalAlignment = Element.ALIGN_CENTER;
                     companyNameCell.Border = PdfPCell.NO_BORDER;
                     headerTable.AddCell(companyNameCell);
+
                     // Add empty cell to create space between header and table
                     PdfPCell emptyCell = new PdfPCell(new Phrase(" "));
                     emptyCell.Border = PdfPCell.NO_BORDER;
                     headerTable.AddCell(emptyCell);
                     doc.Add(headerTable);
+
                     // Define a style for the header column
                     Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
                     Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
-                    PdfPCell headerCell = new PdfPCell();
-                    headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
-                    headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                    headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                    headerCell.Padding = 3;
+
                     // Add DataGrid content to the PDF document
-                    PdfPTable pdfTable = new PdfPTable(dataGrid.Columns.Count);
-                    pdfTable.SetWidths(new float[] { 3f, 3f, 3f, 2f, 2f, 4f, 2f, 4f, 3f, 4f }); // Adjust column widths here
-                    foreach (DataGridColumn column in dataGrid.Columns)
+                    PdfPTable pdfTable = new PdfPTable(dataTable.Columns.Count);
+                    pdfTable.WidthPercentage = 100;
+
+                    // Add headers
+                    foreach (DataColumn column in dataTable.Columns)
                     {
-                        headerCell.Phrase = new Phrase(column.Header.ToString(), headerFont);
+                        PdfPCell headerCell = new PdfPCell(new Phrase(column.ColumnName.ToString(), headerFont));
+                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        headerCell.Padding = 3;
                         pdfTable.AddCell(headerCell);
                     }
 
-                    foreach (var item in dataGrid.Items)
+                    // Add data rows
+                    foreach (DataRow row in dataTable.Rows)
                     {
-                        if (item is DataRowView)
+                        foreach (var cell in row.ItemArray)
                         {
-                            DataRowView rowView = item as DataRowView;
-                            DataRow row = rowView.Row;
-                            foreach (var cell in row.ItemArray)
-                            {
-                                PdfPCell cellToAdd = new PdfPCell(new Phrase(cell.ToString(), cellFont));
-                                pdfTable.AddCell(cellToAdd);
-                            }
+                            PdfPCell cellToAdd = new PdfPCell(new Phrase(cell.ToString(), cellFont));
+                            cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
+                            cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
+                            pdfTable.AddCell(cellToAdd);
                         }
                     }
-                    // Set position of PDF table
-                    //pdfTable.SetTotalWidth(doc.PageSize.Width - doc.LeftMargin - doc.RightMargin);
-                    pdfTable.HorizontalAlignment = Element.ALIGN_CENTER;
 
+                    // Add table to document
                     doc.Add(pdfTable);
                     doc.Close();
 
@@ -249,49 +277,21 @@ namespace CTOTracker.View.UserControls
 
         private void btnExport_Click_1(object sender, RoutedEventArgs e)
         {
-            ExportToPdf(reportDataGrid, null);
-        }
-        private void LoadScheduleDataByInitial(string initial)
-        {
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection())
-                {
-                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
-                                    "ctoUsed, ctoBalance FROM (((Schedule " +
-                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
-                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
-                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID) WHERE Employee.fName LIKE @Initial + '%' OR Employee.lName LIKE @Initial + '%'";
+            // Convert DataView to DataTable
+            DataView dataView = reportDataGrid.ItemsSource as DataView;
 
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
+            // Apply the same filters as applied in the UI
+            DataTable filteredDataTable = dataView.ToTable();
+            // You may need to apply additional filters here based on UI inputs, such as nameFilter, roleFilter, etc.
 
-                    // Bind the DataTable to the DataGrid
-                    reportDataGrid.ItemsSource = dataTable.DefaultView;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
+            // Call the ExportToPdf method with the filtered data
+            ExportToPdf(filteredDataTable, null);
         }
+   
         private void txtschFname_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string name = txtschFname.Text.ToString();
-            //LoadAllData();
-            if (string.IsNullOrEmpty(name))
-            {
-                DataReportView();
-                return;
-            }
-            else
-            {
-
-            }
-            //Otherwise, filter the data based on the entered initial
-            LoadScheduleDataByInitial(txtschFname.Text);
+            nameFilter = txtschFname.Text.Trim();
+            ApplyFiltersAndUpdateDataGrid();
         }
 
         //------------------------------Task------------------------------------
@@ -370,81 +370,7 @@ namespace CTOTracker.View.UserControls
             return task;
         }
 
-        private string GetTaskID(string taskName)
-        {
-            string? taskID = null; // Initialize taskId to null
 
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
-                {
-                    string query = "SELECT taskID FROM Task WHERE taskName = ?"; // SQL query to retrieve task ID based on task name
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-                    {
-                        command.Parameters.AddWithValue("@taskName", taskName); // Add parameter for task name
-
-                        connection.Open(); // Open the connection
-                        object? result = command.ExecuteScalar(); // Execute the query and get the result
-
-                        if (result != null) // Check if the result is not null
-                        {
-                            taskID = result.ToString(); // Assign the task ID to taskId
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
-            }
-
-            return taskID ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
-        }
-
-        private void LoadTaskQuery(string taskId)
-        {
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection())
-                {
-                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
-                                    "ctoUsed, ctoBalance FROM (((Schedule " +
-                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
-                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
-                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID) WHERE Task.taskID = ?;";
-
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-                    {
-                        command.Parameters.AddWithValue("@taskId", taskId);
-                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
-                        DataTable dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-
-                        // Bind the DataTable to the DataGrid
-                        reportDataGrid.ItemsSource = dataTable.DefaultView;
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-        }
-
-        private void FilterDataByTask()
-        {
-            string selectedTask = cmbxTask.SelectedItem?.ToString() ?? string.Empty;
-            string taskId = GetTaskID(selectedTask);
-            if (!string.IsNullOrEmpty(taskId))
-            {
-                LoadTaskQuery(taskId);
-            }
-            else
-            {
-                MessageBox.Show("Employee not found.");
-            }
-        }
 
         //------------------------------Role------------------------------------
         private void PopulateRoleComboBox()
@@ -522,83 +448,6 @@ namespace CTOTracker.View.UserControls
             return role;
         }
 
-        private string GetRoleID(string roleName)
-        {
-            string? roleID = null; // Initialize taskId to null
-
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
-                {
-                    string query = "SELECT roleID FROM Role WHERE roleName = ?"; // SQL query to retrieve task ID based on task name
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-                    {
-                        command.Parameters.AddWithValue("@roleName", roleName); // Add parameter for task name
-
-                        connection.Open(); // Open the connection
-                        object? result = command.ExecuteScalar(); // Execute the query and get the result
-
-                        if (result != null) // Check if the result is not null
-                        {
-                            roleID = result.ToString(); // Assign the task ID to taskId
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error retrieving role ID: " + ex.Message); // Display error message if an exception occurs
-            }
-
-            return roleID ?? throw new Exception("Role ID not found."); // Return taskId if not null, otherwise throw an exception
-        }
-
-        private void LoadRoleQuery(string roleId)
-        {
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection())
-                {
-                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Task.taskName, Role.roleName, plannedEnd, ctoEarned, dateUsed, " +
-                                    "ctoUsed, ctoBalance FROM (((Schedule " +
-                                    "LEFT JOIN Employee ON Schedule.empID = Employee.empID) " +
-                                    "LEFT JOIN Role ON Employee.roleID = Role.roleID) " +
-                                    "LEFT JOIN Task ON Schedule.taskID = Task.taskID) WHERE Role.roleID = ?;";
-
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-                    {
-                        command.Parameters.AddWithValue("@empID", roleId);
-                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
-                        DataTable dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-
-                        // Bind the DataTable to the DataGrid
-                        reportDataGrid.ItemsSource = dataTable.DefaultView;
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-        }
-
-        private void FilterDataByRole()
-        {
-            string selectedRole = cmbxRole.SelectedItem?.ToString() ?? string.Empty;
-            string roleId = GetRoleID(selectedRole);
-            if (!string.IsNullOrEmpty(roleId))
-            {
-                LoadRoleQuery(roleId);
-            }
-            else
-            {
-                MessageBox.Show("Employee not found.");
-            }
-        }
-
-
         private void txtschFname_GotFocus(object sender, RoutedEventArgs e)
         {
             txtschFname.Text = "";
@@ -627,7 +476,7 @@ namespace CTOTracker.View.UserControls
             txtschLname.Text = "";
         }
 
-        private void LoadEmployeeReportWithCTO()
+        /*private void LoadEmployeeReportWithCTO()
         {
             // Modify your query to retrieve employees with remaining CTO balance
             string query = @"SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName,Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, " +
@@ -650,10 +499,11 @@ namespace CTOTracker.View.UserControls
                 // Load all data
                 DataReportView();
             }
-        }
+        }*/
         private void chkbxBalance_Checked(object sender, RoutedEventArgs e)
         {
-            FilterAndLoadData();         }
+            ApplyFiltersAndUpdateDataGrid(); 
+        }
 
         private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
         {
@@ -693,19 +543,15 @@ namespace CTOTracker.View.UserControls
 
         private void cmbxRole_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cmbxRole.SelectedItem != null)
-            {
-                FilterDataByRole();
-            }   
+            roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
+            ApplyFiltersAndUpdateDataGrid();
 
         }
 
         private void cmbxTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cmbxTask.SelectedItem != null)
-            {
-                FilterDataByTask();
-            }
+            taskFilter = cmbxTask.SelectedItem?.ToString() ?? "";
+            ApplyFiltersAndUpdateDataGrid();
         }
 
         /*private void PopulateEmployeeListComboBox(string selectedRole)
