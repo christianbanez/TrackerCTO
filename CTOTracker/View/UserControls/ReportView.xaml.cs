@@ -42,7 +42,7 @@ namespace CTOTracker.View.UserControls
         }
         private void EmployeeReportView()
         {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Employee.email, Role.roleName, Schedule.ctoBalance\r\nFROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID;\r\n";
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Employee.email, Employee.contact, Role.roleName, Schedule.ctoBalance\r\nFROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) INNER JOIN Schedule ON Employee.empID = Schedule.empID;\r\n";
             LoadEmployeeReport(query);
 
         }
@@ -220,22 +220,24 @@ namespace CTOTracker.View.UserControls
         }
 
         private void reportDG_DoubleMouseClick(object sender, MouseButtonEventArgs e)
-        {
-            // Retrieve the selected row (data item)
-            DataGrid gd = (DataGrid)sender;
-            DataRowView row_selected = (DataRowView)gd.SelectedItem;
-           
+        { 
             try
             {
-                if (row_selected != null)
+                // Retrieve the selected row (data item)
+                //DataGrid gd = (DataGrid)sender;
+                
+                if (reportDataGrid.SelectedItem != null)
                 {
-                    // Extract values from the row and populate labels
-                    lblID.Content = row_selected["inforID"].ToString();
-                    string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString(); //get fullname of the selected employee
-                    lblEmpName.Content = fullName.ToString();
-                    lblRole.Content = row_selected["roleName"].ToString();
-                    /*kulang pa ng contact number & email*/
-                    LoadEmployeeReportHistory(fullName);
+                    DataRowView row_selected = (DataRowView)reportDataGrid.SelectedItem;
+
+                    // Extract relevant data from the selected row
+                    string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString();
+                    string role = row_selected["roleName"].ToString();
+                    string contactNum = row_selected["contact"].ToString();
+                    string email = row_selected["email"].ToString();
+                    string empID = row_selected["inforID"].ToString();
+
+                    LoadEmployeeReportHistory(fullName, role, contactNum, email, empID);
                 }
             }
             catch (Exception ex)
@@ -273,10 +275,16 @@ namespace CTOTracker.View.UserControls
             // Return employeeId if not null, otherwise throw an exception
             return employeeId ?? throw new Exception("Employee ID not found.");
         }
-        private void LoadEmployeeReportHistory(string fullName)
+        private void LoadEmployeeReportHistory(string fullName, string role, string contactNum, string email, string empID)
         {
             string employeeId = GetEmployeeId(fullName);
-            
+
+            lblEmpName.Content = fullName;
+            lblID.Content = empID;
+            lblRole.Content = role;
+            lblContactNum.Content = contactNum;
+            lblEmail.Content = email;
+
             try
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
@@ -293,30 +301,19 @@ namespace CTOTracker.View.UserControls
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
 
-                        
-
-                        //bool allTasksComplete = true;
-                        //
-                        //// Modify the data table for display
-                        //foreach (DataRow row in dataTable.Rows)
-                        //{
-                        //    // Check for null values in timeIn and timeOut
-                        //    if (row["timeIn"] == DBNull.Value || row["timeOut"] == DBNull.Value)
-                        //    {
-                        //        allTasksComplete = false; 
-                        //    }
-                        //}
-                        //if (!allTasksComplete)
-                        //{
-                        //    // Display a message indicating the task is not yet completed
-                        //    MessageBox.Show("This task not yet completed.", "Information");
-                        //}
-                        //else
-                        //{
-                        // Bind the DataTable to the DataGrid
-                        scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                        // Check if any rows were returned with completed = -1
+                        if (dataTable.Rows.Count > 0)
+                        {
+                            // Bind the DataTable to the DataGrid
+                            scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                            // Set visibility of EmpFilPnl to visible
                             EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
-                        //}
+                        }
+                        else
+                        {
+                            // Display a message indicating the task is not yet completed
+                            MessageBox.Show("This task is not yet completed.", "Information");
+                        }
                     }
                 }
             }
@@ -324,6 +321,10 @@ namespace CTOTracker.View.UserControls
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
+        }
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
         }
     }
 }
