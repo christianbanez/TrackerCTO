@@ -32,6 +32,7 @@ namespace CTOTracker.View
             dataConnection = new DataConnection();
             LoadEmployeeView();
             AddPnl.Visibility = Visibility.Collapsed;
+            employeeSearch.TextChanged += employeeSearch_TextChanged;
             UpdatePnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
 
@@ -80,16 +81,16 @@ namespace CTOTracker.View
             //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
             //if (msgRes == MessageBoxResult.Yes)
             //{
-                AddEdit.Visibility = Visibility.Visible;
-                AddPnl.Visibility = Visibility.Collapsed;
-                UpdatePnl.Visibility = Visibility.Collapsed;
-                txtEmpID.IsEnabled = false;
-                txtFname.IsEnabled = false;
-                txtLname.IsEnabled = false;
-                txtEmail.IsEnabled = false;
-                txtContact.IsEnabled = false;
-                txtRole.IsEnabled = false;
-                DataGridEmployee1.IsEnabled = true;
+            AddEdit.Visibility = Visibility.Visible;
+            AddPnl.Visibility = Visibility.Collapsed;
+            UpdatePnl.Visibility = Visibility.Collapsed;
+            txtEmpID.IsEnabled = false;
+            txtFname.IsEnabled = false;
+            txtLname.IsEnabled = false;
+            txtEmail.IsEnabled = false;
+            txtContact.IsEnabled = false;
+            txtRole.IsEnabled = false;
+            DataGridEmployee1.IsEnabled = true;
             //}
         }
 
@@ -98,16 +99,16 @@ namespace CTOTracker.View
             //MessageBoxResult msgRes = MessageBox.Show("Are you sure?", "Cancel", MessageBoxButton.YesNo);
             //if (msgRes == MessageBoxResult.Yes)
             //{
-                AddEdit.Visibility = Visibility.Visible;
-                AddPnl.Visibility = Visibility.Collapsed;
-                UpdatePnl.Visibility = Visibility.Collapsed;
-                txtEmpID.Clear();
-                txtFname.Clear();
-                txtLname.Clear();
-                txtEmail.Clear();
-                txtContact.Clear();
-                txtRole.SelectedIndex = -1;
-                DataGridEmployee1.IsEnabled = true;
+            AddEdit.Visibility = Visibility.Visible;
+            AddPnl.Visibility = Visibility.Collapsed;
+            UpdatePnl.Visibility = Visibility.Collapsed;
+            txtEmpID.Clear();
+            txtFname.Clear();
+            txtLname.Clear();
+            txtEmail.Clear();
+            txtContact.Clear();
+            txtRole.SelectedIndex = -1;
+            DataGridEmployee1.IsEnabled = true;
             //}
             //dataConnection = new DataConnection();
             LoadEmployeeView();
@@ -124,7 +125,7 @@ namespace CTOTracker.View
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();          // Retrieve data from the database
                     adapter.Fill(dataTable);
-                    
+
                     if (dataTable != null && dataTable.Rows.Count > 0)  // Check if any data is returned
                     {
                         DataGridEmployee1.ItemsSource = dataTable.DefaultView;     // Bind the DataTable to the DataGridView
@@ -143,7 +144,7 @@ namespace CTOTracker.View
                 }
                 finally
                 {
-                    connection.Close(); 
+                    connection.Close();
                 }
             }
         }
@@ -301,21 +302,21 @@ namespace CTOTracker.View
 
                     using (OleDbCommand cmd = connection.CreateCommand())
                     {
-                        
-                            cmd.CommandType = CommandType.Text;
-                            cmd.CommandText = "INSERT INTO Employee (inforID, fName, lName, email, contact, roleID) " +
-                                              "VALUES (@inforID, @firstName, @lastName, @email, @contact, @roleID)";
 
-                            cmd.Parameters.AddWithValue("@inforID", inforID);
-                            cmd.Parameters.AddWithValue("@firstName", firstName);
-                            cmd.Parameters.AddWithValue("@lastName", lastName);
-                            cmd.Parameters.AddWithValue("@email", email);
-                            cmd.Parameters.AddWithValue("@contact", contact);
-                            cmd.Parameters.AddWithValue("@roleID", roleID);
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "INSERT INTO Employee (inforID, fName, lName, email, contact, roleID) " +
+                                          "VALUES (@inforID, @firstName, @lastName, @email, @contact, @roleID)";
 
-                            cmd.ExecuteNonQuery();
-                            
-                        
+                        cmd.Parameters.AddWithValue("@inforID", inforID);
+                        cmd.Parameters.AddWithValue("@firstName", firstName);
+                        cmd.Parameters.AddWithValue("@lastName", lastName);
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@contact", contact);
+                        cmd.Parameters.AddWithValue("@roleID", roleID);
+
+                        cmd.ExecuteNonQuery();
+
+
                     }
                 }
             }
@@ -360,14 +361,14 @@ namespace CTOTracker.View
 
                     InsertEmployee(infor_ID, firstName, lastName, email, contact, roleID);
                     MessageBox.Show("Employee added successfully!");
-                    
+
                     LoadEmployeeView();
                     txtEmpID.Clear();
                     txtFname.Clear();
                     txtLname.Clear();
                     txtEmail.Clear();
                     txtContact.Clear();
-                    txtRole.SelectedIndex=-1;
+                    txtRole.SelectedIndex = -1;
                     AddEdit.Visibility = Visibility.Visible;
                     AddPnl.Visibility = Visibility.Collapsed;
                     UpdatePnl.Visibility = Visibility.Collapsed;
@@ -422,15 +423,15 @@ namespace CTOTracker.View
 
         private void txtContact_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-                foreach (char ch in e.Text)
+            foreach (char ch in e.Text)
+            {
+                if (!char.IsDigit(ch))
                 {
-                    if (!char.IsDigit(ch))
-                    {
-                        e.Handled = true;
-                        return;
-                    }
+                    e.Handled = true;
+                    return;
                 }
-            
+            }
+
         }
 
         private void DataGridEmployee1_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
@@ -450,7 +451,7 @@ namespace CTOTracker.View
             }
         }
 
-       
+
         private void btnSaveUp_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -467,8 +468,8 @@ namespace CTOTracker.View
                 string lastName = txtLname.Text;
                 string email = txtEmail.Text;
                 string contact = txtContact.Text;
-                
-                
+
+
                 // Update the employee record in the database
                 UpdateEmployee(inforID, firstName, lastName, email, contact, roleID);
 
@@ -538,24 +539,24 @@ namespace CTOTracker.View
                         MessageBox.Show("Error updating employee");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("Error updating employee: " + ex);
                 }
-                   
-               
+
+
             }
-            
+
         }
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            
-             
+
+
         }
 
         private void btnDelete_Click_1(object sender, RoutedEventArgs e)
         {
-            
+
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
                 try
@@ -564,7 +565,7 @@ namespace CTOTracker.View
                     {
                         return;
                     }
-                    
+
                     MessageBoxResult msgRes = MessageBox.Show("Are you sure you want to delete this?", "Cancel", MessageBoxButton.YesNo);
                     if (DataGridEmployee1.SelectedItem != null)
                     {
@@ -610,15 +611,60 @@ namespace CTOTracker.View
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error deleting employee: " + ex );
+                    MessageBox.Show("Error deleting employee: " + ex);
                 }
                 finally
                 {
                     connection.Close();
                 }
-                
-    
+
+
             }
         }
+
+        private void employeeSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = employeeSearch.Text.Trim();
+
+            // If the search text is empty, load all data
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadEmployeeView();
+                return;
+            }
+            else
+            {
+
+            }
+            //Otherwise, filter the data based on the entered initial
+            LoadScheduleDataByInitial(searchText);
+        }
+
+        private void LoadScheduleDataByInitial(string initial)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName FROM Employee " +
+                "INNER JOIN Role ON Employee.roleID = Role.roleID " +
+                "WHERE (fName + ' ' + lName) LIKE @Initial + '%'";
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                
+                    DataGridEmployee1.ItemsSource = dataTable.DefaultView;
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
     }
 }

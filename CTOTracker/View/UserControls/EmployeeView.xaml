@@ -69,18 +69,20 @@
                     <!--AddEdit-->
                     <Grid Grid.Row="1" x:Name="AddEdit">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
-                        
-                        <Button x:Name="btnAdd" Grid.Column="1" Margin="5"
+
+                        <TextBox x:Name="employeeSearch" Grid.Column="0" HorizontalAlignment="Left" Margin="39,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="320" TextChanged="employeeSearch_TextChanged"/>
+                        <Button x:Name="btnAdd" Grid.Column="2" Margin="5"
                                 Width="60" Height="30" Content="Add" Click="btnAdd_Click"/>
-                        <Button x:Name="btnEdit" Grid.Column="2" Margin="5" 
+                        <Button x:Name="btnEdit" Grid.Column="3" Margin="5" 
                                 Width="60" Height="30" Content="Update" Click="btnEdit_Click"/>
                     </Grid>
-                    
+
                     <!--AddPnl-->
                     <Grid Grid.Row="1" x:Name="AddPnl">
                         <Grid.ColumnDefinitions>
@@ -99,6 +101,7 @@
                     <!--UpdatePnl-->
                     <Grid Grid.Row="1" x:Name="UpdatePnl">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
@@ -106,12 +109,14 @@
                             <ColumnDefinition Width="15"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button x:Name="btnSaveUp" Grid.Column="1" Margin="5"
+                        
+                        <Button x:Name="btnSaveUp" Grid.Column="2" Margin="5"
                                 Width="60" Height="30" Content="Save" Click="btnSaveUp_Click"/>
-                        <Button x:Name="btnDelete" Grid.Column="2" Margin="5"
+                        <Button x:Name="btnDelete" Grid.Column="3" Margin="5"
                                 Width="60" Height="30" Content="Delete" Click="btnDelete_Click_1"/>
-                        <Button x:Name="btnCancel2" Grid.Column="3" Margin="5" 
+                        <Button x:Name="btnCancel2" Grid.Column="4" Margin="5" 
                                 Width="60" Height="30" Content="Cancel" Click="btnCancel2_Click"/>
+                        
                     </Grid>
                 </Grid>
             </Grid>
