@@ -88,7 +88,7 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" Grid.ColumnSpan="2" />
+                Style="{StaticResource table_style}" Grid.ColumnSpan="2" MouseDoubleClick="reportDataGrid_MouseDoubleClick" />
 
         </Grid>
         <!--  Filter Panel  -->

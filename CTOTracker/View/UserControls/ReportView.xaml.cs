@@ -17,7 +17,6 @@ namespace CTOTracker.View.UserControls
     public partial class ReportView : UserControl
     {
         private DataConnection dataConnection;
-        private List<string> allEmployees;
 
         private string nameFilter = "";
         private string taskFilter = "";
@@ -541,9 +540,6 @@ namespace CTOTracker.View.UserControls
             ApplyFiltersAndUpdateDataGrid();
         }
 
-        /*private void chkbxUsed_Unchecked(object sender, RoutedEventArgs e)
-        {
-            DataReportView();
-        }*/
+        
     }
 }
