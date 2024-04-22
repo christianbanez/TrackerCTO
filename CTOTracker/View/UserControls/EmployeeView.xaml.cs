@@ -156,7 +156,7 @@ namespace CTOTracker.View
                 try
                 {
                     connection.Open();
-                    string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName   FROM Employee    INNER JOIN Role ON Employee.roleID = Role.roleID";   // Specify the columns you want to retrieve
+                    string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName FROM Employee INNER JOIN Role ON Employee.roleID = Role.roleID";   // Specify the columns you want to retrieve
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();          // Retrieve data from the database
                     adapter.Fill(dataTable);

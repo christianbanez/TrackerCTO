@@ -36,7 +36,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox
-                    x:Name="tbxSearch"
+                    x:Name="employeeNameTextBox"
                     Grid.Column="0"
                     Margin="5"
                     HorizontalAlignment="Stretch"
@@ -107,13 +107,11 @@
                     </Grid.ColumnDefinitions>
 
                     <Button
-                        x:Name="btnSaveCTOused"
+                        x:Name="btnUseCtoUsed"
                         Grid.Column="1"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Content="Save"
-                        Style="{StaticResource button_style}" />
+                        Margin="5,0,5,5"
+                        VerticalAlignment="Bottom"
+                        Content="USE" Height="30" Click="btnUseCtoUsed_Click" />
                     <Label
                         Grid.Column="2"
                         HorizontalAlignment="Stretch"
