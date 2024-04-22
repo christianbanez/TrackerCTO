@@ -248,6 +248,15 @@
                         </StackPanel>
                     </ListViewItem>
 
+                    <ListViewItem
+                        Margin="0,390,0,15"
+                        HorizontalAlignment="Left"
+                        Content="Role/Task"
+                        Foreground="White"
+                        FontWeight="DemiBold" Selected="ListViewItem_Selected_3">
+                        
+                    </ListViewItem>
+
                     <!--  // Listview items style template //  -->
                     <ListView.ItemContainerStyle>
 

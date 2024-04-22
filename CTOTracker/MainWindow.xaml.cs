@@ -85,6 +85,16 @@ namespace CTOTracker
             }
         }
 
+        private void ListViewItem_Selected_3(object sender, RoutedEventArgs e)
+        {
+            frmMain.Navigate(new RoleTaskView());
+            // Uncheck the ToggleButton when a list view item is selected
+            if (listSideNav.SelectedItem != null)
+            {
+                tgbMenu.IsChecked = false;
+            }
+        }
+
         private void tgbMenu_MouseEnter(object sender, MouseEventArgs e)
         {
             // Set tooltip visibility
@@ -132,5 +142,6 @@ namespace CTOTracker
         {
             this.DragMove();
         }
+
     }
 }
