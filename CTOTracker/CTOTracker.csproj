@@ -32,6 +32,7 @@
     <Resource Include="View\Resource Dictionary\Assets\tgbMenu.png" />
     <Resource Include="View\Resource Dictionary\Assets\tgbMenu_MouseOver.png" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
   </ItemGroup>
 

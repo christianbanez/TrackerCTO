@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.OleDb;
+﻿using System.Data.OleDb;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Security.Policy;
-using Xceed.Wpf.AvalonDock.Themes;
-using System.Reflection;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
+using Microsoft.Win32;
+using System.Xml.Linq;
+
 
 namespace CTOTracker.View.UserControls
 {
@@ -326,5 +319,187 @@ namespace CTOTracker.View.UserControls
         {
             EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
         }
-    }
-}
+        /*private void ExportToPdfButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Create a SaveFileDialog to choose the output path
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
+            saveFileDialog.FileName = "exported_data.pdf"; // Default file name
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string outputPath = saveFileDialog.FileName;
+
+                // Create a Document
+                Document doc = new Document();
+
+                try
+                {
+                    // Initialize the PdfWriter with the document and a file stream
+                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+
+                    // Open the document
+                    doc.Open();
+
+                    // Add labels to the document
+                    doc.Add(new iTextSharp.text.Paragraph($"Name: {lblEmpName.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"Email: {lblEmail.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"Role: {lblRole.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"ID: {lblID.Content}"));
+
+                    // Add a table to the document
+                    PdfPTable table = new PdfPTable(reportDataGrid.Columns.Count);
+                    table.WidthPercentage = 100;
+
+                    // Add headers
+                    for (int i = 0; i < reportDataGrid.Columns.Count; i++)
+                    {
+                        table.AddCell(new PdfPCell(new Phrase(reportDataGrid.Columns[i].Header.ToString())));
+                    }
+
+                    // Add data rows
+                    for (int i = 0; i < reportDataGrid.Items.Count; i++)
+                    {
+                        DataRowView rowView = (DataRowView)reportDataGrid.Items[i];
+                        DataRow row = rowView.Row;
+
+                        for (int j = 0; j < reportDataGrid.Columns.Count; j++)
+                        {
+                            table.AddCell(new PdfPCell(new Phrase(row[j].ToString())));
+                        }
+                    }
+
+                    // Add table to document
+                    doc.Add(table);
+
+                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error exporting PDF: " + ex.Message);
+                }
+                finally
+                {
+                    // Close the document
+                    doc.Close();
+                }
+            }
+        }*/
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            // Create a SaveFileDialog to choose the output path
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
+            saveFileDialog.FileName = "exported_data.pdf"; // Default file name
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string outputPath = saveFileDialog.FileName;
+
+                // Create a Document
+                Document doc = new Document();
+
+                try
+                {
+                    // Initialize the PdfWriter with the document and a file stream
+                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+
+                    // Open the document
+                    doc.Open();
+
+                    // Add Header with Company Information
+                    PdfPTable headerTable = new PdfPTable(1);
+                    headerTable.WidthPercentage = 100;
+                    // Add current date and time
+                    DateTime currentDate = DateTime.Now;
+                    doc.Add(new iTextSharp.text.Paragraph("Date generated: " + currentDate.ToString()));
+
+                    // Add company logo (assuming logoPath is the path to the company logo)
+                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\dkeh\source\repos\TrackerCTO\CTOTracker\Images\logo.png");
+                    logo.ScaleToFit(50f, 50f); // Adjust size as needed
+                    PdfPCell logoCell = new PdfPCell(logo);
+                    logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    logoCell.Border = PdfPCell.NO_BORDER;
+                    headerTable.AddCell(logoCell);
+                    doc.Add(new iTextSharp.text.Paragraph(" "));
+
+                    // Add company name
+                    PdfPCell companyNameCell = new PdfPCell(new Phrase("EMPLOYEE CTO TRACKER RECORD"));
+                    companyNameCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    companyNameCell.Border = PdfPCell.NO_BORDER;
+                    headerTable.AddCell(companyNameCell);
+
+                    // Add empty cell to create space between header and table
+                    PdfPCell emptyCell = new PdfPCell(new Phrase(" "));
+                    emptyCell.Border = PdfPCell.NO_BORDER;
+                    headerTable.AddCell(emptyCell);
+                    doc.Add(headerTable);
+
+                    // Add labels to the document
+                    doc.Add(new iTextSharp.text.Paragraph($"Name: {lblEmpName.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"Email: {lblEmail.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"Role: {lblRole.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"ID: {lblID.Content}"));
+
+                    
+
+
+                    // Add DataGrid content to the PDF document
+                    PdfPTable pdfTable = new PdfPTable(reportDataGrid.Columns.Count);
+                    pdfTable.WidthPercentage = 100;
+
+                    // Define a style for the header column
+                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
+                    Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
+
+                    // Add headers
+                    foreach (DataGridColumn column in reportDataGrid.Columns)
+                    {
+                        // Get the header text of the column
+                        string columnHeader = column.Header.ToString();
+
+                        // Add the column header to the PDF table
+                        PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
+                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        headerCell.Padding = 3;
+                        pdfTable.AddCell(headerCell);
+                    }
+                    // Iterate through the rows and add the corresponding cell data
+                    foreach (var item in reportDataGrid.Items)
+                    {
+                        var row = reportDataGrid.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
+                        if (row != null)
+                        {
+                            foreach (DataGridColumn column in reportDataGrid.Columns)
+                            {
+                                object cellData = column.GetCellContent(item);
+                                PdfPCell cellToAdd = new PdfPCell(new Phrase(cellData.ToString(), cellFont));
+                                cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
+                                cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
+                                pdfTable.AddCell(cellToAdd);
+                            }
+                        }
+                    }
+
+                    // Add table to document
+                    doc.Add(pdfTable);
+
+                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error exporting PDF: " + ex.Message);
+                }
+                finally
+                {
+                    // Close the document
+                    doc.Close();
+                }
+            }
+        }
+
+    }//main load
+} //namespace
