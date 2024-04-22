@@ -162,23 +162,71 @@ namespace CTOTracker.View
         {
             try
             {
+
                 // Check if any rows are selected in the scheduleDataGrid
                 if (scheduleDataGrid.SelectedItems.Count > 0)
                 {
                     // Create a list to hold selected schedule data
                     List<DataRowView> selectedRows = new List<DataRowView>();
-
+                    string? firstId = null;
+                    bool allRowsValid = true;
                     // Iterate through each selected row in the scheduleDataGrid
                     foreach (DataRowView selectedRow in scheduleDataGrid.SelectedItems)
                     {
-                        selectedRows.Add(selectedRow);
-                    }
+                        string rowId = Convert.ToString(selectedRow["inforID"]); // Assuming 'ID' is the column name for IDs
+                        object balance = selectedRow["ctoBalance"]; // Assuming 'Balance' is the column name for balance                     
 
-                    // Pass the selected rows to the useCto window
-                    useCto useCtoWindow = new useCto();
-                    useCtoWindow.LoadSelectedSchedule(selectedRows);
-                    useCtoWindow.Show();
+                        // Initialize the firstId or compare rowId with firstId
+                        if (firstId == null)
+                        {
+                            firstId = rowId; // Set the first ID for future comparisons
+                        }
+                        else if (rowId != firstId) // Check if the current row's ID matches the first ID
+                        {
+                            allRowsValid = false;
+                            break;
+                        }
+                        //if (!ids.Add(rowId) || balance == null || balance == DBNull.Value)
+                        //{
+                        //    allRowsValid = false;
+
+                        //    break;
+                        //}
+                        if (balance == null || balance == DBNull.Value)
+                        {
+                            allRowsValid = false;
+                            break;
+                        }
+                        selectedRows.Add(selectedRow);
+
+
+                    }
+                    if (allRowsValid)
+                    {
+                        // Pass the selected rows to the useCto window
+                        useCto useCtoWindow = new useCto();
+                        useCtoWindow.LoadSelectedSchedule(selectedRows);
+                        useCtoWindow.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("All selected rows must have the same ID and must have CTO balances.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    //if (allRowsValid)
+                    //{
+                    //    // Pass the selected rows to the useCto window
+                    //    useCto useCtoWindow = new useCto();
+                    //    useCtoWindow.LoadSelectedSchedule(selectedRows);
+                    //    useCtoWindow.Show();
+                    //}
+                    //else
+                    //{
+                    //    MessageBox.Show("Please select rows with unique IDs and non-null balances.");
+                    //}
+                   ;
+                    
                 }
+                        
                 else
                 {
                     MessageBox.Show("No rows selected.");

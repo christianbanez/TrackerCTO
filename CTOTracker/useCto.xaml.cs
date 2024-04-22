@@ -205,43 +205,95 @@ namespace CTOTracker
             }
         }
 
+        //private void useCtoBttn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Ask for confirmation
+        //    MessageBoxResult result = MessageBox.Show("Are you sure you want to update the database with the changes?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+        //    // Check if the user confirmed
+        //    if (result == MessageBoxResult.Yes)
+        //    {
+        //        try
+        //        {
+        //            // Get the changes made in the ChangesGridView
+        //            DataTable changesDataTable = ((DataView)ChangesGridView.ItemsSource).ToTable();
+
+        //            // Update the database with the changes
+        //            foreach (DataRow row in changesDataTable.Rows)
+        //            {
+        //                int schedID = Convert.ToInt32(row["schedID"]);
+        //                double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
+        //                double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
+        //                string useDesc = useDescTextBox.Text;
+
+        //                // Retrieve the date from the DatePicker
+        //                DateTime dateUsed = datePicker.SelectedDate ?? DateTime.Now; // Use current date if no date is selected
+
+        //                // Call the method to update the database
+        //                UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc, dateUsed);
+        //            }
+
+        //            MessageBox.Show("Database updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        //            ScheduleView scheduleView = new ScheduleView();
+        //            this.Close();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show("Error updating database: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        }
+        //    }
+        //}
         private void useCtoBttn_Click(object sender, RoutedEventArgs e)
         {
             // Ask for confirmation
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to update the database with the changes?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+           
+            // Retrieve the description and date from the user interface
+            string useDesc = useDescTextBox.Text.Trim(); // Trim to remove any leading or trailing whitespace
+            DateTime? dateUsed = datePicker.SelectedDate; // Get the selected date
 
-            // Check if the user confirmed
-            if (result == MessageBoxResult.Yes)
+            // Check if description is empty or date is null
+            if (string.IsNullOrEmpty(useDesc) || !dateUsed.HasValue)
             {
-                try
+                MessageBox.Show("Please provide both a description and a date.", "Input Required", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return; // Stop further processing
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to update the database with the changes?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result != MessageBoxResult.Yes)
                 {
-                    // Get the changes made in the ChangesGridView
-                    DataTable changesDataTable = ((DataView)ChangesGridView.ItemsSource).ToTable();
-
-                    // Update the database with the changes
-                    foreach (DataRow row in changesDataTable.Rows)
-                    {
-                        int schedID = Convert.ToInt32(row["schedID"]);
-                        double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
-                        double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
-                        string useDesc = useDescTextBox.Text;
-
-                        // Retrieve the date from the DatePicker
-                        DateTime dateUsed = datePicker.SelectedDate ?? DateTime.Now; // Use current date if no date is selected
-
-                        // Call the method to update the database
-                        UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc, dateUsed);
-                    }
-
-                    MessageBox.Show("Database updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    ScheduleView scheduleView = new ScheduleView();
-                    this.Close();
+                    return;
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error updating database: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    try
+                    {
+                        // Get the changes made in the ChangesGridView
+                        DataTable changesDataTable = ((DataView)ChangesGridView.ItemsSource).ToTable();
+
+                        // Update the database with the changes
+                        foreach (DataRow row in changesDataTable.Rows)
+                        {
+                            int schedID = Convert.ToInt32(row["schedID"]);
+                            double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
+                            double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
+
+                            // Call the method to update the database
+                            UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc, dateUsed.Value); // Use the validated dateUsed
+                        }
+
+                        MessageBox.Show("Database updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        ScheduleView scheduleView = new ScheduleView();
+                        this.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error updating database: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
+                     
+            
         }
 
         // Method to update the ctoUsed, ctoBalance, and useDesc values in the database
