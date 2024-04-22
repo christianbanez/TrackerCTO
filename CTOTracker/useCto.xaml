@@ -18,5 +18,6 @@
         <Button x:Name="confirmChangesBttn" Content="Confirm" HorizontalAlignment="Left" Margin="750,176,0,0" VerticalAlignment="Top" Click="confirmChangesBttn_Click"/>
         <TextBox x:Name="useDescTextBox" HorizontalAlignment="Left" Margin="10,406,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="400"/>
         <Label Content="Usage Description :" HorizontalAlignment="Left" Margin="10,380,0,0" VerticalAlignment="Top"/>
+        <DatePicker x:Name="datePicker" HorizontalAlignment="Left" Margin="490,403,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

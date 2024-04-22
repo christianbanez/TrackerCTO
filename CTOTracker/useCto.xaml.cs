@@ -23,11 +23,18 @@ namespace CTOTracker
     public partial class useCto : Window
     {
         private DataConnection dataConnection; // Declare a field to hold the DataConnection object
+        private bool isConfirmed = false;
         public useCto()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
-
+            SetControlsEnabledState();
+        }
+        private void SetControlsEnabledState()
+        {
+            useDescTextBox.IsEnabled = isConfirmed;
+            datePicker.IsEnabled = isConfirmed;
+            useCtoBttn.IsEnabled = isConfirmed;
         }
 
         private void SelectedScheduleView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -171,11 +178,8 @@ namespace CTOTracker
                         {
                             ctoUsed = Math.Max(0, ctoUsed - ctoBalance); // Otherwise, use the regular logic
                         }
-
-                        
-
-
-
+                        isConfirmed = true; // Set the confirmation state to true
+                        SetControlsEnabledState(); // Update controls state
                         DataRow newRow = changesDataTable.NewRow();
                         newRow["schedID"] = Convert.ToInt32(rowView["schedID"]);
                         newRow["inforID"] = Convert.ToInt32(rowView["inforID"]);
@@ -220,9 +224,13 @@ namespace CTOTracker
                         int schedID = Convert.ToInt32(row["schedID"]);
                         double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
                         double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
-                        string useDesc = ""; // Placeholder for useDesc input
-                        useDesc = useDescTextBox.Text;
-                        UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc);
+                        string useDesc = useDescTextBox.Text;
+
+                        // Retrieve the date from the DatePicker
+                        DateTime dateUsed = datePicker.SelectedDate ?? DateTime.Now; // Use current date if no date is selected
+
+                        // Call the method to update the database
+                        UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc, dateUsed);
                     }
 
                     MessageBox.Show("Database updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -237,12 +245,12 @@ namespace CTOTracker
         }
 
         // Method to update the ctoUsed, ctoBalance, and useDesc values in the database
-        private void UpdateCtoUsedInDatabase(int schedID, double ctoUsed, double ctoBalance, string useDesc)
+        private void UpdateCtoUsedInDatabase(int schedID, double ctoUsed, double ctoBalance, string useDesc, DateTime dateUsed)
         {
             try
             {
                 // Create a SQL query to update the ctoUsed, ctoBalance, and useDesc values
-                string query = "UPDATE Schedule SET ctoUsed = @ctoUsed, ctoBalance = @ctoBalance, useDesc = @useDesc WHERE schedID = @schedID";
+                string query = "UPDATE Schedule SET ctoUsed = @ctoUsed, ctoBalance = @ctoBalance, useDesc = @useDesc, dateUsed = @dateUsed WHERE schedID = @schedID";
 
                 // Execute the query with the provided parameters
                 using (OleDbConnection connection = dataConnection.GetConnection())
@@ -251,6 +259,7 @@ namespace CTOTracker
                     command.Parameters.AddWithValue("@ctoUsed", ctoUsed);
                     command.Parameters.AddWithValue("@ctoBalance", ctoBalance);
                     command.Parameters.AddWithValue("@useDesc", useDesc);
+                    command.Parameters.AddWithValue("@dateUsed", dateUsed);
                     command.Parameters.AddWithValue("@schedID", schedID);
                     connection.Open();
                     command.ExecuteNonQuery();
