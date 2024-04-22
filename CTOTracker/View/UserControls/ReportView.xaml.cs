@@ -30,6 +30,8 @@ namespace CTOTracker.View.UserControls
             txtschFname.TextChanged += txtschFname_TextChanged;
             chkbxBalance.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             chkbxBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            chkbxUsed.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            chkbxUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
             PopulateRoleComboBox();
@@ -68,6 +70,7 @@ namespace CTOTracker.View.UserControls
                     else
                     {
                         MessageBox.Show("No data found.", "Information");
+                        return;
                     }
                     if (!columnsAdded)
                     {
@@ -109,6 +112,10 @@ namespace CTOTracker.View.UserControls
             if (chkbxBalance.IsChecked == true)
             {
                 query += " AND Schedule.ctoBalance > 0";
+            }
+            if (chkbxUsed.IsChecked == true)
+            {
+                query += " AND Schedule.ctoUsed > 0";
             }
 
             // Execute the query and update the DataGrid
@@ -476,33 +483,13 @@ namespace CTOTracker.View.UserControls
             txtschLname.Text = "";
         }
 
-        /*private void LoadEmployeeReportWithCTO()
-        {
-            // Modify your query to retrieve employees with remaining CTO balance
-            string query = @"SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName,Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, " +
-                "Schedule.ctoUsed, Schedule.ctoBalance FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
-                "INNER JOIN(Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
-                "ON Employee.empID = Schedule.empID\r\nWHERE (((Schedule.ctoBalance)>0));";
-
-            LoadAllData(query);
-        }
-        private void FilterAndLoadData()
-        {
-            // Check the state of the CheckBox
-            if (chkbxBalance.IsChecked == true)
-            {
-                // Load data with remaining CTO balance
-                LoadEmployeeReportWithCTO();
-            }
-            else 
-            {
-                // Load all data
-                DataReportView();
-            }
-        }*/
         private void chkbxBalance_Checked(object sender, RoutedEventArgs e)
         {
-            ApplyFiltersAndUpdateDataGrid(); 
+            ApplyFiltersAndUpdateDataGrid();
+        }
+        private void chkbxUsed_Checked(object sender, RoutedEventArgs e)
+        {
+            ApplyFiltersAndUpdateDataGrid();
         }
 
         private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
@@ -554,51 +541,9 @@ namespace CTOTracker.View.UserControls
             ApplyFiltersAndUpdateDataGrid();
         }
 
-        /*private void PopulateEmployeeListComboBox(string selectedRole)
+        /*private void chkbxUsed_Unchecked(object sender, RoutedEventArgs e)
         {
-            string query = "SELECT * FROM Employees WHERE Role = @Role";
-
-            //string query = "SELECT roleName FROM Role";
-
-            using (OleDbConnection connection = dataConnection.GetConnection())
-            {
-                try
-                {
-                    connection.Open();
-                    OleDbCommand cmd = new OleDbCommand(query, connection);
-                    cmd.Parameters.AddWithValue("@Role", selectedRole);
-
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-
-                    if (dataTable != null && dataTable.Rows.Count > 0)
-                    {
-                        // Clear previous items
-                        cmbxRole.Items.Clear();
-
-                        // Populate ComboBox with employee names
-                        foreach (DataRow row in dataTable.Rows)
-                        {
-                            cmbxRole.Items.Add(row["roleName"]);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("No data found.", "Information");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: " + ex.Message, "Error");
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
+            DataReportView();
         }*/
-
-
     }
 }

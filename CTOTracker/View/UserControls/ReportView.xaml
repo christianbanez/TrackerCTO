@@ -54,7 +54,7 @@
                     Content="CTO Used"
                     FontFamily="Roboto-Light"
                     FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" />
+                    Style="{DynamicResource CheckBoxStyle1}" Checked="chkbxUsed_Checked" />
 
                 <Button
                     x:Name="btnExport"
