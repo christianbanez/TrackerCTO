@@ -26,7 +26,7 @@ namespace CTOTracker
             filteredTask = new List<string>();
             //startTimeTextBox.Text = "09:00 AM";
             //endTimeTextBox.Text = "05:00 PM";
-            Employee_Cmbox.IsEditable = true; // Allow editing of ComboBox text
+            //Employee_Cmbox.IsEditable = true; // Allow editing of ComboBox text
             PopulateEmployeeComboBox();
             PopulateTaskComboBox();
             Loaded += MainWindow_Loaded;
@@ -243,6 +243,36 @@ namespace CTOTracker
             // Open the dropdown
             Employee_Cmbox.IsDropDownOpen = true;
         }
+        private void InsertTaskIntoDatabase(string taskName)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "INSERT INTO Task (taskName) VALUES (@taskName)";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@taskName", taskName);
+
+                        connection.Open();
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Task has been added to the database!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to add task to the database.");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error inserting task into database: " + ex.Message);
+            }
+        }
 
         private List<string> GetDataFromTaskTable()
         {
@@ -331,35 +361,33 @@ namespace CTOTracker
             return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
         }
 
-        private string GetTaskId(string taskName)
+        private string? GetTaskId(string taskName)
         {
-            string? taskId = null; // Initialize taskId to null
+            string? taskId = null;
 
             try
             {
-                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT taskID FROM Task WHERE taskName = ?"; // SQL query to retrieve task ID based on task name
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    string query = "SELECT taskID FROM Task WHERE taskName = ?";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@taskName", taskName); // Add parameter for task name
-
-                        connection.Open(); // Open the connection
-                        object? result = command.ExecuteScalar(); // Execute the query and get the result
-
-                        if (result != null) // Check if the result is not null
+                        command.Parameters.AddWithValue("@taskName", taskName);
+                        connection.Open();
+                        object? result = command.ExecuteScalar();
+                        if (result != null)
                         {
-                            taskId = result.ToString(); // Assign the task ID to taskId
+                            taskId = result.ToString();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error retrieving task ID: " + ex.Message); // Display error message if an exception occurs
+                MessageBox.Show("Error retrieving task ID: " + ex.Message);
             }
 
-            return taskId ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
+            return taskId;
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -375,16 +403,36 @@ namespace CTOTracker
                     string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
 
                     // Get selected task name from ComboBox
-                    string selectedTask = Task_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+                    string selectedTask = Task_Cmbox.Text.Trim(); // Retrieve directly from Text property
 
                     if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
                     {
-                        MessageBox.Show("Please select an employee and a task.");
+                        MessageBox.Show("Please select an employee and enter a task.");
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(selectedEmployee))
+                    {
+                        MessageBox.Show("Please select an employee.");
+                        return;
+                    }
+                    if (string.IsNullOrEmpty(selectedTask))
+                    {
+                        MessageBox.Show("Please select a task.");
                         return;
                     }
 
                     string employeeId = GetEmployeeId(selectedEmployee);
+
+                    // Check if the task exists in the database
                     string taskId = GetTaskId(selectedTask);
+                    if (taskId == null)
+                    {
+                        // If task ID is null, insert the task into the database
+                        InsertTaskIntoDatabase(selectedTask);
+                        // Retrieve the task ID again after insertion
+                        taskId = GetTaskId(selectedTask);
+                    }
+
 
                     // Get selected dates from date pickers
                     DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
@@ -403,6 +451,9 @@ namespace CTOTracker
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
+
+
 
         private void InsertIntoSchedule(string employeeId, string taskId, DateTime startDate, DateTime endDate, string timeIn, string timeOut)
         {
@@ -554,6 +605,7 @@ namespace CTOTracker
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                                 command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                 command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                                
                             }
                             else
                             {
@@ -562,6 +614,7 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                               
                             }
 
                             command.Parameters.AddWithValue("@schedID", schedID);
@@ -591,6 +644,11 @@ namespace CTOTracker
         {
             // Hide the time pickers panel
             addTime.Visibility = Visibility.Collapsed;
+        }
+
+        private void Employee_Cmbox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

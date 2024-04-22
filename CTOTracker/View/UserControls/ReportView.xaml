@@ -20,16 +20,16 @@
             <!--  Employee HEADER  -->
             <Grid Focusable="True">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
-                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="425*" />
+                    <ColumnDefinition Width="390*" />
+                    <ColumnDefinition Width="247*"/>
+                    <ColumnDefinition Width="213*" />
+                    <ColumnDefinition Width="85*" />
                 </Grid.ColumnDefinitions>
 
                 <Label
                     Margin="10,0,0,0"
-                    Content="Report"
+                    Content="Employee CTO Records"
                     FontSize="24" />
 
                 <CheckBox
@@ -47,7 +47,7 @@
                     Content="CTO Balance"
                     FontFamily="Roboto-Light"
                     FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" />
+                    Style="{DynamicResource CheckBoxStyle1}" Checked="chkbxBalance_Checked" />
                 <CheckBox
                     x:Name="chkbxUsed"
                     Grid.Column="3"
@@ -55,7 +55,7 @@
                     Content="CTO Used"
                     FontFamily="Roboto-Light"
                     FontSize="14"
-                    Style="{DynamicResource CheckBoxStyle1}" />
+                    Style="{DynamicResource CheckBoxStyle1}" Checked="chkbxUsed_Checked" />
 
                 <Button
                     x:Name="btnExport"
@@ -64,7 +64,7 @@
                     HorizontalAlignment="Stretch"
                     Content="Export"
                     FontSize="16"
-                    Style="{StaticResource button_style}" />
+                    Style="{StaticResource button_style}" Click="btnExport_Click_1" />
 
             </Grid>
         </Grid>
@@ -74,6 +74,10 @@
             Height="723"
             Margin="0,45,0,0"
             Focusable="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="413*"/>
+                <ColumnDefinition Width="267*"/>
+            </Grid.ColumnDefinitions>
             <!--  SCHDULE_TABLE  -->
             <DataGrid
                 x:Name="reportDataGrid"
@@ -85,7 +89,7 @@
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 IsReadOnly="True"
-                Style="{StaticResource table_style}" />
+                Style="{StaticResource table_style}" Grid.ColumnSpan="2" />
 
         </Grid>
         <!--  Filter Panel  -->
@@ -140,12 +144,14 @@
                             HorizontalAlignment="Stretch"
                             FontSize="14"
                             Foreground="Gray"
-                            GotFocus="txtbx_GotFocus"
-                            Loaded="txtbx_Loaded"
-                            LostFocus="txtbx_LostFocus"
-                            Style="{StaticResource txtbx_style}"
-                            Tag="First Name"
-                            TextChanged="txtschFname_TextChanged" />
+                            
+                            Text="First Name"
+                            
+                            Style="{StaticResource txtbx_style}" 
+                            GotFocus="txtschFname_GotFocus" 
+                            LostFocus="txtschFname_LostFocus"
+                            
+                            />
                         <TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
@@ -153,12 +159,10 @@
                             HorizontalAlignment="Stretch"
                             FontSize="14"
                             Foreground="Gray"
-                            GotFocus="txtbx_GotFocus"
-                            Loaded="txtbx_Loaded"
-                            LostFocus="txtbx_LostFocus"
-                            Style="{StaticResource txtbx_style}"
-                            Tag="Last Name"
-                            TextChanged="txtschLname_TextChanged" />
+                            Text="Last Name"
+                            
+                            Style="{StaticResource txtbx_style}" LostFocus="txtschLname_LostFocus" GotFocus="txtschLname_GotFocus"
+                             />
                         <ComboBox
                             x:Name="cmbxTask"
                             Grid.Column="2"
@@ -166,8 +170,8 @@
                             HorizontalAlignment="Stretch"
                             FontSize="14"
                             Foreground="Gray"
-                            Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Tag="Task"
+                            Template="{DynamicResource ComboBoxTemplate1}" SelectionChanged="cmbxTask_SelectionChanged" />
                         <ComboBox
                             x:Name="cmbxRole"
                             Grid.Column="3"
@@ -176,7 +180,7 @@
                             FontSize="14"
                             Foreground="Gray"
                             Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Template="{DynamicResource ComboBoxTemplate1}" SelectionChanged="cmbxRole_SelectionChanged"  />
                         <DatePicker
                             x:Name="dtEDate"
                             Grid.Column="4"

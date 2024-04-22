@@ -37,14 +37,9 @@
                 <Grid Margin="0,0,0,5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="40" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Label
-                        Margin="10,10,0,0"
-                        Content="Employee :"
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{DynamicResource font_style}" />
+                    <Label Margin="10,10,0,0" Content="Employee :" Foreground="Black" FontSize="14" Style="{DynamicResource font_style}" />
                     <ComboBox
                         x:Name="Employee_Cmbox"
                         Grid.Row="1"

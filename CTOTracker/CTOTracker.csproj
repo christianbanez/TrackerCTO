@@ -33,6 +33,8 @@
     <Resource Include="View\Resource Dictionary\Assets\tgbMenu_MouseOver.png" />
     <PackageReference Include="MaterialDesignThemes" Version="5.0.1-ci598" />
     <PackageReference Include="System.Data.OleDb" Version="9.0.0-preview.3.24172.9" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
   </ItemGroup>
 
 </Project>
