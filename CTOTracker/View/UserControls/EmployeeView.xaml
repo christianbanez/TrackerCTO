@@ -164,33 +164,18 @@
 
                         <TextBox
                             x:Name="employeeSearch"
-                            Grid.Column="0"
                             Width="320"
                             Margin="39,0,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
+                            Style="{StaticResource txtbx_style}"
                             TextChanged="employeeSearch_TextChanged"
                             TextWrapping="Wrap" />
-                        <Button
-                            x:Name="btnAdd"
-                            Grid.Column="2"
-                            Width="60"
-                            Height="30"
-                            Margin="5"
-                            Click="btnAdd_Click"
-                            Content="Add" />
-                        <Button
-                            x:Name="btnEdit"
-                            Grid.Column="3"
-                            Width="60"
-                            Height="30"
-                            Margin="5"
-                            Click="btnEdit_Click"
-                            Content="Update" />
+
 
                         <Button
                             x:Name="btnAdd"
-                            Grid.Column="1"
+                            Grid.Column="2"
                             Width="60"
                             Height="30"
                             Margin="5"
@@ -199,7 +184,7 @@
                             Style="{StaticResource button_style}" />
                         <Button
                             x:Name="btnEdit"
-                            Grid.Column="2"
+                            Grid.Column="3"
                             Width="60"
                             Height="30"
                             Margin="5"
@@ -250,30 +235,35 @@
 
                         <Button
                             x:Name="btnSaveUp"
-                            Grid.Column="1"
-                            Width="60"
-                            Height="30"
-                            Margin="5"
-                            Click="btnSaveUp_Click"
-                            Content="Save" />
-                        <Button
-                            x:Name="btnDelete"
                             Grid.Column="2"
                             Width="60"
                             Height="30"
                             Margin="5"
+                            Click="btnSaveUp_Click"
+                            Content="Save"
+                            Style="{StaticResource button_style}" />
+
+                        <Button
+                            x:Name="btnDelete"
+                            Grid.Column="3"
+                            Width="60"
+                            Height="30"
+                            Margin="5"
                             Click="btnDelete_Click_1"
-                            Content="Delete" />
+                            Content="Delete"
+                            Style="{StaticResource button_style}" />
+
                         <Button
                             x:Name="btnCancel2"
-                        
-                        <Button x:Name="btnSaveUp" Grid.Column="2" Margin="5"
-                                Width="60" Height="30" Content="Save" Click="btnSaveUp_Click"/>
-                        <Button x:Name="btnDelete" Grid.Column="3" Margin="5"
-                                Width="60" Height="30" Content="Delete" Click="btnDelete_Click_1"/>
-                        <Button x:Name="btnCancel2" Grid.Column="4" Margin="5" 
-                                Width="60" Height="30" Content="Cancel" Click="btnCancel2_Click"/>
-                        
+                            Grid.Column="4"
+                            Width="60"
+                            Height="30"
+                            Margin="5"
+                            Click="btnCancel2_Click"
+                            Content="Cancel"
+                            Style="{StaticResource button_style}" />
+
+
                     </Grid>
                 </Grid>
             </Grid>
