@@ -31,15 +31,7 @@
                     Margin="10,0,0,0"
                     Content="Employee CTO Records"
                     FontSize="24" />
-
-                <CheckBox
-                    x:Name="chkbxAEmp"
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Content="All Employees"
-                    FontFamily="Roboto-Light"
-                    FontSize="14" Checked="chkbxAEmp_Checked" />
-
+                
                 <Button
                     x:Name="btnExport"
                     Grid.Column="4"
