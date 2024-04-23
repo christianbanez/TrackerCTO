@@ -24,17 +24,45 @@ namespace CTOTracker.View.UserControls
     {
 
         private DataConnection dataConnection;
-        private DataTable dataTable; // Declare dataTable at class level to make it accessible across methods
+        private DataTable roleDataTable; // Declare roleDataTable at class level
+        private DataTable taskDataTable; // Declare taskDataTable at class level
 
         public RoleTaskView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
+            InitializeRoleGridView();
+            InitializeTaskGridView();
             LoadRoleView();
-            InitializeTaskGridView(); // Call the method to initialize the taskGridView
-            LoadTaskView(); // Load data initially
-            taskGridView.IsEnabled = false;
+            LoadTaskView();
+            roleGridView.IsEnabled = false;
+            roleNameInput.IsEnabled = false;
+        }
+        private void InitializeRoleGridView()
+        {
+            // Create columns for roleName
+            DataGridTextColumn roleNameColumn = new DataGridTextColumn();
+            roleNameColumn.Header = "Role Name";
+            roleNameColumn.Binding = new System.Windows.Data.Binding("roleName");
 
+            // Add column to the roleGridView
+            roleGridView.Columns.Add(roleNameColumn);
+
+            // Handle selection changed event
+            roleGridView.SelectionChanged += RoleGridView_SelectionChanged;
+        }
+
+        private void RoleGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (roleGridView.SelectedItem != null)
+            {
+                // Get selected row's data
+                DataRowView selectedRow = (DataRowView)roleGridView.SelectedItem;
+                string roleName = selectedRow["roleName"].ToString();
+
+                // Display data in input field
+                roleNameInput.Text = roleName;
+            }
         }
 
         private void LoadRoleView()
@@ -44,14 +72,13 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     connection.Open();
-                    string query = "SELECT roleName FROM Role";   // Specify the columns you want to retrieve
+                    string query = "SELECT roleID, roleName FROM Role";
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                    DataTable dataTable = new DataTable();          // Retrieve data from the database
-                    adapter.Fill(dataTable);
 
-         
-                    roleDataGrid.ItemsSource = dataTable.DefaultView;     // Bind the DataTable to the DataGridView
-                    
+                    roleDataTable = new DataTable(); // Initialize roleDataTable
+                    adapter.Fill(roleDataTable);
+
+                    roleGridView.ItemsSource = roleDataTable.DefaultView; // Bind roleDataTable to roleGridView
                 }
                 catch (Exception ex)
                 {
@@ -63,15 +90,307 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
+        private void InsertRoleIntoDatabase(string roleName)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+
+                    // Check if the role already exists
+                    string checkQuery = "SELECT COUNT(*) FROM Role WHERE roleName = @RoleName";
+                    OleDbCommand checkCommand = new OleDbCommand(checkQuery, connection);
+                    checkCommand.Parameters.AddWithValue("@RoleName", roleName);
+                    int existingRolesCount = (int)checkCommand.ExecuteScalar();
+
+                    if (existingRolesCount > 0)
+                    {
+                        MessageBox.Show("Role already exists in the database.", "Warning");
+                        return; // Exit the method
+                    }
+
+                    // Role doesn't exist, proceed with insertion
+                    string insertQuery = "INSERT INTO Role (roleName) VALUES (@RoleName)";
+                    OleDbCommand insertCommand = new OleDbCommand(insertQuery, connection);
+                    insertCommand.Parameters.AddWithValue("@RoleName", roleName);
+                    int rowsAffected = insertCommand.ExecuteNonQuery();
+
+                    if (rowsAffected == 0)
+                    {
+                        MessageBox.Show("No rows were affected. Role insertion might have failed.", "Warning");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Role inserted successfully.", "Success");
+                    }
+                }
+                catch (OleDbException ex)
+                {
+                    MessageBox.Show("Database error: " + ex.Message, "Error");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+        private bool isAdding = false;
         private void roleSave_Click(object sender, RoutedEventArgs e)
         {
+            if (isAdding)
+            {
+                string roleName = roleNameInput.Text;
 
+                // Check if roleName is empty
+                if (string.IsNullOrWhiteSpace(roleName))
+                {
+                    MessageBox.Show("Role name cannot be empty.", "Warning");
+                    return; // Exit the method
+                }
+
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to save this role?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    InsertRoleIntoDatabase(roleName);
+                    LoadRoleView();
+                    roleNameInput.Text = "";
+
+                    // Reset UI
+                    roleNameInput.IsEnabled = false;
+                    roleSave.Content = "Add";
+                    isAdding = false;
+
+                    // Gray out the editBtn
+                    roleEditBtn.IsEnabled = false;
+                }
+            }
+            else
+            {
+                // Toggle the enabled state of the input field when adding is not active
+                roleNameInput.IsEnabled = true;
+                roleSave.Content = "Save";
+                isAdding = true;
+
+                // Enable the editBtn
+                roleEditBtn.IsEnabled =false;
+            }
         }
 
-        private void roleDataGrid_AutoGeneratedColumns(object sender, EventArgs e)
+        private void roleDeleteBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (roleGridView.SelectedItem != null)
+            {
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this role?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            roleDataGrid.Columns[0].Header = "Role";
+                if (result == MessageBoxResult.Yes)
+                {
+                    DataRowView selectedRow = (DataRowView)roleGridView.SelectedItem;
+
+                    if (selectedRow.Row.Table.Columns.Contains("roleID"))
+                    {
+                        string roleId = selectedRow["roleID"].ToString();
+                        DeleteRoleFromDatabase(roleId);
+                        LoadRoleView();
+                    }
+                    else
+                    {
+                        MessageBox.Show("roleID column not found in the DataTable.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a role to delete.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void DeleteRoleFromDatabase(string roleId)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Role WHERE roleID = @RoleID";
+                    OleDbCommand command = new OleDbCommand(query, connection);
+                    command.Parameters.AddWithValue("@RoleID", roleId);
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting role from database: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        private void roleUpdateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (roleGridView.SelectedItem != null)
+            {
+                DataRowView selectedRow = (DataRowView)roleGridView.SelectedItem;
+
+                if (selectedRow.Row.Table.Columns.Contains("roleID"))
+                {
+                    string roleId = selectedRow["roleID"].ToString();
+                    string roleName = roleNameInput.Text;
+
+                    // Check if roleName is empty
+                    if (string.IsNullOrWhiteSpace(roleName))
+                    {
+                        MessageBox.Show("Role name cannot be empty.", "Warning");
+                        return; // Exit the method
+                    }
+
+                    // Check if the role already exists
+                    if (RoleExists(roleName))
+                    {
+                        MessageBox.Show("Role already exists in the database.", "Warning");
+                        return; // Exit the method
+                    }
+
+                    UpdateRoleInDatabase(roleId, roleName);
+                    LoadRoleView();
+
+                    roleNameInput.Text = "";
+
+                    roleDeleteBtn.Visibility = Visibility.Collapsed;
+                    roleUpdateBtn.Visibility = Visibility.Collapsed;
+
+                    roleEditBtn.Visibility = Visibility.Visible;
+                    addBtnClick.Visibility = Visibility.Visible;
+
+                    roleGridView.IsEnabled = false;
+                }
+                else
+                {
+                    MessageBox.Show("roleID column not found in the DataTable.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a role to update.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private bool RoleExists(string roleName)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "SELECT COUNT(*) FROM Role WHERE roleName = @RoleName";
+                    OleDbCommand command = new OleDbCommand(query, connection);
+                    command.Parameters.AddWithValue("@RoleName", roleName);
+                    int existingRolesCount = (int)command.ExecuteScalar();
+                    return existingRolesCount > 0;
+                }
+                catch (OleDbException ex)
+                {
+                    MessageBox.Show("Database error: " + ex.Message, "Error");
+                    return true; // Assume role exists to prevent update
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                    return true; // Assume role exists to prevent update
+                }
+            }
+        }
+
+        private void UpdateRoleInDatabase(string roleId, string roleName)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE Role SET roleName = @RoleName WHERE roleID = @RoleID";
+                    OleDbCommand command = new OleDbCommand(query, connection);
+                    command.Parameters.AddWithValue("@RoleName", roleName);
+                    command.Parameters.AddWithValue("@RoleID", roleId);
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected == 0)
+                    {
+                        MessageBox.Show("No rows were affected. Role update might have failed.", "Warning");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Role updated successfully.", "Success");
+                    }
+                }
+                catch (OleDbException ex)
+                {
+                    MessageBox.Show("Database error: " + ex.Message, "Error");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+
+        private void roleEditBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the roleDeleteBtn and roleUpdateBtn
+            roleDeleteBtn.Visibility = Visibility.Visible;
+            roleUpdateBtn.Visibility = Visibility.Visible;
+            roleCancelBtn.Visibility = Visibility.Visible;
+            
+
+            // Hide the roleEditBtn
+            roleEditBtn.Visibility = Visibility.Collapsed;
+            roleSave.Visibility = Visibility.Collapsed;
+
+            // Disable roleGridView (make it unselectable)
+            roleGridView.IsEnabled = true;
+
+            // Clear selection in roleGridView
+            roleGridView.SelectedItem = null;
+
+            // Clear input fields (assuming roleNameInput is the only input field)
+            roleNameInput.Text = "";
+        }
+
+        private void roleCancelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the roleEditBtn
+            roleEditBtn.Visibility = Visibility.Visible;
+            roleSave.Visibility = Visibility.Visible;
+
+            // Hide the roleDeleteBtn, roleUpdateBtn, and roleCancelBtn
+            roleDeleteBtn.Visibility = Visibility.Collapsed;
+            roleUpdateBtn.Visibility = Visibility.Collapsed;
+            roleCancelBtn.Visibility = Visibility.Collapsed;
+
+
+            // Enable roleGridView (make it selectable)
+            roleGridView.IsEnabled =false;
+
+            // Clear selection in roleGridView
+            roleGridView.SelectedItem = null;
+
+            // Clear input fields (assuming roleNameInput is the only input field)
+            roleNameInput.Text = "";
         }
 
         private void InitializeTaskGridView()
@@ -107,7 +426,6 @@ namespace CTOTracker.View.UserControls
                 taskDescInput.Text = taskDesc;
             }
         }
-
         private void LoadTaskView()
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
@@ -115,24 +433,13 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     connection.Open();
-                    string query = "SELECT taskID, taskName, taskDesc FROM Task"; // Include taskId in the SELECT statement
+                    string query = "SELECT taskID, taskName, taskDesc FROM Task";
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
 
-                    // Check if dataTable is null and instantiate it if needed
-                    if (dataTable == null)
-                    {
-                        dataTable = new DataTable();
-                    }
-                    else
-                    {
-                        // Clear existing data in the dataTable
-                        dataTable.Clear();
-                    }
+                    taskDataTable = new DataTable(); // Initialize taskDataTable
+                    adapter.Fill(taskDataTable);
 
-                    adapter.Fill(dataTable);
-
-                    // Set the ItemsSource to the DataTable
-                    taskGridView.ItemsSource = dataTable.DefaultView;
+                    taskGridView.ItemsSource = taskDataTable.DefaultView; // Bind taskDataTable to taskGridView
                 }
                 catch (Exception ex)
                 {
@@ -147,6 +454,19 @@ namespace CTOTracker.View.UserControls
 
 
 
+        private bool TaskExists(string taskName)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                connection.Open();
+                string query = "SELECT COUNT(*) FROM Task WHERE taskName = @TaskName";
+                OleDbCommand command = new OleDbCommand(query, connection);
+                command.Parameters.AddWithValue("@TaskName", taskName);
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
+            }
+        }
+
         private void InsertTaskIntoDatabase(string taskName, string taskDesc)
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
@@ -154,15 +474,31 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     connection.Open();
+
+                    // Check if the task already exists
+                    if (TaskExists(taskName))
+                    {
+                        MessageBox.Show("Task with the same name already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     string query = "INSERT INTO Task (taskName, taskDesc) VALUES (@TaskName, @TaskDesc)";
                     OleDbCommand command = new OleDbCommand(query, connection);
                     command.Parameters.AddWithValue("@TaskName", taskName);
                     command.Parameters.AddWithValue("@TaskDesc", taskDesc);
                     command.ExecuteNonQuery();
                 }
+                catch (OleDbException ex)
+                {
+                    MessageBox.Show("Database error occurred: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Log the exception for debugging or auditing purposes
+                    // Logger.Log(ex);
+                }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error inserting task into database: " + ex.Message, "Error");
+                    MessageBox.Show("Error occurred: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Log the exception for debugging or auditing purposes
+                    // Logger.Log(ex);
                 }
                 finally
                 {
@@ -171,65 +507,112 @@ namespace CTOTracker.View.UserControls
             }
         }
 
+        private bool IsInputValid(string taskName, string taskDesc)
+        {
+            if (string.IsNullOrWhiteSpace(taskName) || string.IsNullOrWhiteSpace(taskDesc))
+            {
+                MessageBox.Show("Task name and description cannot be empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            return true;
+        }
+
+        private bool isFirstClick = true;
+
         private void taskSaveBtn_Click_1(object sender, RoutedEventArgs e)
         {
+            if (isFirstClick)
+            {
+                taskNameInput.IsEnabled = true; // Enable the input field on first click
+                taskDescInput.IsEnabled = true; // Enable the input field on first click
+                editBtn.IsEnabled = false;
+
+                isFirstClick = false; // Update the flag to indicate that the first click has occurred
+                return; // Exit the method without performing further actions
+            }
+
             // Assuming you have TextBoxes for taskNameInput and taskDescInput where users enter task information
             string taskName = taskNameInput.Text;
             string taskDesc = taskDescInput.Text;
 
+            // Check if input is valid
+            if (!IsInputValid(taskName, taskDesc))
+            {
+                return;
+            }
+
+            
             // Display confirmation dialog
             MessageBoxResult result = MessageBox.Show("Are you sure you want to save this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             // Check if the user confirmed the action
             if (result == MessageBoxResult.Yes)
             {
-                // Insert data into the database
-                InsertTaskIntoDatabase(taskName, taskDesc);
+                try
+                {
+                    // Insert data into the database
+                    InsertTaskIntoDatabase(taskName, taskDesc);
 
-                // Refresh the taskGridView
-                LoadTaskView();
+                    // Refresh the taskGridView
+                    LoadTaskView();
 
-                // Optionally, clear the input fields after saving
-                taskNameInput.Text = "";
-                taskDescInput.Text = "";
+                    // Optionally, clear the input fields after saving
+                    taskNameInput.Text = "";
+                    taskDescInput.Text = "";
+                }   
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while saving the task: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Log the exception for debugging or auditing purposes
+                    // Logger.Log(ex);
+                }
             }
         }
 
+
+
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Show the deleteBtn and updateBtn
+            // Show the roleDeleteBtn and roleUpdateBtn
             deleteBtn.Visibility = Visibility.Visible;
             updateBtn.Visibility = Visibility.Visible;
+            addBtnClick.Visibility = Visibility.Visible;
 
-            // Hide the editBtn
+
+            // Hide the roleEditBtn
             editBtn.Visibility = Visibility.Collapsed;
             addBtnClick.Visibility = Visibility.Collapsed;
 
-
-
-            // Enable taskGridView (make it selectable)
+            // Disable roleGridView (make it unselectable)
             taskGridView.IsEnabled = true;
+
+            // Clear selection in roleGridView
+            taskGridView.SelectedItem = null;
+
+            // Clear input fields (assuming roleNameInput is the only input field)
+            taskNameInput.Text = "";
+            taskDescInput.Text = "";
         }
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Show the editBtn
+            // Show the roleEditBtn
             editBtn.Visibility = Visibility.Visible;
-
-            // Hide the deleteBtn and updateBtn
-            deleteBtn.Visibility = Visibility.Collapsed;
-            updateBtn.Visibility = Visibility.Collapsed;
-
-            // Show the addBtnClick
             addBtnClick.Visibility = Visibility.Visible;
 
-            // Disable taskGridView (make it unselectable)
+            // Hide the roleDeleteBtn, roleUpdateBtn, and roleCancelBtn
+            deleteBtn.Visibility = Visibility.Collapsed;
+            updateBtn.Visibility = Visibility.Collapsed;
+            cancelBtn.Visibility = Visibility.Collapsed;
+
+
+            // Enable roleGridView (make it selectable)
             taskGridView.IsEnabled = false;
 
-            // Clear selection in taskGridView
+            // Clear selection in roleGridView
             taskGridView.SelectedItem = null;
 
-            // Clear input fields
+            // Clear input fields (assuming roleNameInput is the only input field)
             taskNameInput.Text = "";
             taskDescInput.Text = "";
         }
@@ -309,26 +692,41 @@ namespace CTOTracker.View.UserControls
                     string taskName = taskNameInput.Text;
                     string taskDesc = taskDescInput.Text;
 
-                    // Update data in the database
-                    UpdateTaskInDatabase(taskId, taskName, taskDesc); // Corrected taskId here
+                    // Check if input is valid
+                    if (!IsInputValid(taskName, taskDesc))
+                    {
+                        return;
+                    }
 
-                    // Refresh the taskGridView
-                    LoadTaskView();
+                    try
+                    {
+                        // Update data in the database
+                        UpdateTaskInDatabase(taskId, taskName, taskDesc);
 
-                    // Optionally, clear the input fields after updating
-                    taskNameInput.Text = "";
-                    taskDescInput.Text = "";
+                        // Refresh the taskGridView
+                        LoadTaskView();
 
-                    // Hide the deleteBtn and updateBtn
-                    deleteBtn.Visibility = Visibility.Collapsed;
-                    updateBtn.Visibility = Visibility.Collapsed;
+                        // Optionally, clear the input fields after updating
+                        taskNameInput.Text = "";
+                        taskDescInput.Text = "";
 
-                    // Show the editBtn and addBtnClick
-                    editBtn.Visibility = Visibility.Visible;
-                    addBtnClick.Visibility = Visibility.Visible;
+                        // Hide the deleteBtn and updateBtn
+                        deleteBtn.Visibility = Visibility.Collapsed;
+                        updateBtn.Visibility = Visibility.Collapsed;
 
-                    // Disable taskGridView (make it unselectable)
-                    taskGridView.IsEnabled = false;
+                        // Show the editBtn and addBtnClick
+                        editBtn.Visibility = Visibility.Visible;
+                        addBtnClick.Visibility = Visibility.Visible;
+
+                        // Disable taskGridView (make it unselectable)
+                        taskGridView.IsEnabled = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while updating the task: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        // Log the exception for debugging or auditing purposes
+                        // Logger.Log(ex);
+                    }
                 }
                 else
                 {
@@ -341,6 +739,20 @@ namespace CTOTracker.View.UserControls
             }
         }
 
+        private bool TaskExists(string taskName, string taskDesc, string currentTaskId)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                connection.Open();
+                string query = "SELECT COUNT(*) FROM Task WHERE taskName = @TaskName AND taskDesc = @TaskDesc AND taskId <> @TaskID";
+                OleDbCommand command = new OleDbCommand(query, connection);
+                command.Parameters.AddWithValue("@TaskName", taskName);
+                command.Parameters.AddWithValue("@TaskDesc", taskDesc);
+                command.Parameters.AddWithValue("@TaskID", currentTaskId);
+                int count = (int)command.ExecuteScalar();
+                return count > 0;
+            }
+        }
 
         private void UpdateTaskInDatabase(string taskId, string taskName, string taskDesc)
         {
@@ -349,6 +761,14 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     connection.Open();
+
+                    // Check if a task with the same name and description already exists, excluding the current task
+                    if (TaskExists(taskName, taskDesc, taskId))
+                    {
+                        MessageBox.Show("A task with the same name and description already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
                     string query = "UPDATE Task SET taskName = @TaskName, taskDesc = @TaskDesc WHERE taskId = @TaskID";
                     OleDbCommand command = new OleDbCommand(query, connection);
                     command.Parameters.AddWithValue("@TaskName", taskName);
@@ -359,6 +779,8 @@ namespace CTOTracker.View.UserControls
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error updating task in database: " + ex.Message, "Error");
+                    // Log the exception for debugging or auditing purposes
+                    // Logger.Log(ex);
                 }
                 finally
                 {
