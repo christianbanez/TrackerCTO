@@ -109,6 +109,7 @@
                             Margin="20"
                             IsEnabled="False"
                             MaxLength="11"
+                            Tag="Infor ID"
                             PreviewTextInput="txtEmpID_PreviewTextInput"
                             Style="{StaticResource txtbx_style}" />
                         <TextBox
@@ -117,6 +118,7 @@
                             Grid.Column="2"
                             Margin="20"
                             IsEnabled="False"
+                            Tag="First Name"
                             Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtLname"
@@ -124,6 +126,7 @@
                             Grid.Column="2"
                             Margin="20"
                             IsEnabled="False"
+                            Tag="Last Name"
                             Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtEmail"
@@ -131,6 +134,7 @@
                             Grid.Column="5"
                             Margin="20"
                             IsEnabled="False"
+                            Tag="Email"
                             Style="{StaticResource txtbx_style}" />
                         <TextBox
                             x:Name="txtContact"
@@ -139,6 +143,7 @@
                             Margin="20"
                             IsEnabled="False"
                             MaxLength="11"
+                            Tag="Contact Number"
                             PreviewTextInput="txtContact_PreviewTextInput"
                             Style="{DynamicResource txtbx_style}"
                             TabIndex="11" />
@@ -165,9 +170,12 @@
                         <TextBox
                             x:Name="employeeSearch"
                             Width="320"
+                            Height="29"
                             Margin="39,0,0,0"
+                            FontSize="14"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
+                            Tag="Search Employee"
                             Style="{StaticResource txtbx_style}"
                             TextChanged="employeeSearch_TextChanged"
                             TextWrapping="Wrap" />

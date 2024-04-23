@@ -465,34 +465,6 @@ namespace CTOTracker.View.UserControls
             return role;
         }
 
-        private void txtschFname_GotFocus(object sender, RoutedEventArgs e)
-        {
-            txtschFname.Text = "";
-        }
-
-        private void txtschLname_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtschLname.Text))
-            {
-                txtschLname.Text = "Last Name";
-            }
-            DataReportView();
-        }
-
-        private void txtschFname_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtschFname.Text))
-            {
-                txtschFname.Text = "First Name";
-            }
-            DataReportView();
-        }
-
-        private void txtschLname_GotFocus(object sender, RoutedEventArgs e)
-        {
-            txtschLname.Text = "";
-        }
-
         private void chkbxBalance_Checked(object sender, RoutedEventArgs e)
         {
             chkbxUsed.IsChecked = false;

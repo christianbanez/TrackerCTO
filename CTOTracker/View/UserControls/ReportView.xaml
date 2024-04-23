@@ -24,7 +24,7 @@
                     <ColumnDefinition Width="390*" />
                     <ColumnDefinition Width="247*" />
                     <ColumnDefinition Width="213*" />
-                    <ColumnDefinition Width="85*" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
 
                 <Label
@@ -35,8 +35,8 @@
                 <Button
                     x:Name="btnExport"
                     Grid.Column="4"
-                    Margin="5,5,10,5"
-                    HorizontalAlignment="Stretch"
+                    Width="100"
+                    Margin="5,0,10,0"
                     Click="btnExport_Click_1"
                     Content="Export"
                     FontSize="16"
@@ -87,14 +87,15 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="175" />
+                        <ColumnDefinition Width="225" />
                     </Grid.ColumnDefinitions>
                     <!--  Filter Panel Toggle Button  -->
                     <ToggleButton
                         x:Name="tgb_FilterPnl"
                         Grid.Column="1"
+                        Margin="5,0,10,2"
                         HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
+                        VerticalAlignment="Bottom"
                         HorizontalContentAlignment="Center"
                         Checked="tgb_FilterPnl_Checked"
                         Style="{DynamicResource MaterialDesignFlatButton}"
@@ -102,9 +103,8 @@
                         <StackPanel Orientation="Horizontal">
                             <Label
                                 Padding="0"
-                                VerticalAlignment="Top"
                                 Content="Filters"
-                                FontSize="18"
+                                FontSize="16"
                                 FontWeight="Normal" />
                             <materialDesign:PackIcon
                                 Margin="10,0,0,0"
@@ -136,12 +136,9 @@
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
                             FontSize="14"
-                            Foreground="Gray"
-                            GotFocus="txtschFname_GotFocus"
-                            LostFocus="txtschFname_LostFocus"
                             Style="{StaticResource txtbx_style}"
-                            Text="First Name" />
-                        <TextBox
+                            Tag="Search Name" />
+                        <!--<TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
                             Margin="0,25,10,10"
@@ -151,10 +148,10 @@
                             GotFocus="txtschLname_GotFocus"
                             LostFocus="txtschLname_LostFocus"
                             Style="{StaticResource txtbx_style}"
-                            Text="Last Name" />
+                            Text="Last Name" />-->
                         <ComboBox
                             x:Name="cmbxTask"
-                            Grid.Column="2"
+                            Grid.Column="1"
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
                             FontSize="14"
@@ -164,7 +161,7 @@
                             Template="{DynamicResource ComboBoxTemplate1}" />
                         <ComboBox
                             x:Name="cmbxRole"
-                            Grid.Column="3"
+                            Grid.Column="2"
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
                             FontSize="14"
@@ -174,19 +171,21 @@
                             Template="{DynamicResource ComboBoxTemplate1}" />
                         <DatePicker
                             x:Name="dtEDate"
-                            Grid.Column="4"
+                            Grid.Column="3"
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
+                            materialDesign:HintAssist.Hint="Date Earned"
                             FontSize="14" />
                         <DatePicker
                             x:Name="dtUDate"
-                            Grid.Column="5"
+                            Grid.Column="4"
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
+                            materialDesign:HintAssist.Hint="Date Used"
                             FontSize="14" />
                         <CheckBox
                             x:Name="chkbxBalance"
-                            Grid.Column="6"
+                            Grid.Column="5"
                             VerticalAlignment="Center"
                             Checked="chkbxBalance_Checked"
                             Content="CTO Balance"
@@ -194,12 +193,21 @@
                             FontSize="14" />
                         <CheckBox
                             x:Name="chkbxUsed"
-                            Grid.Column="7"
+                            Grid.Column="6"
                             VerticalAlignment="Center"
                             Checked="chkbxUsed_Checked"
                             Content="CTO Used"
                             FontFamily="Roboto-Light"
                             FontSize="14" />
+
+                        <Button
+                            x:Name="btnSearch"
+                            Grid.Column="9"
+                            HorizontalAlignment="Stretch"
+                            Margin="5,25,5,10"
+                            Content="Search"
+                            FontSize="16"
+                            Style="{StaticResource button_style}" />
 
                     </Grid>
                 </StackPanel>
@@ -212,7 +220,7 @@
             x:Name="EmpFilPnl"
             Grid.Row="1"
             Background="AliceBlue"
-            Visibility="Visible">
+            Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
                 <RowDefinition Height="80*" />
@@ -240,19 +248,26 @@
                     FontSize="20"
                     FontWeight="Bold"
                     Foreground="Black" />
-                <Button
-                    Grid.Column="2"
-                    x:Name="btnBack"
-                    Click="btnBack_Click"
-                    Content="Back"
-                    FontSize="16"
-                    Style="{DynamicResource button_style}" />
-                <Button
-                    x:Name="btnExportEmp"
-                    Click="btnExportEmp_Click"
-                    Content="Export"
-                    FontSize="16"
-                    Style="{DynamicResource button_style}" />
+                <StackPanel Grid.Column="5" Orientation="Horizontal">
+                    <Button
+                        x:Name="btnBack"
+                        Grid.Column="2"
+                        Width="100"
+                        Margin="100,0,10,0"
+                        Click="btnBack_Click"
+                        Content="Back"
+                        FontSize="16"
+                        Style="{DynamicResource button_style}" />
+                    <Button
+                        x:Name="btnExportEmp"
+                        Width="100"
+                        Margin="10,0,0,0"
+                        Click="btnExportEmp_Click"
+                        Content="Export"
+                        FontSize="16"
+                        Style="{DynamicResource button_style}" />
+                </StackPanel>
+
 
 
                 <Label
@@ -263,9 +278,18 @@
                     Content="Name:"
                     FontSize="20"
                     Foreground="Black" />
+                <Label
+                    x:Name="lblEmpName"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    VerticalContentAlignment="Center"
+                    Content="PLACEHOLDER"
+                    FontSize="20"
+                    Foreground="Black" />
 
                 <Label
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Margin="50,0,0,0"
                     VerticalContentAlignment="Center"
                     Content="Infor ID:"
@@ -282,64 +306,55 @@
                     Foreground="Black" />
 
                 <Label
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Margin="305,51,35,0"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="10,0,0,0"
                     VerticalContentAlignment="Center"
                     Content="Contact Number:"
                     FontSize="20"
                     Foreground="Black" />
                 <Label
                     x:Name="lblContactNum"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
+                    Grid.Row="1"
+                    Grid.Column="3"
                     Grid.ColumnSpan="3"
-                    Margin="485,51,205,0"
+                    Margin="10,0,0,0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
                     Foreground="Black" />
 
                 <Label
-                    Grid.Row="1"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Margin="305,51,35,0"
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Margin="10,0,0,0"
+                    VerticalContentAlignment="Center"
                     Content="Role:"
                     FontSize="20"
                     Foreground="Black" />
                 <Label
                     x:Name="lblRole"
-                    Grid.Row="1"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Grid.ColumnSpan="3"
-                    Margin="485,51,205,0"
-                    VerticalContentAlignment="Center"
-                    Content="PLACEHOLDER"
-                    FontSize="20"
-                    Foreground="Black" />
-                <Label
-                    x:Name="lblEmpName"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Margin="10,50,0,0"
-                    VerticalContentAlignment="Center"
-                    Content="PLACEHOLDER"
-                    FontSize="20"
-                    Foreground="Black" />
-                <Label
                     Grid.Row="2"
                     Grid.Column="3"
-                    Margin="0"
+                    Grid.ColumnSpan="3"
+                    Margin="10,0,0,0"
+                    VerticalContentAlignment="Center"
+                    Content="PLACEHOLDER"
+                    FontSize="20"
+                    Foreground="Black" />
+
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="4"
+                    Margin="10,0,0,0"
+                    VerticalContentAlignment="Center"
                     Content="Email:"
                     FontSize="20"
                     Foreground="Black" />
                 <Label
                     x:Name="lblEmail"
-                    Grid.Row="1"
-                    Grid.RowSpan="2"
-                    Grid.Column="3"
+                    Grid.Row="2"
+                    Grid.Column="5"
                     Margin="0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
