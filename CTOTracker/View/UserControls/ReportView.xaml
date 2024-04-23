@@ -219,8 +219,16 @@
         <Grid
             x:Name="EmpFilPnl"
             Grid.Row="1"
-            Background="AliceBlue"
             Visibility="Collapsed">
+
+            <!--  BG  -->
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#FFEFF6FB" />
+                    <GradientStop Offset="1" Color="#FFD1D6EA" />
+                </LinearGradientBrush>
+            </Grid.Background>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
                 <RowDefinition Height="80*" />

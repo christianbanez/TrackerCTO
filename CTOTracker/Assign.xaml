@@ -139,7 +139,7 @@
                 <Grid
                     x:Name="addTime"
                     Margin="0,0,0,5"
-                    Visibility="Visible">
+                    Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
