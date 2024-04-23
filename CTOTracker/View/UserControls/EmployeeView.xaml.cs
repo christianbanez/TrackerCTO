@@ -20,6 +20,7 @@ namespace CTOTracker.View
             dataConnection = new DataConnection();
             LoadEmployeeView();
             AddPnl.Visibility = Visibility.Collapsed;
+            employeeSearch.TextChanged += employeeSearch_TextChanged;
             UpdatePnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
             btnEdit.IsEnabled = false;
@@ -664,6 +665,55 @@ namespace CTOTracker.View
                 {
                     connection.Close();
                 }
+
+
+            }
+        }
+
+        private void employeeSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string searchText = employeeSearch.Text.Trim();
+
+            // If the search text is empty, load all data
+            if (string.IsNullOrEmpty(searchText))
+            {
+                LoadEmployeeView();
+                return;
+            }
+            else
+            {
+
+            }
+            //Otherwise, filter the data based on the entered initial
+            LoadScheduleDataByInitial(searchText);
+        }
+
+        private void LoadScheduleDataByInitial(string initial)
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName FROM Employee " +
+                "INNER JOIN Role ON Employee.roleID = Role.roleID " +
+                "WHERE (fName + ' ' + lName) LIKE @Initial + '%' OR Role.roleName LIKE @Initial + '%';
+
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                
+                    DataGridEmployee1.ItemsSource = dataTable.DefaultView;
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
             }
         }
 
