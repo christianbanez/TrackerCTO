@@ -22,13 +22,19 @@ namespace CTOTracker.View.UserControls
     /// </summary>
     public partial class RoleTaskView : UserControl
     {
+
         private DataConnection dataConnection;
+        private DataTable dataTable; // Declare dataTable at class level to make it accessible across methods
 
         public RoleTaskView()
         {
             InitializeComponent();
             dataConnection = new DataConnection();
             LoadRoleView();
+            InitializeTaskGridView(); // Call the method to initialize the taskGridView
+            LoadTaskView(); // Load data initially
+            taskGridView.IsEnabled = false;
+
         }
 
         private void LoadRoleView()
@@ -66,6 +72,299 @@ namespace CTOTracker.View.UserControls
         {
 
             roleDataGrid.Columns[0].Header = "Role";
+        }
+
+        private void InitializeTaskGridView()
+        {
+            // Create columns for taskName and taskDesc
+            DataGridTextColumn taskNameColumn = new DataGridTextColumn();
+            taskNameColumn.Header = "Task Name";
+            taskNameColumn.Binding = new System.Windows.Data.Binding("taskName");
+
+            DataGridTextColumn taskDescColumn = new DataGridTextColumn();
+            taskDescColumn.Header = "Task Description";
+            taskDescColumn.Binding = new System.Windows.Data.Binding("taskDesc");
+
+            // Add columns to the taskGridView
+            taskGridView.Columns.Add(taskNameColumn);
+            taskGridView.Columns.Add(taskDescColumn);
+
+            // Handle selection changed event
+            taskGridView.SelectionChanged += TaskGridView_SelectionChanged;
+        }
+
+        private void TaskGridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (taskGridView.SelectedItem != null)
+            {
+                // Get selected row's data
+                DataRowView selectedRow = (DataRowView)taskGridView.SelectedItem;
+                string taskName = selectedRow["taskName"].ToString();
+                string taskDesc = selectedRow["taskDesc"].ToString();
+
+                // Display data in input fields
+                taskNameInput.Text = taskName;
+                taskDescInput.Text = taskDesc;
+            }
+        }
+
+        private void LoadTaskView()
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "SELECT taskID, taskName, taskDesc FROM Task"; // Include taskId in the SELECT statement
+                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+
+                    // Check if dataTable is null and instantiate it if needed
+                    if (dataTable == null)
+                    {
+                        dataTable = new DataTable();
+                    }
+                    else
+                    {
+                        // Clear existing data in the dataTable
+                        dataTable.Clear();
+                    }
+
+                    adapter.Fill(dataTable);
+
+                    // Set the ItemsSource to the DataTable
+                    taskGridView.ItemsSource = dataTable.DefaultView;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+
+
+        private void InsertTaskIntoDatabase(string taskName, string taskDesc)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "INSERT INTO Task (taskName, taskDesc) VALUES (@TaskName, @TaskDesc)";
+                    OleDbCommand command = new OleDbCommand(query, connection);
+                    command.Parameters.AddWithValue("@TaskName", taskName);
+                    command.Parameters.AddWithValue("@TaskDesc", taskDesc);
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error inserting task into database: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        private void taskSaveBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            // Assuming you have TextBoxes for taskNameInput and taskDescInput where users enter task information
+            string taskName = taskNameInput.Text;
+            string taskDesc = taskDescInput.Text;
+
+            // Display confirmation dialog
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to save this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            // Check if the user confirmed the action
+            if (result == MessageBoxResult.Yes)
+            {
+                // Insert data into the database
+                InsertTaskIntoDatabase(taskName, taskDesc);
+
+                // Refresh the taskGridView
+                LoadTaskView();
+
+                // Optionally, clear the input fields after saving
+                taskNameInput.Text = "";
+                taskDescInput.Text = "";
+            }
+        }
+
+        private void editBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the deleteBtn and updateBtn
+            deleteBtn.Visibility = Visibility.Visible;
+            updateBtn.Visibility = Visibility.Visible;
+
+            // Hide the editBtn
+            editBtn.Visibility = Visibility.Collapsed;
+            addBtnClick.Visibility = Visibility.Collapsed;
+
+
+
+            // Enable taskGridView (make it selectable)
+            taskGridView.IsEnabled = true;
+        }
+
+        private void cancelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the editBtn
+            editBtn.Visibility = Visibility.Visible;
+
+            // Hide the deleteBtn and updateBtn
+            deleteBtn.Visibility = Visibility.Collapsed;
+            updateBtn.Visibility = Visibility.Collapsed;
+
+            // Show the addBtnClick
+            addBtnClick.Visibility = Visibility.Visible;
+
+            // Disable taskGridView (make it unselectable)
+            taskGridView.IsEnabled = false;
+
+            // Clear selection in taskGridView
+            taskGridView.SelectedItem = null;
+
+            // Clear input fields
+            taskNameInput.Text = "";
+            taskDescInput.Text = "";
+        }
+
+        private void deleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if a row is selected in the taskGridView
+            if (taskGridView.SelectedItem != null)
+            {
+                // Display confirmation dialog
+                MessageBoxResult result = MessageBox.Show("Are you sure you want to delete this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                // Check if the user confirmed the action
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Get the selected row's data
+                    DataRowView selectedRow = (DataRowView)taskGridView.SelectedItem;
+
+                    // Check if the taskId column exists in the DataTable
+                    if (selectedRow.Row.Table.Columns.Contains("taskID"))
+                    {
+                        string taskId = selectedRow["taskID"].ToString();
+
+                        // Delete the task from the database
+                        DeleteTaskFromDatabase(taskId);
+
+                        // Refresh the taskGridView
+                        LoadTaskView();
+                    }
+                    else
+                    {
+                        MessageBox.Show("taskId column not found in the DataTable.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a task to delete.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void DeleteTaskFromDatabase(string taskId)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "DELETE FROM Task WHERE taskId = @TaskID";
+                    OleDbCommand command = new OleDbCommand(query, connection);
+                    command.Parameters.AddWithValue("@TaskID", taskId);
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting task from database: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        private void updateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if a row is selected in the taskGridView
+            if (taskGridView.SelectedItem != null)
+            {
+                // Get the selected row's data
+                DataRowView selectedRow = (DataRowView)taskGridView.SelectedItem;
+
+                // Check if the taskId column exists in the DataTable
+                if (selectedRow.Row.Table.Columns.Contains("taskID"))
+                {
+                    string taskId = selectedRow["taskID"].ToString();
+                    string taskName = taskNameInput.Text;
+                    string taskDesc = taskDescInput.Text;
+
+                    // Update data in the database
+                    UpdateTaskInDatabase(taskId, taskName, taskDesc); // Corrected taskId here
+
+                    // Refresh the taskGridView
+                    LoadTaskView();
+
+                    // Optionally, clear the input fields after updating
+                    taskNameInput.Text = "";
+                    taskDescInput.Text = "";
+
+                    // Hide the deleteBtn and updateBtn
+                    deleteBtn.Visibility = Visibility.Collapsed;
+                    updateBtn.Visibility = Visibility.Collapsed;
+
+                    // Show the editBtn and addBtnClick
+                    editBtn.Visibility = Visibility.Visible;
+                    addBtnClick.Visibility = Visibility.Visible;
+
+                    // Disable taskGridView (make it unselectable)
+                    taskGridView.IsEnabled = false;
+                }
+                else
+                {
+                    MessageBox.Show("taskId column not found in the DataTable.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a task to update.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+
+        private void UpdateTaskInDatabase(string taskId, string taskName, string taskDesc)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    string query = "UPDATE Task SET taskName = @TaskName, taskDesc = @TaskDesc WHERE taskId = @TaskID";
+                    OleDbCommand command = new OleDbCommand(query, connection);
+                    command.Parameters.AddWithValue("@TaskName", taskName);
+                    command.Parameters.AddWithValue("@TaskDesc", taskDesc);
+                    command.Parameters.AddWithValue("@TaskID", taskId);
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error updating task in database: " + ex.Message, "Error");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
         }
     }
 }
