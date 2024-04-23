@@ -107,6 +107,11 @@ namespace CTOTracker
             {
                 return 0.5; // Half day (4+ hours)
             }
+            else if (duration.Ticks < 0)
+            {
+               
+                return 0.0;
+            }
             else
             {
                 return 0.0; // Less than 4 hours
@@ -492,8 +497,20 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate.ToString("MM/dd/yyyy hh:mm tt"));
                                 command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                                command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
-                                command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                                if (ctoEarned != 0.0)
+                                {
+                                    command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                                    command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                                    connection.Open();
+                                    int rowsAffected = command.ExecuteNonQuery();
+                                    MessageBox.Show("Schedule has been added!");
+                                    this.Close();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The time you have inputted is in a wrong order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+                            
                             }
                             else
                             {
@@ -503,12 +520,8 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
                             }
-
-                            connection.Open();
-                            int rowsAffected = command.ExecuteNonQuery();
-                            MessageBox.Show("Schedule has been added!");
                             connection.Close();
-                            this.Close();
+                            
                         }
                     }
                     catch (Exception ex)
@@ -603,9 +616,20 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
                                 command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                                command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
-                                command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-                                
+                                if (ctoEarned != 0.0)
+                                {
+                                    command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
+                                    command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
+                                    connection.Open();
+                                    int rowsAffected = command.ExecuteNonQuery();
+                                    MessageBox.Show("Schedule has been added!");
+                                    this.Close();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The time you have inputted is in a wrong order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                }
+
                             }
                             else
                             {
@@ -618,10 +642,6 @@ namespace CTOTracker
                             }
 
                             command.Parameters.AddWithValue("@schedID", schedID);
-
-                            connection.Open();
-                            int rowsAffected = command.ExecuteNonQuery();
-                            MessageBox.Show("Schedule has been updated!");
                             connection.Close();
                             this.Close();
                         }

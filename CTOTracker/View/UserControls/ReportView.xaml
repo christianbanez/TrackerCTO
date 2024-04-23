@@ -31,7 +31,7 @@
                     Margin="10,0,0,0"
                     Content="Employee CTO Records"
                     FontSize="24" />
-                
+
                 <Button
                     x:Name="btnExport"
                     Grid.Column="4"
@@ -211,7 +211,8 @@
         <Grid
             x:Name="EmpFilPnl"
             Grid.Row="1"
-            Background="AliceBlue" Visibility="Collapsed">
+            Background="AliceBlue"
+            Visibility="Visible">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
                 <RowDefinition Height="80*" />
@@ -225,9 +226,11 @@
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
 
@@ -237,6 +240,20 @@
                     FontSize="20"
                     FontWeight="Bold"
                     Foreground="Black" />
+                <Button
+                    Grid.Column="2"
+                    x:Name="btnBack"
+                    Click="btnBack_Click"
+                    Content="Back"
+                    FontSize="16"
+                    Style="{DynamicResource button_style}" />
+                <Button
+                    x:Name="btnExportEmp"
+                    Click="btnExportEmp_Click"
+                    Content="Export"
+                    FontSize="16"
+                    Style="{DynamicResource button_style}" />
+
 
                 <Label
                     Grid.Row="1"
@@ -265,58 +282,69 @@
                     Foreground="Black" />
 
                 <Label
+                    Grid.RowSpan="2"
                     Grid.Column="1"
+                    Margin="305,51,35,0"
                     VerticalContentAlignment="Center"
                     Content="Contact Number:"
                     FontSize="20"
-                    Foreground="Black" Margin="305,51,35,0" Grid.RowSpan="2" />
+                    Foreground="Black" />
                 <Label
                     x:Name="lblContactNum"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
+                    Grid.ColumnSpan="3"
                     Margin="485,51,205,0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
-                    Foreground="Black" Grid.ColumnSpan="3" Grid.RowSpan="2" />
+                    Foreground="Black" />
 
                 <Label
                     Grid.Row="1"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
+                    Margin="305,51,35,0"
                     Content="Role:"
                     FontSize="20"
-                    Foreground="Black" Margin="305,51,35,0" Grid.RowSpan="2" />
+                    Foreground="Black" />
                 <Label
                     x:Name="lblRole"
                     Grid.Row="1"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
+                    Grid.ColumnSpan="3"
                     Margin="485,51,205,0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
-                    Foreground="Black" Grid.ColumnSpan="3" Grid.RowSpan="2" />
+                    Foreground="Black" />
                 <Label
                     x:Name="lblEmpName"
+                    Grid.RowSpan="2"
                     Grid.Column="1"
                     Margin="10,50,0,0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
-                    Foreground="Black" Grid.RowSpan="2" />
+                    Foreground="Black" />
                 <Label
                     Grid.Row="2"
                     Grid.Column="3"
+                    Margin="0"
                     Content="Email:"
                     FontSize="20"
-                    Foreground="Black" Margin="10,5,330,-5" />
+                    Foreground="Black" />
                 <Label
                     x:Name="lblEmail"
                     Grid.Row="1"
+                    Grid.RowSpan="2"
                     Grid.Column="3"
-                    Margin="87,51,-77,0"
+                    Margin="0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
-                    Foreground="Black" Grid.RowSpan="2" />
+                    Foreground="Black" />
 
             </Grid>
 
@@ -333,16 +361,6 @@
                 IsReadOnly="True"
                 RowStyle="{DynamicResource MaterialDesignDataGridRow}"
                 Style="{DynamicResource MaterialDesignDataGrid}" />
-            <Button
-                x:Name="btnBack"
-                Margin="988,42,232,77"
-                Content="Back"
-                FontSize="16" Click="btnBack_Click"/>
-            <Button
-                x:Name="btnExportEmp"
-                Margin="1128,42,26,77"
-                Content="Export"
-                FontSize="16" Click="btnExportEmp_Click"/>
         </Grid>
 
     </Grid>
