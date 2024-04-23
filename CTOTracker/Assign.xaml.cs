@@ -65,6 +65,15 @@ namespace CTOTracker
             this.DragMove();
         }
 
+        public void ClockDialogOpenedEventHandler(object sender, DialogOpenedEventArgs eventArgs)
+        => Clock.Time = ((PickersViewModel)DataContext).Time;
+
+        public void ClockDialogClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        {
+            if (Equals(eventArgs.Parameter, "1"))
+                ((PickersViewModel)DataContext).Time = Clock.Time;
+        }
+
         // Method to populate AddTask form with selected data
         public void PopulateWithData(string fullName, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
         {

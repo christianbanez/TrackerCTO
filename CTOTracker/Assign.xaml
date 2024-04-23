@@ -4,9 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker"
-    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Assign Schedule"
     Width="430"
@@ -39,7 +39,12 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Label Margin="10,10,0,0" Content="Employee :" Foreground="Black" FontSize="14" Style="{DynamicResource font_style}" />
+                    <Label
+                        Margin="10,10,0,0"
+                        Content="Employee :"
+                        FontSize="14"
+                        Foreground="Black"
+                        Style="{DynamicResource font_style}" />
                     <ComboBox
                         x:Name="Employee_Cmbox"
                         Grid.Row="1"
@@ -47,7 +52,6 @@
                         Margin="10,10,10,5"
                         FontSize="12"
                         IsReadOnly="True"
-                        Tag="Select an Employee..."
                         Style="{DynamicResource ComboBoxStyle1}"
                         Template="{DynamicResource ComboBoxTemplate1}" />
                 </Grid>
@@ -73,8 +77,7 @@
                         FontSize="12"
                         IsEditable="True"
                         Style="{DynamicResource ComboBoxStyle1}"
-                        Template="{DynamicResource ComboBoxTemplate1}"
-                        Tag="Select a Task..." />
+                        Template="{DynamicResource ComboBoxTemplate1}" />
                 </Grid>
 
                 <!--  DatePickers Grid  -->
@@ -104,18 +107,20 @@
                         x:Name="startDatePicker"
                         Grid.Row="1"
                         Margin="5,0,5,0"
+                        BorderBrush="#FF5D86A4"
                         IsTodayHighlighted="True"
                         PreviewKeyDown="DatePicker_PreviewKeyDown"
                         SelectedDate="{x:Static sys:DateTime.Now}"
-                        SelectedDateFormat="Short" BorderBrush="#FF5D86A4" />
+                        SelectedDateFormat="Short" />
                     <DatePicker
                         x:Name="endDatePicker"
                         Grid.Row="1"
                         Grid.Column="1"
                         Margin="5,0,10,0"
+                        BorderBrush="#FF5D86A4"
                         PreviewKeyDown="DatePicker_PreviewKeyDown"
                         SelectedDate="{x:Static sys:DateTime.Now}"
-                        SelectedDateFormat="Short" BorderBrush="#FF5D86A4" />
+                        SelectedDateFormat="Short" />
                 </Grid>
 
                 <!--  Show Time CheckBox  -->
@@ -134,6 +139,10 @@
                     x:Name="addTime"
                     Margin="0,0,0,5"
                     Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -153,17 +162,20 @@
                         FontSize="14"
                         Foreground="Black"
                         Style="{DynamicResource font_style}" />
-                    
+
                     <materialDesign:TimePicker
                         x:Name="startTimeTextBox"
                         Grid.Column="1"
                         Width="100"
-                        Margin="5,10,10,0" BorderBrush="#FF5D86A4" />
+                        Margin="5,10,10,0"
+                        BorderBrush="#FF5D86A4" />
                     <materialDesign:TimePicker
                         x:Name="endTimeTextBox"
                         Grid.Column="3"
                         Width="100"
-                        Margin="5,10,10,0" BorderBrush="#FF5D86A4" SelectedTimeFormat="Long" />
+                        Margin="5,10,10,0"
+                        BorderBrush="#FF5D86A4"
+                        SelectedTimeFormat="Long" />
                 </Grid>
 
                 <!--  TextBox for Schedule ID  -->
