@@ -514,19 +514,30 @@ namespace CTOTracker
                             }
                             else
                             {
+                                
                                 command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                                 command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                                connection.Open();
+                                int rowsAffected = command.ExecuteNonQuery();
+                                MessageBox.Show("Schedule has been added!");
+                                
                             }
-                            connection.Close();
+                            
                             
                         }
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error inserting into Schedule table: " + ex.Message);
+                    }
+                    finally
+                    {
+                        connection.Close();
+                        this.Close();
+
                     }
                 }
             }
@@ -590,7 +601,30 @@ namespace CTOTracker
                         MessageBox.Show("Planned start date cannot be greater than planned end date.");
                         return;
                     }
-
+                    connection.Open();
+                    string fetchQuery = "SELECT empID, taskID, plannedStart, plannedEnd, timeIn, timeOut FROM Schedule WHERE schedID = @schedID";
+                    using (OleDbCommand fetchCommand = new OleDbCommand(fetchQuery, connection))
+                    {
+                        fetchCommand.Parameters.AddWithValue("@schedID", schedID);
+                        using (OleDbDataReader reader = fetchCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Assuming you have getters that parse the reader into appropriate types
+                                if (reader["empID"].ToString() == employeeId &&
+                                    reader["taskID"].ToString() == taskId &&
+                                    (DateTime)reader["plannedStart"] == startDate &&
+                                    (DateTime)reader["plannedEnd"] == endDate &&
+                                    reader["timeIn"].ToString() == timeIn &&
+                                    reader["timeOut"].ToString() == timeOut)
+                                {
+                                    MessageBox.Show("No changes detected to update.");
+                                    return;
+                                }
+                            }
+                        }
+                        connection.Close();
+                    }
                     // Ask for confirmation before updating
                     MessageBoxResult result = MessageBox.Show("Are you sure you want to update this schedule?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -620,10 +654,6 @@ namespace CTOTracker
                                 {
                                     command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                     command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-                                    connection.Open();
-                                    int rowsAffected = command.ExecuteNonQuery();
-                                    MessageBox.Show("Schedule has been added!");
-                                    this.Close();
                                 }
                                 else
                                 {
@@ -638,18 +668,31 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
-                               
+                                
+                            }
+                            command.Parameters.AddWithValue("@schedID", schedID);
+                            connection.Open();
+                            int rowsAffected = command.ExecuteNonQuery();
+                            if (rowsAffected == 0)
+                            {
+                                MessageBox.Show("No changes were made to the schedule.");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Schedule has been updated successfully!");
                             }
 
-                            command.Parameters.AddWithValue("@schedID", schedID);
-                            connection.Close();
-                            this.Close();
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error updating Schedule table: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                    this.Close();
                 }
             }
         }

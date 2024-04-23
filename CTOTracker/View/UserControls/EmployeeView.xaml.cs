@@ -1,6 +1,8 @@
 ﻿using System.Data;
 using System.Data.OleDb;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -548,6 +550,30 @@ namespace CTOTracker.View
             {
                 try
                 {
+                    connection.Open();
+                    string fetchQuery = "SELECT inforID, fName, lName, email, contact, roleID FROM Employee WHERE inforID = @inforID";
+                    using (OleDbCommand fetchCommand = new OleDbCommand(fetchQuery, connection))
+                    {
+                        fetchCommand.Parameters.AddWithValue("@inforID", inforID);
+                        using (OleDbDataReader reader = fetchCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Assuming you have getters that parse the reader into appropriate types
+                                if (reader["inforID"].ToString() == inforID &&
+                                    reader["fName"].ToString() == firstName &&
+                                    reader["lName"].ToString() == lastName &&
+                                    reader["email"].ToString() == email &&
+                                    reader["contact"].ToString() == contact &&
+                                    reader["roleID"].ToString() == roleID)
+                                {
+                                    MessageBox.Show("No changes detected to update.");
+                                    return;
+                                }
+                            }
+                        }
+                        connection.Close();
+                    }
                     if (DataGridEmployee1.SelectedItem != null)
                     {
                         connection.Open();
