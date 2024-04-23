@@ -33,12 +33,13 @@ namespace CTOTracker.View.UserControls
             chkbxUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
+            EmpFilPnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
             PopulateTaskComboBox();
         }
         private void DataReportView()
         {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, Schedule.ctoUsed, Schedule.ctoBalance, Employee.contact, Employee.email " +
                 "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
                 "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
                 "ON Employee.empID = Schedule.empID;";
@@ -177,6 +178,17 @@ namespace CTOTracker.View.UserControls
             {
                 Header = "CTO Balance",
                 Binding = new Binding("ctoBalance")
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Visibility = Visibility.Collapsed,
+                Binding = new Binding("contact")
+            });
+            reportDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Visibility = Visibility.Collapsed,
+                Binding = new Binding("email")
+                
             });
         }
 
@@ -336,7 +348,7 @@ namespace CTOTracker.View.UserControls
                 // Get connection from DataConnection
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    // Define the Access query to select first names (fName) and last names (lName) from the Employee table
+                    // Define the Access query to select task ID (taskID) and task name (taskName) from the Task table
                     string query = "SELECT taskID, taskName FROM Task";
 
                     // Create a command object with the query and connection
@@ -375,9 +387,6 @@ namespace CTOTracker.View.UserControls
             // Return the list of employee names retrieved from the database
             return task;
         }
-
-
-
         //------------------------------Role------------------------------------
         private void PopulateRoleComboBox()
         {
@@ -531,7 +540,6 @@ namespace CTOTracker.View.UserControls
         {
             roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
             ApplyFiltersAndUpdateDataGrid();
-
         }
 
         private void cmbxTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -540,6 +548,125 @@ namespace CTOTracker.View.UserControls
             ApplyFiltersAndUpdateDataGrid();
         }
 
+        private void reportDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (reportDataGrid.SelectedItem != null)
+                {
+                    DataRowView row_selected = (DataRowView)reportDataGrid.SelectedItem;
+
+                    // Extract relevant data from the selected row
+                    string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString();
+                    string role = row_selected["roleName"].ToString();
+                    string contactNum = row_selected["contact"].ToString();
+                    string email = row_selected["email"].ToString();
+                    string empID = row_selected["inforID"].ToString();
+
+                    LoadEmployeeReportHistory(fullName, role,contactNum, email, empID);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
         
+        private string GetEmployeeId(string employeeName)
+        {
+            string? employeeId = null; // Initialize employeeId to null
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    // Modified query to concatenate fName and lName
+                    string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ?";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            employeeId = result.ToString(); // Assign the employee ID to employeeId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+            }
+            // Return employeeId if not null, otherwise throw an exception
+            return employeeId ?? throw new Exception("Employee ID not found.");
+        }
+        private void LoadEmployeeReportHistory(string fullName, string role,string contactNum, string email, string empID)
+        {
+            string employeeId = GetEmployeeId(fullName);
+
+            lblEmpName.Content = fullName;
+            lblID.Content = empID;
+            lblRole.Content = role;
+            lblContactNum.Content = contactNum;
+            lblEmail.Content = email;
+
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Your code to load the report for employees' history
+                    // Modify your query to retrieve employees' history
+                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, dateUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
+                                   "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE completed = -1 AND Employee.empID = ?;";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@employeeId", employeeId);
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        // Set visibility of EmpFilPnl to visible
+                        //EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                        //Check if any rows were returned with completed = -1
+                        if (dataTable.Rows.Count > 0)
+                        {
+                            // Bind the DataTable to the DataGrid
+                            scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                            // Set visibility of EmpFilPnl to visible
+                            EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else
+                        {
+                            // Display a message indicating the task is not yet completed
+                            MessageBox.Show("This task is not yet completed.", "Information");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
+        private void btnExportEmp_Click(object sender, RoutedEventArgs e)
+        {
+            // Convert DataView to DataTable
+            DataView dataView = scheduleDataGrid1.ItemsSource as DataView;
+
+            // Apply the same filters as applied in the UI
+            DataTable filteredDataTable = dataView.ToTable();
+            // You may need to apply additional filters here based on UI inputs, such as nameFilter, roleFilter, etc.
+
+            // Call the ExportToPdf method with the filtered data
+            ExportToPdf(filteredDataTable, null);
+        }
     }
 }
