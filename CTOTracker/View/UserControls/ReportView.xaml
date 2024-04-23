@@ -61,13 +61,14 @@
                 Height="718"
                 Margin="0,0,10,5"
                 d:ItemsSource="{d:SampleData ItemCount=5}"
-                AutoGenerateColumns="False"
+                AutoGenerateColumns="false"
                 CanUserReorderColumns="False"
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
                 CellStyle="{DynamicResource MaterialDesignDataGridCell}"
                 ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
                 IsReadOnly="True"
+                MouseDoubleClick="reportDataGrid_MouseDoubleClick"
                 RowStyle="{DynamicResource MaterialDesignDataGridRow}"
                 Style="{DynamicResource MaterialDesignDataGrid}" />
 
@@ -210,8 +211,7 @@
         <Grid
             x:Name="EmpFilPnl"
             Grid.Row="1"
-            Background="AliceBlue"
-            Visibility="Collapsed">
+            Background="AliceBlue" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
                 <RowDefinition Height="80*" />
@@ -246,11 +246,6 @@
                     Content="Name:"
                     FontSize="20"
                     Foreground="Black" />
-                <ComboBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="10,5,50,5"
-                    VerticalContentAlignment="Center" />
 
                 <Label
                     Grid.Row="3"
@@ -270,40 +265,60 @@
                     Foreground="Black" />
 
                 <Label
-                    Grid.Row="1"
-                    Grid.Column="2"
+                    Grid.Column="1"
                     VerticalContentAlignment="Center"
                     Content="Contact Number:"
                     FontSize="20"
-                    Foreground="Black" />
+                    Foreground="Black" Margin="305,51,35,0" Grid.RowSpan="2" />
                 <Label
-                    x:Name="lblConNum"
-                    Grid.Row="1"
-                    Grid.Column="4"
-                    Margin="10,0,0,0"
+                    x:Name="lblContactNum"
+                    Grid.Column="1"
+                    Margin="485,51,205,0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
-                    Foreground="Black" />
+                    Foreground="Black" Grid.ColumnSpan="3" Grid.RowSpan="2" />
 
                 <Label
-                    Grid.Row="2"
-                    Grid.Column="2"
+                    Grid.Row="1"
+                    Grid.Column="1"
                     Content="Role:"
                     FontSize="20"
-                    Foreground="Black" />
+                    Foreground="Black" Margin="305,51,35,0" Grid.RowSpan="2" />
                 <Label
                     x:Name="lblRole"
-                    Grid.Row="3"
-                    Grid.Column="4"
-                    Margin="10,0,0,0"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="485,51,205,0"
                     VerticalContentAlignment="Center"
                     Content="PLACEHOLDER"
                     FontSize="20"
-                    Foreground="Black" />
+                    Foreground="Black" Grid.ColumnSpan="3" Grid.RowSpan="2" />
+                <Label
+                    x:Name="lblEmpName"
+                    Grid.Column="1"
+                    Margin="10,50,0,0"
+                    VerticalContentAlignment="Center"
+                    Content="PLACEHOLDER"
+                    FontSize="20"
+                    Foreground="Black" Grid.RowSpan="2" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="3"
+                    Content="Email:"
+                    FontSize="20"
+                    Foreground="Black" Margin="10,5,330,-5" />
+                <Label
+                    x:Name="lblEmail"
+                    Grid.Row="1"
+                    Grid.Column="3"
+                    Margin="87,51,-77,0"
+                    VerticalContentAlignment="Center"
+                    Content="PLACEHOLDER"
+                    FontSize="20"
+                    Foreground="Black" Grid.RowSpan="2" />
 
             </Grid>
-
 
             <DataGrid
                 x:Name="scheduleDataGrid1"
@@ -318,6 +333,16 @@
                 IsReadOnly="True"
                 RowStyle="{DynamicResource MaterialDesignDataGridRow}"
                 Style="{DynamicResource MaterialDesignDataGrid}" />
+            <Button
+                x:Name="btnBack"
+                Margin="988,42,232,77"
+                Content="Back"
+                FontSize="16" Click="btnBack_Click"/>
+            <Button
+                x:Name="btnExportEmp"
+                Margin="1128,42,26,77"
+                Content="Export"
+                FontSize="16" Click="btnExportEmp_Click"/>
         </Grid>
 
     </Grid>

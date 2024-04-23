@@ -174,67 +174,68 @@
                 <ColumnDefinition Width="0" MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
             </Grid.ColumnDefinitions>
             <Popup
-            x:Name="PART_Popup"
-            Grid.ColumnSpan="2"
-            Width="{Binding ActualWidth, ElementName=toggleButton}"
-            Margin="1"
-            AllowsTransparency="true"
-            IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-            Placement="Bottom"
-            PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                x:Name="PART_Popup"
+                Grid.ColumnSpan="2"
+                Width="{Binding ActualWidth, ElementName=toggleButton}"
+                Margin="1"
+                AllowsTransparency="true"
+                IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                Placement="Bottom"
+                PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
                 <Border
-                x:Name="dropDownBorder"
-                Background="#FFE1ECF4"
-                BorderBrush="#FFB0C8D9"
-                BorderThickness="1"
-                CornerRadius="4">
+                    x:Name="dropDownBorder"
+                    Background="#FFE1ECF4"
+                    BorderBrush="#FFB0C8D9"
+                    BorderThickness="1"
+                    CornerRadius="4">
                     <ScrollViewer x:Name="DropDownScrollViewer">
                         <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                             <Canvas
-                            x:Name="canvas"
-                            Width="0"
-                            Height="0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top">
+                                x:Name="canvas"
+                                Width="0"
+                                Height="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
                                 <Rectangle
-                                x:Name="opaqueRect"
-                                Width="{Binding ActualWidth, ElementName=dropDownBorder}"
-                                Height="{Binding ActualHeight, ElementName=dropDownBorder}"
-                                Fill="#FFE1ECF4" />
+                                    x:Name="opaqueRect"
+                                    Width="{Binding ActualWidth, ElementName=dropDownBorder}"
+                                    Height="{Binding ActualHeight, ElementName=dropDownBorder}"
+                                    Fill="#FFE1ECF4" />
                             </Canvas>
                             <ItemsPresenter
-                            x:Name="ItemsPresenter"
-                            KeyboardNavigation.DirectionalNavigation="Contained"
-                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                x:Name="ItemsPresenter"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </Grid>
                     </ScrollViewer>
                 </Border>
             </Popup>
             <ToggleButton
-            x:Name="toggleButton"
-            Grid.ColumnSpan="2"
-            Background="{TemplateBinding Background}"
-            BorderBrush="{TemplateBinding BorderBrush}"
-            BorderThickness="{TemplateBinding BorderThickness}"
-            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-            Style="{StaticResource ComboBoxToggleButton}" />
+                x:Name="toggleButton"
+                Grid.ColumnSpan="2"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                Style="{StaticResource ComboBoxToggleButton}" />
             <ContentPresenter
-            x:Name="contentPresenter"
-            Margin="{TemplateBinding Padding}"
-            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-            Content="{TemplateBinding SelectedItem}"
-            ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
-            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-            IsHitTestVisible="false"
-            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            <TextBlock x:Name="PlaceholderTextBlock"
-                   Text="{TemplateBinding Tag}"
-                   Margin="{TemplateBinding Padding}"
-                   VerticalAlignment="Center"
-                   Foreground="Gray"
-                   Visibility="Collapsed" />
+                x:Name="contentPresenter"
+                Margin="{TemplateBinding Padding}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                Content="{TemplateBinding SelectedItem}"
+                ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                IsHitTestVisible="false"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+            <TextBlock
+                x:Name="PlaceholderTextBlock"
+                Margin="{TemplateBinding Padding}"
+                VerticalAlignment="Center"
+                Foreground="Gray"
+                Text="{TemplateBinding Tag}"
+                Visibility="Collapsed" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="HasItems" Value="false">

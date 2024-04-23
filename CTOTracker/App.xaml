@@ -11,10 +11,13 @@
                 <ResourceDictionary Source="View/Resource Dictionary/Main.xaml" />
                 <ResourceDictionary Source="View/Resource Dictionary/Combobox.xaml" />
                 <ResourceDictionary Source="View/Resource Dictionary/Checkbox.xaml" />
-                <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="MediumPurple" SecondaryColor="SkyBlue" />
+                <materialDesign:CustomColorTheme
+                    BaseTheme="Light"
+                    PrimaryColor="MediumPurple"
+                    SecondaryColor="SkyBlue" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
                 <ResourceDictionary Source="View/Resource Dictionary/DataGridView.xaml" />
-           </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>  
