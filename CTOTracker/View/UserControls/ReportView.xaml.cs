@@ -9,6 +9,7 @@ using iTextSharp.text.pdf;
 using System.IO;
 using Microsoft.Win32;
 using System.Xml.Linq;
+using iTextSharp.text.pdf.draw;
 
 
 namespace CTOTracker.View.UserControls
@@ -416,7 +417,7 @@ namespace CTOTracker.View.UserControls
                     doc.Add(new iTextSharp.text.Paragraph("Date generated: " + currentDate.ToString()));
 
                     // Add company logo (assuming logoPath is the path to the company logo)
-                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\dkeh\source\repos\TrackerCTO\CTOTracker\Images\logo.png");
+                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\Administrator\source\repos\TrackerCTO\Images\logo.png");
                     logo.ScaleToFit(50f, 50f); // Adjust size as needed
                     PdfPCell logoCell = new PdfPCell(logo);
                     logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
@@ -435,18 +436,19 @@ namespace CTOTracker.View.UserControls
                     emptyCell.Border = PdfPCell.NO_BORDER;
                     headerTable.AddCell(emptyCell);
                     doc.Add(headerTable);
+                    doc.Add(new Chunk(new LineSeparator(0.5f, 100f, BaseColor.BLACK, Element.ALIGN_CENTER, -1)));
+
 
                     // Add labels to the document
                     doc.Add(new iTextSharp.text.Paragraph($"Name: {lblEmpName.Content}"));
                     doc.Add(new iTextSharp.text.Paragraph($"Email: {lblEmail.Content}"));
                     doc.Add(new iTextSharp.text.Paragraph($"Role: {lblRole.Content}"));
                     doc.Add(new iTextSharp.text.Paragraph($"ID: {lblID.Content}"));
-
-                    
+                    doc.Add(new iTextSharp.text.Paragraph(" ")); // Add an empty paragraph
 
 
                     // Add DataGrid content to the PDF document
-                    PdfPTable pdfTable = new PdfPTable(reportDataGrid.Columns.Count);
+                    PdfPTable pdfTable = new PdfPTable(scheduleDataGrid1.Columns.Count);
                     pdfTable.WidthPercentage = 100;
 
                     // Define a style for the header column
@@ -454,7 +456,7 @@ namespace CTOTracker.View.UserControls
                     Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
 
                     // Add headers
-                    foreach (DataGridColumn column in reportDataGrid.Columns)
+                    foreach (DataGridColumn column in scheduleDataGrid1.Columns)
                     {
                         // Get the header text of the column
                         string columnHeader = column.Header.ToString();
@@ -468,18 +470,25 @@ namespace CTOTracker.View.UserControls
                         pdfTable.AddCell(headerCell);
                     }
                     // Iterate through the rows and add the corresponding cell data
-                    foreach (var item in reportDataGrid.Items)
+                    foreach (var item in scheduleDataGrid1.Items)
                     {
-                        var row = reportDataGrid.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
+                        var row = scheduleDataGrid1.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
                         if (row != null)
                         {
-                            foreach (DataGridColumn column in reportDataGrid.Columns)
+                            foreach (DataGridColumn column in scheduleDataGrid1.Columns)
                             {
-                                object cellData = column.GetCellContent(item);
-                                PdfPCell cellToAdd = new PdfPCell(new Phrase(cellData.ToString(), cellFont));
-                                cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
-                                cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
-                                pdfTable.AddCell(cellToAdd);
+                                var cellContent = column.GetCellContent(item) as TextBlock;
+                                if (cellContent != null)
+                                {
+                                    // Get the text content of the TextBlock
+                                    string cellText = cellContent.Text;
+
+                                    // Add the text content to the PDF table
+                                    PdfPCell cellToAdd = new PdfPCell(new Phrase(cellText, cellFont));
+                                    cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
+                                    cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
+                                    pdfTable.AddCell(cellToAdd);
+                                }
                             }
                         }
                     }
