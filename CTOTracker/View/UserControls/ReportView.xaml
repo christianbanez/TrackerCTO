@@ -38,7 +38,7 @@
                     VerticalAlignment="Center"
                     Content="All Employees"
                     FontFamily="Roboto-Light"
-                    FontSize="14" />
+                    FontSize="14" Checked="chkbxAEmp_Checked" />
 
                 <Button
                     x:Name="btnExport"

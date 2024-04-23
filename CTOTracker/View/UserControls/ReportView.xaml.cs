@@ -486,10 +486,12 @@ namespace CTOTracker.View.UserControls
 
         private void chkbxBalance_Checked(object sender, RoutedEventArgs e)
         {
+            chkbxUsed.IsChecked = false;
             ApplyFiltersAndUpdateDataGrid();
         }
         private void chkbxUsed_Checked(object sender, RoutedEventArgs e)
         {
+            chkbxBalance.IsChecked = false;
             ApplyFiltersAndUpdateDataGrid();
         }
 
@@ -531,6 +533,7 @@ namespace CTOTracker.View.UserControls
 
         private void cmbxRole_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
             ApplyFiltersAndUpdateDataGrid();
 
@@ -538,8 +541,14 @@ namespace CTOTracker.View.UserControls
 
         private void cmbxTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            
             taskFilter = cmbxTask.SelectedItem?.ToString() ?? "";
             ApplyFiltersAndUpdateDataGrid();
+        }
+
+        private void chkbxAEmp_Checked(object sender, RoutedEventArgs e)
+        {
+            DataReportView();
         }
 
         /*private void chkbxUsed_Unchecked(object sender, RoutedEventArgs e)

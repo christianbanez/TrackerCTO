@@ -696,7 +696,7 @@ namespace CTOTracker.View
                 {
                     string query = "SELECT Employee.inforID, fName, lName, email, contact, Role.roleName FROM Employee " +
                 "INNER JOIN Role ON Employee.roleID = Role.roleID " +
-                "WHERE (fName + ' ' + lName) LIKE @Initial + '%' OR Role.roleName LIKE @Initial + '%'";
+                "WHERE (fName + ' ' + lName) LIKE @Initial + '%' OR Role.roleName LIKE @Initial + '%' OR (lName + ' ' + fName) LIKE @Initial + '%'";
 
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     adapter.SelectCommand.Parameters.AddWithValue("@Initial", initial);
