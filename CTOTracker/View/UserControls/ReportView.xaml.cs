@@ -16,6 +16,7 @@ namespace CTOTracker.View.UserControls
     /// </summary>
     public partial class ReportView : UserControl
     {
+        string imagePath = "Images/logo.png";
         private DataConnection dataConnection;
         private DataView dataView;
         private List<string> allEmployees;
@@ -231,7 +232,7 @@ namespace CTOTracker.View.UserControls
                     doc.Add(new Paragraph("Date generated: " + currentDate.ToString()));
 
                     // Add company logo (assuming logoPath is the path to the company logo)
-                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\dkeh\source\repos\TrackerCTO\CTOTracker\Images\logo.png");
+                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
                     logo.ScaleToFit(50f, 50f); // Adjust size as needed
                     PdfPCell logoCell = new PdfPCell(logo);
                     logoCell.HorizontalAlignment = Element.ALIGN_LEFT;

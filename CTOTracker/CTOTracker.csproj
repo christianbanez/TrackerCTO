@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="dbCto.accdb" />
     <None Remove="View\Resource Dictionary\Assets\btnEmp.png" />
     <None Remove="View\Resource Dictionary\Assets\btnRep.png" />
     <None Remove="View\Resource Dictionary\Assets\btnSched.png" />
@@ -16,6 +17,12 @@
     <None Remove="View\Resource Dictionary\Assets\Roboto-Regular.ttf" />
     <None Remove="View\Resource Dictionary\Assets\tgbMenu.png" />
     <None Remove="View\Resource Dictionary\Assets\tgbMenu_MouseOver.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="dbCto.accdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +42,12 @@
     <PackageReference Include="System.Data.OleDb" Version="9.0.0-preview.3.24172.9" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Images\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
