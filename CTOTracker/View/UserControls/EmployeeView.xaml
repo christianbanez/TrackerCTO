@@ -153,6 +153,7 @@
                             Grid.Column="5"
                             Margin="20"
                             IsEnabled="False"
+                            IsEditable="True"
                             Style="{DynamicResource ComboBoxStyle1}"
                             Template="{DynamicResource ComboBoxTemplate1}" />
                     </Grid>
