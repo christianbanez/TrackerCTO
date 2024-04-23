@@ -410,7 +410,7 @@ namespace CTOTracker
                     // Get selected task name from ComboBox
                     string selectedTask = Task_Cmbox.Text.Trim(); // Retrieve directly from Text property
 
-                    if (string.IsNullOrEmpty(selectedEmployee) || string.IsNullOrEmpty(selectedTask))
+                    if (string.IsNullOrEmpty(selectedEmployee) && string.IsNullOrEmpty(selectedTask))
                     {
                         MessageBox.Show("Please select an employee and enter a task.");
                         return;

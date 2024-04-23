@@ -41,7 +41,7 @@ namespace CTOTracker.View.UserControls
         }
         private void DataReportView()
         {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, Schedule.ctoUsed, Schedule.ctoBalance, Employee.contact, Employee.email " +
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, Schedule.ctoEarned, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.ctoUsed, Schedule.ctoBalance, Employee.contact, Employee.email " +
                 "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
                 "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
                 "ON Employee.empID = Schedule.empID;";
@@ -49,8 +49,8 @@ namespace CTOTracker.View.UserControls
 
         }
 
-
         private bool columnsAdded = false;
+        private bool columnsAddedemp = false;
         private void LoadAllData(string query)
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
@@ -123,7 +123,7 @@ namespace CTOTracker.View.UserControls
             // Execute the query and update the DataGrid
             LoadAllData(query);
         }
-        private void AddDataGridColumns()
+        private void AddDataGridColumns() //Columns for reportDataGrid
         {
             // Create DataGrid columns
             reportDataGrid.Columns.Add(new DataGridTextColumn
@@ -533,7 +533,6 @@ namespace CTOTracker.View.UserControls
                 if (reportDataGrid.SelectedItem != null)
                 {
                     DataRowView row_selected = (DataRowView)reportDataGrid.SelectedItem;
-
                     // Extract relevant data from the selected row
                     string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString();
                     string role = row_selected["roleName"].ToString();
@@ -580,6 +579,55 @@ namespace CTOTracker.View.UserControls
             // Return employeeId if not null, otherwise throw an exception
             return employeeId ?? throw new Exception("Employee ID not found.");
         }
+        private void AddDataGridColumnsEmpReport() //Columns for specific employee details
+        {
+            // Create DataGrid columns
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Task",
+                Binding = new Binding("taskName"),
+                Width = 125
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Time In",
+                Binding = new Binding("timeIn")
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Time Out",
+                Binding = new Binding("timeOut")
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Earned",
+                Binding = new Binding("ctoEarned"),
+                Width = 100
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Used",
+                Binding = new Binding("ctoUsed"),
+                Width = 100
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "Date Used",
+                Binding = new Binding("dateUsed"),
+                Width = 100
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Used Description",
+                Binding = new Binding("useDesc"),
+                Width = 350
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
+                Header = "CTO Balance",
+                Binding = new Binding("ctoBalance")
+            });
+        }
         private void LoadEmployeeReportHistory(string fullName, string role,string contactNum, string email, string empID)
         {
             string employeeId = GetEmployeeId(fullName);
@@ -596,7 +644,7 @@ namespace CTOTracker.View.UserControls
                 {
                     // Your code to load the report for employees' history
                     // Modify your query to retrieve employees' history
-                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, dateUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
+                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
                                    "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE completed = -1 AND Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
@@ -613,6 +661,7 @@ namespace CTOTracker.View.UserControls
                         {
                             // Bind the DataTable to the DataGrid
                             scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
+                            
                             // Set visibility of EmpFilPnl to visible
                             EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
                         }
@@ -620,6 +669,11 @@ namespace CTOTracker.View.UserControls
                         {
                             // Display a message indicating the task is not yet completed
                             MessageBox.Show("This task is not yet completed.", "Information");
+                        }
+                        if (!columnsAddedemp)
+                        {
+                            AddDataGridColumnsEmpReport();
+                            columnsAddedemp = true; // Set the flag to true after adding columns
                         }
                     }
                 }
