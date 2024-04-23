@@ -601,7 +601,29 @@ namespace CTOTracker
                         MessageBox.Show("Planned start date cannot be greater than planned end date.");
                         return;
                     }
-
+                    connection.Open();
+                    string fetchQuery = "SELECT empID, taskID, plannedStart, plannedEnd, timeIn, timeOut FROM Schedule WHERE schedID = @schedID";
+                    using (OleDbCommand fetchCommand = new OleDbCommand(fetchQuery, connection))
+                    {
+                        fetchCommand.Parameters.AddWithValue("@schedID", schedID);
+                        using (OleDbDataReader reader = fetchCommand.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Assuming you have getters that parse the reader into appropriate types
+                                if (reader["empID"].ToString() == employeeId &&
+                                    reader["taskID"].ToString() == taskId &&
+                                    (DateTime)reader["plannedStart"] == startDate &&
+                                    (DateTime)reader["plannedEnd"] == endDate &&
+                                    reader["timeIn"].ToString() == timeIn &&
+                                    reader["timeOut"].ToString() == timeOut)
+                                {
+                                    MessageBox.Show("No changes detected to update.");
+                                    return;
+                                }
+                            }
+                        }
+                    }
                     // Ask for confirmation before updating
                     MessageBoxResult result = MessageBox.Show("Are you sure you want to update this schedule?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -650,7 +672,14 @@ namespace CTOTracker
                             command.Parameters.AddWithValue("@schedID", schedID);
                             connection.Open();
                             int rowsAffected = command.ExecuteNonQuery();
-                            MessageBox.Show("Schedule has been added!");
+                            if (rowsAffected == 0)
+                            {
+                                MessageBox.Show("No changes were made to the schedule.");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Schedule has been updated successfully!");
+                            }
 
                         }
                     }
