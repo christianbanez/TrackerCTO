@@ -30,6 +30,7 @@ namespace CTOTracker
             dataConnection = new DataConnection();
             SetControlsEnabledState();
         }
+        
         private void SetControlsEnabledState()
         {
             useDescTextBox.IsEnabled = isConfirmed;
