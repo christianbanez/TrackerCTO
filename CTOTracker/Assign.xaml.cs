@@ -514,19 +514,30 @@ namespace CTOTracker
                             }
                             else
                             {
+                                
                                 command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                                 command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
+                                connection.Open();
+                                int rowsAffected = command.ExecuteNonQuery();
+                                MessageBox.Show("Schedule has been added!");
+                                
                             }
-                            connection.Close();
+                            
                             
                         }
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("Error inserting into Schedule table: " + ex.Message);
+                    }
+                    finally
+                    {
+                        connection.Close();
+                        this.Close();
+
                     }
                 }
             }
@@ -620,10 +631,6 @@ namespace CTOTracker
                                 {
                                     command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                     command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
-                                    connection.Open();
-                                    int rowsAffected = command.ExecuteNonQuery();
-                                    MessageBox.Show("Schedule has been added!");
-                                    this.Close();
                                 }
                                 else
                                 {
@@ -638,18 +645,24 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
-                               
+                                
                             }
-
                             command.Parameters.AddWithValue("@schedID", schedID);
-                            connection.Close();
-                            this.Close();
+                            connection.Open();
+                            int rowsAffected = command.ExecuteNonQuery();
+                            MessageBox.Show("Schedule has been added!");
+
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error updating Schedule table: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                    this.Close();
                 }
             }
         }
