@@ -24,6 +24,40 @@ namespace CTOTracker
     {
         private DataConnection dataConnection; // Declare a field to hold the DataConnection object
         private bool isConfirmed = false;
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            AttachEventHandlers();
+        }
+
+        private void AttachEventHandlers()
+        {
+            // Find controls in the template
+            var closeButton = (Button)this.Template.FindName("CloseButton", this);
+            var titleBar = (Border)this.Template.FindName("TitleBar", this);
+
+            // Attach event handlers
+            if (closeButton != null)
+            {
+                closeButton.Click += CloseButton_Click;
+            }
+
+            if (titleBar != null)
+            {
+                titleBar.MouseLeftButtonDown += TitleBar_MouseLeftButtonDown;
+            }
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
         public useCto()
         {
             InitializeComponent();
