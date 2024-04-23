@@ -348,18 +348,30 @@ namespace CTOTracker.View.UserControls
             }
         }
 
+        private void roleSave_Click_1(object sender, RoutedEventArgs e)
+        {
+            // Show the roleDeleteBtn and roleUpdateBtn
+            roleAddPnl.Visibility = Visibility.Visible;
+            // Hide the roleEditBtn
+            roleAddEditPnl.Visibility = Visibility.Collapsed;
+
+            // Disable roleGridView (make it unselectable)
+            roleGridView.IsEnabled = true;
+
+            // Clear selection in roleGridView
+            roleGridView.SelectedItem = null;
+
+            // Clear input fields (assuming roleNameInput is the only input field)
+            roleNameInput.Text = "";
+        }
+
 
         private void roleEditBtn_Click(object sender, RoutedEventArgs e)
         {
             // Show the roleDeleteBtn and roleUpdateBtn
-            roleDeleteBtn.Visibility = Visibility.Visible;
-            roleUpdateBtn.Visibility = Visibility.Visible;
-            roleCancelBtn.Visibility = Visibility.Visible;
-            
-
+            roleEditPnl.Visibility = Visibility.Visible;
             // Hide the roleEditBtn
-            roleEditBtn.Visibility = Visibility.Collapsed;
-            roleSave.Visibility = Visibility.Collapsed;
+            roleAddEditPnl.Visibility = Visibility.Collapsed;
 
             // Disable roleGridView (make it unselectable)
             roleGridView.IsEnabled = true;
@@ -373,14 +385,11 @@ namespace CTOTracker.View.UserControls
 
         private void roleCancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Show the roleEditBtn
-            roleEditBtn.Visibility = Visibility.Visible;
-            roleSave.Visibility = Visibility.Visible;
-
-            // Hide the roleDeleteBtn, roleUpdateBtn, and roleCancelBtn
-            roleDeleteBtn.Visibility = Visibility.Collapsed;
-            roleUpdateBtn.Visibility = Visibility.Collapsed;
-            roleCancelBtn.Visibility = Visibility.Collapsed;
+            // Show the roleDeleteBtn and roleUpdateBtn
+            roleEditPnl.Visibility = Visibility.Collapsed;
+            roleAddPnl.Visibility= Visibility.Collapsed;
+            // Hide the roleEditBtn
+            roleAddEditPnl.Visibility = Visibility.Visible;
 
 
             // Enable roleGridView (make it selectable)
@@ -521,16 +530,6 @@ namespace CTOTracker.View.UserControls
 
         private void taskSaveBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            if (isFirstClick)
-            {
-                taskNameInput.IsEnabled = true; // Enable the input field on first click
-                taskDescInput.IsEnabled = true; // Enable the input field on first click
-                editBtn.IsEnabled = false;
-
-                isFirstClick = false; // Update the flag to indicate that the first click has occurred
-                return; // Exit the method without performing further actions
-            }
-
             // Assuming you have TextBoxes for taskNameInput and taskDescInput where users enter task information
             string taskName = taskNameInput.Text;
             string taskDesc = taskDescInput.Text;
@@ -540,8 +539,7 @@ namespace CTOTracker.View.UserControls
             {
                 return;
             }
-
-            
+                        
             // Display confirmation dialog
             MessageBoxResult result = MessageBox.Show("Are you sure you want to save this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -569,19 +567,29 @@ namespace CTOTracker.View.UserControls
             }
         }
 
+        private void addBtnClick_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the roleDeleteBtn and roleUpdateBtn
+            taskAddPnl.Visibility = Visibility.Visible;
+            // Hide the roleEditBtn
+            taskAddEditPnl.Visibility = Visibility.Collapsed;
+            // Disable roleGridView (make it unselectable)
+            taskGridView.IsEnabled = true;
 
+            // Clear selection in roleGridView
+            taskGridView.SelectedItem = null;
+
+            // Clear input fields (assuming roleNameInput is the only input field)
+            taskNameInput.Text = "";
+            taskDescInput.Text = "";
+        }
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
             // Show the roleDeleteBtn and roleUpdateBtn
-            deleteBtn.Visibility = Visibility.Visible;
-            updateBtn.Visibility = Visibility.Visible;
-            addBtnClick.Visibility = Visibility.Visible;
-
-
+            taskUpdatePnl.Visibility = Visibility.Visible;
             // Hide the roleEditBtn
-            editBtn.Visibility = Visibility.Collapsed;
-            addBtnClick.Visibility = Visibility.Collapsed;
+            taskAddEditPnl.Visibility = Visibility.Collapsed;
 
             // Disable roleGridView (make it unselectable)
             taskGridView.IsEnabled = true;
@@ -596,15 +604,11 @@ namespace CTOTracker.View.UserControls
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Show the roleEditBtn
-            editBtn.Visibility = Visibility.Visible;
-            addBtnClick.Visibility = Visibility.Visible;
-
-            // Hide the roleDeleteBtn, roleUpdateBtn, and roleCancelBtn
-            deleteBtn.Visibility = Visibility.Collapsed;
-            updateBtn.Visibility = Visibility.Collapsed;
-            cancelBtn.Visibility = Visibility.Collapsed;
-
+            // Show the roleDeleteBtn and roleUpdateBtn
+            taskUpdatePnl.Visibility = Visibility.Collapsed;
+            taskAddPnl.Visibility = Visibility.Collapsed;
+            // Hide the roleEditBtn
+            taskAddEditPnl.Visibility = Visibility.Visible;
 
             // Enable roleGridView (make it selectable)
             taskGridView.IsEnabled = false;
@@ -788,5 +792,6 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
+
     }
 }
