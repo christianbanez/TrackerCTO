@@ -39,9 +39,9 @@ namespace CTOTracker.View
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
             cbxFilterTask.SelectionChanged += cbxFilterTask_SelectionChanged;
-            PopulateTaskComboBox();
+            PopulateTaskComboBox();       
         }
-
+        
 
         private void LoadScheduleData()
         {
@@ -593,7 +593,10 @@ namespace CTOTracker.View
                         // Pass the selected rows to the useCto window
                         useCto useCtoWindow = new useCto();
                         useCtoWindow.LoadSelectedSchedule(selectedRows);
+                        useCtoWindow.Closed += UseCtoWindow_Closed;
                         useCtoWindow.Show();
+                        
+
                     }
                     else
                     {
@@ -610,7 +613,7 @@ namespace CTOTracker.View
                     //{
                     //    MessageBox.Show("Please select rows with unique IDs and non-null balances.");
                     //}
-                   ;
+                   
                     
                 }
                         
@@ -618,10 +621,27 @@ namespace CTOTracker.View
                 {
                     MessageBox.Show("No rows selected.");
                 }
+            
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
+            }
+
+            
+        }
+        private void UseCtoWindow_Closed(object sender, EventArgs e)
+        {
+            // This method gets called when the useCto window is closed
+            if (cbxEmployee.SelectedItem != null)
+            {
+                LoadEmployeeQuery();  // Filter data when a new employee is selected
+                LoadCtoEmployeeQuery();
+            }
+            else
+            {
+                LoadScheduleData();
+                LoadCTOuseData();
             }
         }
         private void PopulateTaskComboBox()
