@@ -10,15 +10,20 @@
     mc:Ignorable="d">
     <Grid>
         <!--  EmployeeView  -->
-        <Grid Grid.Row="1">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="35*" />
-                <RowDefinition Height="65*" />
-                <RowDefinition />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="9*" />
             </Grid.RowDefinitions>
 
+            <Label
+                Margin="10,0,0,0"
+                Content="Manage Employees"
+                FontSize="24" />
+
             <!--  EmployeeDisplay  -->
-            <Grid>
+            <Grid Grid.Row="1">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60*" />
@@ -109,33 +114,33 @@
                             Margin="20"
                             IsEnabled="False"
                             MaxLength="11"
-                            Tag="Infor ID"
                             PreviewTextInput="txtEmpID_PreviewTextInput"
-                            Style="{StaticResource txtbx_style}" />
+                            Style="{StaticResource txtbx_style}"
+                            Tag="Infor ID" />
                         <TextBox
                             x:Name="txtFname"
                             Grid.Row="2"
                             Grid.Column="2"
                             Margin="20"
                             IsEnabled="False"
-                            Tag="First Name"
-                            Style="{StaticResource txtbx_style}" />
+                            Style="{StaticResource txtbx_style}"
+                            Tag="First Name" />
                         <TextBox
                             x:Name="txtLname"
                             Grid.Row="3"
                             Grid.Column="2"
                             Margin="20"
                             IsEnabled="False"
-                            Tag="Last Name"
-                            Style="{StaticResource txtbx_style}" />
+                            Style="{StaticResource txtbx_style}"
+                            Tag="Last Name" />
                         <TextBox
                             x:Name="txtEmail"
                             Grid.Row="1"
                             Grid.Column="5"
                             Margin="20"
                             IsEnabled="False"
-                            Tag="Email"
-                            Style="{StaticResource txtbx_style}" />
+                            Style="{StaticResource txtbx_style}"
+                            Tag="Email" />
                         <TextBox
                             x:Name="txtContact"
                             Grid.Row="2"
@@ -143,19 +148,21 @@
                             Margin="20"
                             IsEnabled="False"
                             MaxLength="11"
-                            Tag="Contact Number"
                             PreviewTextInput="txtContact_PreviewTextInput"
                             Style="{DynamicResource txtbx_style}"
-                            TabIndex="11" />
+                            TabIndex="11"
+                            Tag="Contact Number" />
                         <ComboBox
                             x:Name="txtRole"
                             Grid.Row="3"
                             Grid.Column="5"
                             Margin="20"
-                            IsEnabled="False"
+                            Background="#FFEFF6FB"
+                            BorderBrush="#FFB0C8D9"
                             IsEditable="True"
+                            IsEnabled="False"
                             Style="{DynamicResource ComboBoxStyle1}"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Template="{DynamicResource MaterialDesignDataGridComboBoxEditableTemplate}" />
                     </Grid>
 
                     <!--  AddEdit  -->
@@ -173,11 +180,11 @@
                             Width="320"
                             Height="29"
                             Margin="39,0,0,0"
-                            FontSize="14"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Tag="Search Employee"
+                            FontSize="14"
                             Style="{StaticResource txtbx_style}"
+                            Tag="Search Employee"
                             TextChanged="employeeSearch_TextChanged"
                             TextWrapping="Wrap" />
 
@@ -280,7 +287,7 @@
             <!--  EmployeeTable  -->
             <DataGrid
                 x:Name="DataGridEmployee1"
-                Grid.Row="1"
+                Grid.Row="2"
                 d:ItemsSource="{d:SampleData ItemCount=6}"
                 AutoGeneratedColumns="DataGridEmployee1_AutoGeneratedColumns"
                 CanUserDeleteRows="False"

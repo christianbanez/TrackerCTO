@@ -73,11 +73,12 @@
                         Grid.Row="1"
                         Width="311"
                         Margin="10,10,10,5"
-                        materialDesign:HintAssist.Hint="Some item"
+                        Background="#FFEFF6FB"
+                        BorderBrush="#FFB0C8D9"
                         FontSize="12"
                         IsEditable="True"
                         Style="{DynamicResource ComboBoxStyle1}"
-                        Template="{DynamicResource ComboBoxTemplate1}" />
+                        Template="{DynamicResource MaterialDesignDataGridComboBoxEditableTemplate}" />
                 </Grid>
 
                 <!--  DatePickers Grid  -->

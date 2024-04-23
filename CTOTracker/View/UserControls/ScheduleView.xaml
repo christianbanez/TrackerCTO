@@ -15,14 +15,11 @@
         <!--  ScheduleDisplay  -->
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="260" />
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="3*" />
-                <RowDefinition Height="260" />
-                <RowDefinition />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="300" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="300" />
             </Grid.RowDefinitions>
 
             <!--  HEADER  -->
@@ -35,6 +32,11 @@
                     <ColumnDefinition Width="125" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+
+                <Label
+                    Margin="10,0,0,0"
+                    Content="Schedules"
+                    FontSize="24" />
 
                 <Button
                     x:Name="btnAssignTask"
@@ -76,53 +78,24 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="15*" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="1.5*" />
-                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <Button
                         x:Name="btnUseCtoUsed"
                         Grid.Column="1"
+                        Width="100"
                         Height="30"
                         Margin="5,0,5,5"
                         VerticalAlignment="Bottom"
                         Click="btnUseCtoUsed_Click"
-                        Content="USE" />
-                    <Label
-                        Grid.Column="2"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Content="Total Selected :" />
-                    <Label
-                        Grid.Column="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Content="NUMBER" />
+                        Content="Use CTO"
+                        Style="{DynamicResource button_style}" />
                 </Grid>
             </Grid>
 
-            <!--  TOTAL_EARNED_PANEL  -->
-            <Grid Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="15*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="1.5*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Label
-                    Grid.Column="2"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Content="Total Earned : " />
-                <Label
-                    Grid.Column="3"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Content="NUMBER" />
-            </Grid>
             <DataGrid
                 x:Name="ctoUseDataGrid"
-                Grid.Row="6"
+                Grid.Row="4"
                 Grid.RowSpan="2"
                 Margin="0,19,0,28"
                 d:ItemsSource="{d:SampleData ItemCount=12}"
@@ -163,7 +136,7 @@
                     IsReadOnly="True"
                     SelectionChanged="cbxEmployee_SelectionChanged"
                     Style="{DynamicResource ComboBoxStyle1}"
-                    Template="{DynamicResource ComboBoxTemplate1}"/>
+                    Template="{DynamicResource ComboBoxTemplate1}" />
                 <CheckBox
                     x:Name="showallChkBox"
                     Grid.Column="2"
@@ -215,8 +188,6 @@
                     Template="{DynamicResource ComboBoxTemplate1}"
                     Text="Filter by Task" />
             </Grid>
-
-
         </Grid>
     </Grid>
 </UserControl>
