@@ -623,6 +623,7 @@ namespace CTOTracker
                                 }
                             }
                         }
+                        connection.Close();
                     }
                     // Ask for confirmation before updating
                     MessageBoxResult result = MessageBox.Show("Are you sure you want to update this schedule?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
