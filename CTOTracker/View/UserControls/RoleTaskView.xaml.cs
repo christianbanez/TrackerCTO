@@ -37,6 +37,7 @@ namespace CTOTracker.View.UserControls
             LoadTaskView();
             roleGridView.IsEnabled = false;
             roleNameInput.IsEnabled = false;
+            taskGridView.IsEnabled = false;
 
         }
         private void InitializeRoleGridView()
@@ -221,6 +222,8 @@ namespace CTOTracker.View.UserControls
             {
                 MessageBox.Show("Please select a role to delete.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            roleNameInput.Text = "";
+
         }
 
         private void DeleteRoleFromDatabase(string roleId)
@@ -673,6 +676,8 @@ namespace CTOTracker.View.UserControls
             {
                 MessageBox.Show("Please select a task to delete.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            taskNameInput.Text = "";
+            taskDescInput.Text = "";
         }
 
         private void DeleteTaskFromDatabase(string taskId)
