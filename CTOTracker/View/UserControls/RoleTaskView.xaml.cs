@@ -34,9 +34,10 @@ namespace CTOTracker.View.UserControls
             InitializeRoleGridView();
             InitializeTaskGridView();
             LoadRoleView();
-            LoadTaskView();
-            roleGridView.IsEnabled = false;
+            LoadTaskView(); 
+            roleGridView.IsReadOnly = true;
             roleNameInput.IsEnabled = false;
+            taskGridView.IsReadOnly= true;
 
         }
         private void InitializeRoleGridView()
@@ -182,7 +183,7 @@ namespace CTOTracker.View.UserControls
                     roleNameInput.Text = "";
 
                     // Reset UI
-                    roleNameInput.IsEnabled = false;
+                    roleNameInput.IsReadOnly = true;
                     isAdding = false;
 
                     // Gray out the editBtn
@@ -221,6 +222,8 @@ namespace CTOTracker.View.UserControls
             {
                 MessageBox.Show("Please select a role to delete.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            roleNameInput.Text = "";
+
         }
 
         private void DeleteRoleFromDatabase(string roleId)
@@ -280,7 +283,7 @@ namespace CTOTracker.View.UserControls
                     roleAddEditPnl.Visibility = Visibility.Visible;
                     roleEditPnl.Visibility = Visibility.Collapsed;
 
-                    roleGridView.IsEnabled = false;
+                    roleGridView.IsReadOnly = true;
                 }
                 else
                 {
@@ -364,7 +367,7 @@ namespace CTOTracker.View.UserControls
             roleAddEditPnl.Visibility = Visibility.Collapsed;
 
             // Disable roleGridView (make it unselectable)
-            roleGridView.IsEnabled = true;
+            roleGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
             roleGridView.SelectedItem = null;
@@ -376,7 +379,7 @@ namespace CTOTracker.View.UserControls
 
         private void roleEditBtn_Click(object sender, RoutedEventArgs e)
         {
-            roleNameInput.IsEnabled = true;
+            roleNameInput.IsReadOnly = true;
 
             // Show the roleDeleteBtn and roleUpdateBtn
             roleEditPnl.Visibility = Visibility.Visible;
@@ -384,7 +387,7 @@ namespace CTOTracker.View.UserControls
             roleAddEditPnl.Visibility = Visibility.Collapsed;
 
             // Disable roleGridView (make it unselectable)
-            roleGridView.IsEnabled = true;
+            roleGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
             roleGridView.SelectedItem = null;
@@ -561,6 +564,7 @@ namespace CTOTracker.View.UserControls
 
             MessageBoxResult result = MessageBox.Show("Are you sure you want to save this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
+
             if (result == MessageBoxResult.Yes)
             {
                 try
@@ -576,6 +580,10 @@ namespace CTOTracker.View.UserControls
                     // Logger.Log(ex);
                 }
             }
+            taskAddEditPnl.Visibility = Visibility.Visible;
+            taskAddPnl.Visibility = Visibility.Collapsed;
+            taskNameInput.IsEnabled = false;
+            taskDescInput.IsEnabled = false;
         }
 
         private void addBtnClick_Click(object sender, RoutedEventArgs e)
@@ -589,7 +597,7 @@ namespace CTOTracker.View.UserControls
 
             taskAddPnl.Visibility = Visibility.Visible;
             taskAddEditPnl.Visibility = Visibility.Collapsed;
-            taskGridView.IsEnabled = true;
+            taskGridView.IsReadOnly = true;
             taskGridView.SelectedItem = null;
             taskNameInput.Text = "";
             taskDescInput.Text = "";
@@ -606,7 +614,7 @@ namespace CTOTracker.View.UserControls
             taskAddEditPnl.Visibility = Visibility.Collapsed;
 
             // Disable roleGridView (make it unselectable)
-            taskGridView.IsEnabled = true;
+            taskGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
             taskGridView.SelectedItem = null;
@@ -625,7 +633,7 @@ namespace CTOTracker.View.UserControls
             taskAddEditPnl.Visibility = Visibility.Visible;
 
             // Enable roleGridView (make it selectable)
-            taskGridView.IsEnabled = false;
+            taskGridView.IsReadOnly = false;
 
             // Clear selection in roleGridView
             taskGridView.SelectedItem = null;
@@ -634,8 +642,7 @@ namespace CTOTracker.View.UserControls
             taskNameInput.Text = "";
             taskDescInput.Text = "";
 
-            taskNameInput.IsEnabled = false;
-            taskDescInput.IsEnabled = false;
+
         }
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
@@ -673,6 +680,8 @@ namespace CTOTracker.View.UserControls
             {
                 MessageBox.Show("Please select a task to delete.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+            taskNameInput.Text = "";
+            taskDescInput.Text = "";
         }
 
         private void DeleteTaskFromDatabase(string taskId)
@@ -743,7 +752,7 @@ namespace CTOTracker.View.UserControls
                         taskAddEditPnl.Visibility = Visibility.Visible;
 
                         // Disable taskGridView (make it unselectable)
-                        taskGridView.IsEnabled = false;
+                        taskGridView.IsReadOnly = false;
                     }
                     catch (Exception ex)
                     {
