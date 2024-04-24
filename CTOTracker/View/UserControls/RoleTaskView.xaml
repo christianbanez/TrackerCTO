@@ -198,7 +198,7 @@
                     IsReadOnly="True"
                     ItemsSource="{Binding dataTable}"
                     RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-                    Style="{DynamicResource MaterialDesignDataGrid}" />
+                    Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="taskGridView_SelectionChanged_1" />
 
                 <Grid>
                     <Grid.RowDefinitions>

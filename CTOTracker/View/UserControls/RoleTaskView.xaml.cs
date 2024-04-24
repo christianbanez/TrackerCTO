@@ -389,11 +389,12 @@ namespace CTOTracker.View.UserControls
             // Disable roleGridView (make it unselectable)
             roleGridView.IsReadOnly = true;
 
+            roleNameInput.IsEnabled = true;
             // Clear selection in roleGridView
-            roleGridView.SelectedItem = null;
+            //roleGridView.SelectedItem = null;
 
             // Clear input fields (assuming roleNameInput is the only input field)
-            roleNameInput.Text = "";
+            //roleNameInput.Text = "";
         }
 
         private void roleCancelBtn_Click(object sender, RoutedEventArgs e)
@@ -457,6 +458,7 @@ namespace CTOTracker.View.UserControls
                 // Display data in input fields
                 taskNameInput.Text = taskName;
                 taskDescInput.Text = taskDesc;
+                editBtn.IsEnabled = true;
             }
         }
         private void LoadTaskView()
@@ -471,6 +473,7 @@ namespace CTOTracker.View.UserControls
 
                     taskDataTable = new DataTable(); // Initialize taskDataTable
                     adapter.Fill(taskDataTable);
+                    editBtn.IsEnabled = false;
 
                     taskGridView.ItemsSource = taskDataTable.DefaultView; // Bind taskDataTable to taskGridView
                 }
@@ -603,8 +606,8 @@ namespace CTOTracker.View.UserControls
             taskAddEditPnl.Visibility = Visibility.Collapsed;
             taskGridView.IsReadOnly = true;
             taskGridView.SelectedItem = null;
-            taskNameInput.Text = "";
-            taskDescInput.Text = "";
+            //taskNameInput.Text = "";
+            //taskDescInput.Text = "";
         }
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
@@ -621,11 +624,11 @@ namespace CTOTracker.View.UserControls
             taskGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
-            taskGridView.SelectedItem = null;
+            //taskGridView.SelectedItem = null;
 
             // Clear input fields (assuming roleNameInput is the only input field)
-            taskNameInput.Text = "";
-            taskDescInput.Text = "";
+            //taskNameInput.Text = "";
+            //taskDescInput.Text = "";
         }
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
@@ -645,7 +648,7 @@ namespace CTOTracker.View.UserControls
             // Clear input fields (assuming roleNameInput is the only input field)
             taskNameInput.Text = "";
             taskDescInput.Text = "";
-
+            editBtn.IsEnabled = false;
 
         }
 
@@ -831,6 +834,20 @@ namespace CTOTracker.View.UserControls
         private void taskNameInput_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void taskGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate textboxes
+                editBtn.IsEnabled = true;
+                taskNameInput.Text = row_selected["taskName"].ToString();
+                taskDescInput.Text = row_selected["taskDesc"].ToString();
+                
+            }
         }
     }
 }
