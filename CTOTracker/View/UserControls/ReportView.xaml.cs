@@ -103,11 +103,11 @@ namespace CTOTracker.View.UserControls
             {
                 query += $" AND (Employee.fName LIKE '{nameFilter}%' OR Employee.lName LIKE '{nameFilter}%')";
             }
-            if (!string.IsNullOrEmpty(taskFilter))
+            if (cmbxTask.SelectedItem != null)
             {
                 query += $" AND Task.taskName = '{taskFilter}'";
             }
-            if (!string.IsNullOrEmpty(roleFilter))
+            if (cmbxRole.SelectedItem != null)
             {
                 query += $" AND Role.roleName = '{roleFilter}'";
             }
@@ -310,8 +310,14 @@ namespace CTOTracker.View.UserControls
    
         private void txtschFname_TextChanged(object sender, TextChangedEventArgs e)
         {
+
             nameFilter = txtschFname.Text.Trim();
-            ApplyFiltersAndUpdateDataGrid();
+            if (string.IsNullOrEmpty(nameFilter))
+            {
+                ApplyFiltersAndUpdateDataGrid();
+                return;
+            }
+            DataReportView();
         }
 
         //------------------------------Task------------------------------------
@@ -469,11 +475,20 @@ namespace CTOTracker.View.UserControls
         {
             chkbxUsed.IsChecked = false;
             ApplyFiltersAndUpdateDataGrid();
+            if (chkbxBalance.IsChecked == true)
+            {
+                ApplyFiltersAndUpdateDataGrid();
+            }
+            DataReportView();
         }
         private void chkbxUsed_Checked(object sender, RoutedEventArgs e)
         {
             chkbxBalance.IsChecked = false;
-            ApplyFiltersAndUpdateDataGrid();
+            if (chkbxUsed.IsChecked == true)
+            {
+                ApplyFiltersAndUpdateDataGrid();
+            }
+            DataReportView();
         }
 
         private void tgb_FilterPnl_Checked(object sender, RoutedEventArgs e)
@@ -517,13 +532,32 @@ namespace CTOTracker.View.UserControls
 
             roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
             ApplyFiltersAndUpdateDataGrid();
+            //if (cmbxRole.SelectedItem != null)
+            //{
+            //    ApplyFiltersAndUpdateDataGrid();
+            //    return;
+            //}
+
+
+            //DataReportView();
         }
 
         private void cmbxTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+
             taskFilter = cmbxTask.SelectedItem?.ToString() ?? "";
             ApplyFiltersAndUpdateDataGrid();
+            //if (cmbxTask.SelectedItem != null)
+            //{
+            //    ApplyFiltersAndUpdateDataGrid();
+            //}
+            //if (cmbxTask.SelectedItem != null)
+            //{
+            //    ApplyFiltersAndUpdateDataGrid();
+            //}
+            //DataReportView();
+
+
         }
 
         private void reportDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -612,12 +646,6 @@ namespace CTOTracker.View.UserControls
             });
             scheduleDataGrid1.Columns.Add(new DataGridTextColumn
             {
-                Header = "Date Used",
-                Binding = new Binding("dateUsed"),
-                Width = 100
-            });
-            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
-            {
                 Header = "CTO Used Description",
                 Binding = new Binding("useDesc"),
                 Width = 350
@@ -644,7 +672,7 @@ namespace CTOTracker.View.UserControls
                 {
                     // Your code to load the report for employees' history
                     // Modify your query to retrieve employees' history
-                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
+                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
                                    "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE completed = -1 AND Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
@@ -654,8 +682,6 @@ namespace CTOTracker.View.UserControls
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
 
-                        // Set visibility of EmpFilPnl to visible
-                        //EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
                         //Check if any rows were returned with completed = -1
                         if (dataTable.Rows.Count > 0)
                         {

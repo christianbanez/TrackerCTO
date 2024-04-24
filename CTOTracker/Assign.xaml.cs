@@ -497,7 +497,7 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate.ToString("MM/dd/yyyy hh:mm tt"));
                                 command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                                if (ctoEarned != 0.0)
+                                if (ctoEarned >= 0.0)
                                 {
                                     command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                     command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
@@ -650,7 +650,7 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
                                 command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                                if (ctoEarned != 0.0)
+                                if (ctoEarned >= 0.0)
                                 {
                                     command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                     command.Parameters.AddWithValue("@ctoBalance", ctoEarned);

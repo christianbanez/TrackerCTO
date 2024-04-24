@@ -289,9 +289,19 @@ namespace CTOTracker
             DateTime? dateUsed = datePicker.SelectedDate; // Get the selected date
 
             // Check if description is empty or date is null
-            if (string.IsNullOrEmpty(useDesc) || !dateUsed.HasValue)
+            if (string.IsNullOrEmpty(useDesc) && !dateUsed.HasValue)
             {
                 MessageBox.Show("Please provide both a description and a date.", "Input Required", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return; // Stop further processing
+            }
+            else if (string.IsNullOrEmpty(useDesc))
+            {
+                MessageBox.Show("Please provide a description.", "Input Required", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return; // Stop further processing
+            }
+            else if (!dateUsed.HasValue)
+            {
+                MessageBox.Show("Please provide a date.", "Input Required", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return; // Stop further processing
             }
             else
