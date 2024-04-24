@@ -80,6 +80,7 @@ namespace CTOTracker.View.UserControls
                     roleDataTable = new DataTable(); // Initialize roleDataTable
                     adapter.Fill(roleDataTable);
 
+                    roleEditBtn.IsEnabled = false;
                     roleGridView.ItemsSource = roleDataTable.DefaultView; // Bind roleDataTable to roleGridView
                 }
                 catch (Exception ex)
@@ -397,6 +398,7 @@ namespace CTOTracker.View.UserControls
 
             // Clear input fields (assuming roleNameInput is the only input field)
             //roleNameInput.Text = "";
+
         }
 
         private void roleCancelBtn_Click(object sender, RoutedEventArgs e)
@@ -848,7 +850,19 @@ namespace CTOTracker.View.UserControls
                 editBtn.IsEnabled = true;
                 taskNameInput.Text = row_selected["taskName"].ToString();
                 taskDescInput.Text = row_selected["taskDesc"].ToString();
-                
+            }
+        }
+
+        private void roleGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate textboxes
+                roleEditBtn.IsEnabled = true;
+                taskNameInput.Text = row_selected["roleName"].ToString();
+
             }
         }
     }

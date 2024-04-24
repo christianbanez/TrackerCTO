@@ -38,7 +38,7 @@
                     ItemsSource="{Binding dataTable}"
                     RenderTransformOrigin="0.5,0.5"
                     RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-                    Style="{DynamicResource MaterialDesignDataGrid}">
+                    Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="roleGridView_SelectionChanged_1">
                     <DataGrid.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform />
