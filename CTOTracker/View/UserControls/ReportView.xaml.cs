@@ -86,47 +86,6 @@ namespace CTOTracker.View.UserControls
 
                     return;
                 }
-                /*else if (dataTable.Rows.Count == 0)
-                {
-                    if (!string.IsNullOrEmpty(nameFilter))
-                    {
-                        MessageBox.Show("No data found for the specified name.", "Information");
-                        txtschFname.Text = "";
-
-                    }
-                    else if (!string.IsNullOrEmpty(taskFilter))
-                    {
-                        MessageBox.Show("No data found for the specified task.", "Information");
-                        cmbxTask.SelectedIndex = -1;
-                        cmbxTask.Tag = "Task";
-
-                    }
-                    else if (!string.IsNullOrEmpty(roleFilter))
-                    {
-                        MessageBox.Show("No data found for the specified role.", "Information");
-                        cmbxRole.SelectedIndex = -1;
-                        cmbxRole.Tag = "Role";
-
-                    }
-                    else if (!(dtEDate.SelectedDate.HasValue))
-                    {
-                        MessageBox.Show("No date selected for the date used filter.", "Information");
-                        dtEDate.SelectedDate = null;
-                        return;
-                    }
-                    else if (!(dtUDate.SelectedDate.HasValue))
-                    {
-                        MessageBox.Show("No date selected for the date used filter.", "Information");
-                        dtUDate.SelectedDate = null; 
-                    }
-                    else
-                    {
-                        MessageBox.Show("No data found for the specified filters.", "Information");// Clear filter fields
-                        chkbxBalance.IsChecked = false;
-                        chkbxUsed.IsChecked = false;
-                    }
-                    DataReportView();
-                }*/
                 if (!columnsAdded)
                 {
                     AddDataGridColumns();
@@ -179,18 +138,19 @@ namespace CTOTracker.View.UserControls
                 LoadAllData(query);
                 if (cmbxTask.SelectedItem != null && reportDataGrid.Items.Count == 0 && !string.IsNullOrEmpty(taskFilter))
                 {
-                    MessageBox.Show($"No data found for the selected task: {taskFilter}.", "Information");
+                    MessageBox.Show($"No data found for the selected task: {taskFilter}.", "Information", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     cmbxTask.SelectedIndex = -1;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message, "Error");
+                MessageBox.Show("Error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }
         private void AddDataGridColumns() //Columns for reportDataGrid
         {
+            
             // Create DataGrid columns
             reportDataGrid.Columns.Add(new DataGridTextColumn
             {
@@ -257,7 +217,7 @@ namespace CTOTracker.View.UserControls
             // Check if there is data to export
             if (dataTable == null || dataTable.Rows.Count == 0)
             {
-                MessageBox.Show("No data available for export.", "Information");
+                MessageBox.Show("No data available for export.", "Information", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -269,7 +229,7 @@ namespace CTOTracker.View.UserControls
                 // Show SaveFileDialog to get the output path
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
-                saveFileDialog.FileName = "output.pdf"; // Default file name
+                saveFileDialog.FileName = $"output_{DateTime.Now:yyyyMMdd}.pdf";
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     outputPath = saveFileDialog.FileName;
@@ -316,25 +276,40 @@ namespace CTOTracker.View.UserControls
                     pdfTable.WidthPercentage = 100;
 
                     // Add headers
-                    foreach (DataColumn column in dataTable.Columns)
+                    foreach (DataGridColumn column in reportDataGrid.Columns)
                     {
-                        PdfPCell headerCell = new PdfPCell(new Phrase(column.ColumnName.ToString(), headerFont));
+                        // Get the header text of the column
+                        string columnHeader = column.Header.ToString();
+
+                        // Add the column header to the PDF table
+                        PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
                         headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
                         headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         headerCell.Padding = 3;
                         pdfTable.AddCell(headerCell);
                     }
-
-                    // Add data rows
-                    foreach (DataRow row in dataTable.Rows)
+                    // Iterate through the rows and add the corresponding cell data
+                    foreach (var item in reportDataGrid.Items)
                     {
-                        foreach (var cell in row.ItemArray)
+                        var row = reportDataGrid.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
+                        if (row != null)
                         {
-                            PdfPCell cellToAdd = new PdfPCell(new Phrase(cell.ToString(), cellFont));
-                            cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
-                            cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
-                            pdfTable.AddCell(cellToAdd);
+                            foreach (DataGridColumn column in reportDataGrid.Columns)
+                            {
+                                var cellContent = column.GetCellContent(item) as TextBlock;
+                                if (cellContent != null)
+                                {
+                                    // Get the text content of the TextBlock
+                                    string cellText = cellContent.Text;
+
+                                    // Add the text content to the PDF table
+                                    PdfPCell cellToAdd = new PdfPCell(new Phrase(cellText, cellFont));
+                                    cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
+                                    cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
+                                    pdfTable.AddCell(cellToAdd);
+                                }
+                            }
                         }
                     }
 
@@ -342,12 +317,13 @@ namespace CTOTracker.View.UserControls
                     doc.Add(pdfTable);
                     doc.Close();
 
-                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath);
+                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error exporting PDF: " + ex.Message);
+                MessageBox.Show("Error exporting PDF: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
@@ -758,7 +734,7 @@ namespace CTOTracker.View.UserControls
             // Create a SaveFileDialog to choose the output path
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
-            saveFileDialog.FileName = "exported_data.pdf"; // Default file name
+            saveFileDialog.FileName = $"exported_{DateTime.Now:yyyyMMdd}.pdf"; // Default file name
 
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -862,11 +838,12 @@ namespace CTOTracker.View.UserControls
                     // Add table to document
                     doc.Add(pdfTable);
 
-                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath);
+                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error exporting PDF: " + ex.Message);
+                    MessageBox.Show("Error exporting PDF: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
                 finally
                 {
