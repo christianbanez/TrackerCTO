@@ -112,6 +112,7 @@
                             Grid.Row="1"
                             Grid.Column="2"
                             Margin="20"
+                            VerticalContentAlignment="Center"
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtEmpID_PreviewTextInput"
@@ -122,6 +123,7 @@
                             Grid.Row="2"
                             Grid.Column="2"
                             Margin="20"
+                            VerticalContentAlignment="Center"
                             IsEnabled="False"
                             Style="{StaticResource txtbx_style}"
                             Tag="First Name" />
@@ -130,6 +132,7 @@
                             Grid.Row="3"
                             Grid.Column="2"
                             Margin="20"
+                            VerticalContentAlignment="Center"
                             IsEnabled="False"
                             Style="{StaticResource txtbx_style}"
                             Tag="Last Name" />
@@ -138,6 +141,7 @@
                             Grid.Row="1"
                             Grid.Column="5"
                             Margin="20"
+                            VerticalContentAlignment="Center"
                             IsEnabled="False"
                             Style="{StaticResource txtbx_style}"
                             Tag="Email" />
@@ -146,6 +150,7 @@
                             Grid.Row="2"
                             Grid.Column="5"
                             Margin="20"
+                            VerticalContentAlignment="Center"
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtContact_PreviewTextInput"
@@ -182,6 +187,7 @@
                             Margin="39,0,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
                             FontSize="14"
                             Style="{StaticResource txtbx_style}"
                             Tag="Search Employee"

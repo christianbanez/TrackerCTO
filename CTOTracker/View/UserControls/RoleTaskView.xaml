@@ -17,7 +17,7 @@
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="3*" />
                 </Grid.RowDefinitions>
 
@@ -26,12 +26,19 @@
                     Grid.Row="1"
                     Margin="50,0,50,50"
                     AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
                     CanUserReorderColumns="False"
                     CanUserResizeColumns="False"
                     CanUserResizeRows="False"
+                    CanUserSortColumns="False"
+                    CellStyle="{DynamicResource MaterialDesignDataGridCell}"
+                    ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
                     IsReadOnly="True"
                     ItemsSource="{Binding dataTable}"
-                    RenderTransformOrigin="0.5,0.5">
+                    RenderTransformOrigin="0.5,0.5"
+                    RowStyle="{DynamicResource MaterialDesignDataGridRow}"
+                    Style="{DynamicResource MaterialDesignDataGrid}">
                     <DataGrid.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform />
@@ -44,7 +51,7 @@
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -52,6 +59,11 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
+
+                    <Label
+                        Margin="20"
+                        Content="Roles List"
+                        FontSize="24" />
 
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>
@@ -71,9 +83,11 @@
                             Margin="70,0,0,0"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
                             FontSize="16"
                             IsEnabled="False"
-                            Text="TextBox"
+                            Style="{DynamicResource txtbx_style}"
+                            Tag="Type role name"
                             TextWrapping="Wrap" />
                     </Grid>
 
@@ -82,86 +96,89 @@
                         <Grid x:Name="roleAddEditPnl" Visibility="Visible">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="roleSave"
                                 Grid.Column="1"
-                                Margin="40,0,10,0"
-                                Content="ADD" 
+                                Width="60"
+                                Margin="40,0,5,0"
                                 Click="roleSave_Click"
+                                Content="Add"
                                 Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="roleEditBtn"
                                 Grid.Column="2"
+                                Width="60"
                                 Margin="0,0,50,0"
                                 Click="roleEditBtn_Click"
-                                Content="EDIT" 
+                                Content="Edit"
                                 Style="{DynamicResource button_style}" />
                         </Grid>
 
-                        <Grid x:Name="roleAddPnl"  Visibility="Collapsed">
+                        <Grid x:Name="roleAddPnl" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.4*" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="roleAddBtn"
                                 Grid.Column="1"
+                                Width="60"
                                 Margin="40,0,5,0"
                                 Click="roleSave_Click"
-                                Content="SAVE"
+                                Content="Save"
                                 Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="roleCancelAddBtn"
                                 Grid.Column="2"
-                                Margin="0,0,40,0"
+                                Width="60"
+                                Margin="0,0,50,0"
                                 Click="roleCancelBtn_Click"
-                                Content="CANCEL"
+                                Content="Cancel"
                                 Style="{DynamicResource button_style}" />
                         </Grid>
 
                         <Grid x:Name="roleEditPnl" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.4*" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="roleUpdateBtn"
-                                Margin="40,0,5,0"
+                                Width="60"
+                                Margin="77,0,5,0"
                                 Click="roleUpdateBtn_Click"
-                                Content="SAVE" 
+                                Content="Save"
                                 Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="roleDeleteBtn"
                                 Grid.Column="1"
+                                Width="60"
                                 Margin="0,0,5,0"
                                 Click="roleDeleteBtn_Click"
-                                Content="DELETE"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Delete"
+                                Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="roleCancelBtn"
                                 Grid.Column="2"
+                                Width="60"
                                 Margin="0,0,40,0"
                                 Click="roleCancelBtn_Click_1"
-                                Content="CANCEL"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Cancel"
+                                Style="{DynamicResource button_style}" />
 
                         </Grid>
-
                     </Grid>
-
-
                 </Grid>
-
             </Grid>
 
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="3*" />
                 </Grid.RowDefinitions>
 
@@ -170,15 +187,22 @@
                     Grid.Row="1"
                     Margin="50,0,50,50"
                     AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
                     CanUserReorderColumns="False"
                     CanUserResizeColumns="False"
                     CanUserResizeRows="False"
+                    CanUserSortColumns="False"
+                    CellStyle="{DynamicResource MaterialDesignDataGridCell}"
+                    ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
                     IsReadOnly="True"
-                    ItemsSource="{Binding dataTable}" />
+                    ItemsSource="{Binding dataTable}"
+                    RowStyle="{DynamicResource MaterialDesignDataGridRow}"
+                    Style="{DynamicResource MaterialDesignDataGrid}" />
 
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -186,6 +210,11 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
+
+                    <Label
+                        Margin="20"
+                        Content="Task List"
+                        FontSize="24" />
 
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>
@@ -205,10 +234,13 @@
                             Margin="70,0,0,0"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
                             FontSize="16"
                             IsEnabled="False"
-                            Text="TextBox"
-                            TextWrapping="Wrap" TextChanged="taskNameInput_TextChanged" />
+                            Style="{DynamicResource txtbx_style}"
+                            Tag="Type task name"
+                            TextChanged="taskNameInput_TextChanged"
+                            TextWrapping="Wrap" />
                     </Grid>
 
                     <Grid Grid.Row="1" Grid.Column="1">
@@ -230,9 +262,11 @@
                             Margin="30,0,50,0"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
                             FontSize="16"
                             IsEnabled="False"
-                            Text="TextBox"
+                            Style="{DynamicResource txtbx_style}"
+                            Tag="Type task description"
                             TextWrapping="Wrap" />
 
                     </Grid>
@@ -242,89 +276,87 @@
                         <Grid x:Name="taskAddEditPnl">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="addBtnClick"
                                 Grid.Column="1"
-                                Margin="40,0,10,0"
+                                Width="60"
+                                Margin="40,0,5,0"
                                 Click="addBtnClick_Click"
-                                Content="ADD"
+                                Content="Add"
                                 Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="editBtn"
                                 Grid.Column="2"
+                                Width="60"
                                 Margin="0,0,50,0"
                                 Click="editBtn_Click"
-                                Content="EDIT"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Edit"
+                                Style="{DynamicResource button_style}" />
                         </Grid>
 
-                        <Grid x:Name="taskAddPnl" Visibility="Collapsed" >
+                        <Grid x:Name="taskAddPnl" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.4*" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="addBtn"
                                 Grid.Column="1"
-                                Margin="40,0,10,0"
+                                Width="60"
+                                Margin="40,0,5,0"
                                 Click="taskSaveBtn_Click_1"
-                                Content="SAVE"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Save"
+                                Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="cancel1Btn"
                                 Grid.Column="2"
+                                Width="60"
                                 Margin="0,0,50,0"
                                 Click="cancelBtn_Click"
-                                Content="CANCEL"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Cancel"
+                                Style="{DynamicResource button_style}" />
 
                         </Grid>
 
                         <Grid x:Name="taskUpdatePnl" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.4*" />
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1.5*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="updateBtn"
-                                Margin="40,0,10,0"
+                                Width="60"
+                                Margin="77,0,5,0"
                                 Click="updateBtn_Click"
-                                Content="SAVE"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Save"
+                                Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="deleteBtn"
                                 Grid.Column="1"
-                                Margin="0,0,10,0"
+                                Width="60"
+                                Margin="0,0,5,0"
                                 Click="deleteBtn_Click"
-                                Content="DELETE"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Delete"
+                                Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="cancelBtn"
                                 Grid.Column="2"
-                                Margin="0,0,50,0"
+                                Width="60"
+                                Margin="0,0,40,0"
                                 Click="cancelBtn_Click"
-                                Content="CANCEL"
-                                Style="{DynamicResource button_style}"  />
+                                Content="Cancel"
+                                Style="{DynamicResource button_style}" />
 
                         </Grid>
 
                     </Grid>
-                    <!--
-                    -->
                 </Grid>
-
-
             </Grid>
-
-
-
         </Grid>
-
-
     </Grid>
 </UserControl>

@@ -250,6 +250,7 @@
 
                     <ListViewItem
                         Margin="0,390,0,15"
+                        Width="230"
                         HorizontalAlignment="Left"
                         Content="Role/Task"
                         Foreground="White"

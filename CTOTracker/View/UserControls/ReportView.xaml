@@ -135,7 +135,7 @@
                                 x:Name="txtschFname"
                                 Grid.Column="0"
                                 Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"  VerticalContentAlignment="Center"
                                 FontSize="14"
                                 Style="{StaticResource txtbx_style}"
                                 Tag="Search Name" />
