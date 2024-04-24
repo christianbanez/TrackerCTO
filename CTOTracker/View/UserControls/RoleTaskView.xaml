@@ -86,7 +86,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Button
-                                x:Name="roleSave"
+                                x:Name="c"
                                 Grid.Column="1"
                                 Margin="40,0,10,0"
                                 Content="ADD" 

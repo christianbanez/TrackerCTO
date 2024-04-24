@@ -126,6 +126,9 @@ namespace CTOTracker.View.UserControls
                     {
                         MessageBox.Show("Role inserted successfully.", "Success");
                     }
+
+                    // Disable input field after successful insertion
+                    roleNameInput.IsEnabled = false;
                 }
                 catch (OleDbException ex)
                 {
@@ -144,6 +147,7 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
+
         private bool isAdding = false;
 
         private void roleSave_Click(object sender, RoutedEventArgs e)
@@ -183,7 +187,7 @@ namespace CTOTracker.View.UserControls
                     roleNameInput.Text = "";
 
                     // Reset UI
-                    roleNameInput.IsReadOnly = true;
+                    roleNameInput.IsEnabled = false;
                     isAdding = false;
 
                     // Gray out the editBtn
@@ -277,8 +281,6 @@ namespace CTOTracker.View.UserControls
                     UpdateRoleInDatabase(roleId, roleName);
                     LoadRoleView();
 
-                    roleNameInput.Text = "";
-
                     // Show the appropriate panel
                     roleAddEditPnl.Visibility = Visibility.Visible;
                     roleEditPnl.Visibility = Visibility.Collapsed;
@@ -295,6 +297,7 @@ namespace CTOTracker.View.UserControls
                 MessageBox.Show("Please select a role to update.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
 
         private bool RoleExists(string roleName)
         {
@@ -358,7 +361,6 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
-
         private void roleSave_Click_1(object sender, RoutedEventArgs e)
         {
             // Show the roleDeleteBtn and roleUpdateBtn
@@ -379,7 +381,7 @@ namespace CTOTracker.View.UserControls
 
         private void roleEditBtn_Click(object sender, RoutedEventArgs e)
         {
-            roleNameInput.IsReadOnly = true;
+            roleNameInput.IsEnabled = true;
 
             // Show the roleDeleteBtn and roleUpdateBtn
             roleEditPnl.Visibility = Visibility.Visible;
@@ -637,7 +639,7 @@ namespace CTOTracker.View.UserControls
             taskAddEditPnl.Visibility = Visibility.Visible;
 
             // Enable roleGridView (make it selectable)
-            taskGridView.IsReadOnly = false;
+            taskGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
             taskGridView.SelectedItem = null;
@@ -756,7 +758,7 @@ namespace CTOTracker.View.UserControls
                         taskAddEditPnl.Visibility = Visibility.Visible;
 
                         // Disable taskGridView (make it unselectable)
-                        taskGridView.IsReadOnly = false;
+                        taskGridView.IsReadOnly = true;
                     }
                     catch (Exception ex)
                     {
