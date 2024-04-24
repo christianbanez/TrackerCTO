@@ -175,14 +175,14 @@
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
                             materialDesign:HintAssist.Hint="Date Earned"
-                            FontSize="14" />
+                            FontSize="14" SelectedDateChanged="dtEDate_SelectedDateChanged" />
                         <DatePicker
                             x:Name="dtUDate"
                             Grid.Column="4"
                             Margin="0,25,10,10"
                             HorizontalAlignment="Stretch"
                             materialDesign:HintAssist.Hint="Date Used"
-                            FontSize="14" />
+                            FontSize="14" SelectedDateChanged="dtUDate_SelectedDateChanged" />
                         <CheckBox
                             x:Name="chkbxBalance"
                             Grid.Column="5"
@@ -201,13 +201,13 @@
                             FontSize="14" />
 
                         <Button
-                            x:Name="btnSearch"
+                            x:Name="btnClear"
                             Grid.Column="9"
                             HorizontalAlignment="Stretch"
                             Margin="5,25,5,10"
-                            Content="Search"
+                            Content="Clear"
                             FontSize="16"
-                            Style="{StaticResource button_style}" />
+                            Style="{StaticResource button_style}" Click="btnClear_Click" />
 
                     </Grid>
                 </StackPanel>
@@ -313,24 +313,7 @@
                     FontSize="20"
                     Foreground="Black" />
 
-                <Label
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    Margin="10,0,0,0"
-                    VerticalContentAlignment="Center"
-                    Content="Contact Number:"
-                    FontSize="20"
-                    Foreground="Black" />
-                <Label
-                    x:Name="lblContactNum"
-                    Grid.Row="1"
-                    Grid.Column="3"
-                    Grid.ColumnSpan="3"
-                    Margin="10,0,0,0"
-                    VerticalContentAlignment="Center"
-                    Content="PLACEHOLDER"
-                    FontSize="20"
-                    Foreground="Black" />
+               
 
                 <Label
                     Grid.Row="2"
@@ -351,23 +334,7 @@
                     FontSize="20"
                     Foreground="Black" />
 
-                <Label
-                    Grid.Row="2"
-                    Grid.Column="4"
-                    Margin="10,0,0,0"
-                    VerticalContentAlignment="Center"
-                    Content="Email:"
-                    FontSize="20"
-                    Foreground="Black" />
-                <Label
-                    x:Name="lblEmail"
-                    Grid.Row="2"
-                    Grid.Column="5"
-                    Margin="0"
-                    VerticalContentAlignment="Center"
-                    Content="PLACEHOLDER"
-                    FontSize="20"
-                    Foreground="Black" />
+                
 
             </Grid>
 
