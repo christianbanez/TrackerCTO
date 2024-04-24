@@ -37,6 +37,7 @@ namespace CTOTracker.View.UserControls
             LoadTaskView();
             roleGridView.IsEnabled = false;
             roleNameInput.IsEnabled = false;
+
         }
         private void InitializeRoleGridView()
         {
@@ -143,10 +144,26 @@ namespace CTOTracker.View.UserControls
             }
         }
         private bool isAdding = false;
+
         private void roleSave_Click(object sender, RoutedEventArgs e)
         {
-            if (isAdding)
+            if (!isAdding)
             {
+                // Enable the input field when adding is not active
+                roleNameInput.IsEnabled = true;
+                roleNameInput.Focus(); // Set focus to the input field
+                isAdding = true;
+
+                // Enable the editBtn
+                roleEditBtn.Visibility = Visibility.Collapsed;
+
+                // Show the appropriate panel
+                roleAddEditPnl.Visibility = Visibility.Collapsed;
+                roleAddPnl.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Save functionality goes here
                 string roleName = roleNameInput.Text;
 
                 // Check if roleName is empty
@@ -166,22 +183,15 @@ namespace CTOTracker.View.UserControls
 
                     // Reset UI
                     roleNameInput.IsEnabled = false;
-                    roleSave.Content = "Add";
                     isAdding = false;
 
                     // Gray out the editBtn
-                    roleEditBtn.IsEnabled = false;
-                }
-            }
-            else
-            {
-                // Toggle the enabled state of the input field when adding is not active
-                roleNameInput.IsEnabled = true;
-                roleSave.Content = "Save";
-                isAdding = true;
+                    roleEditBtn.Visibility = Visibility.Visible;
 
-                // Enable the editBtn
-                roleEditBtn.IsEnabled =false;
+                    // Show the appropriate panel
+                    roleAddEditPnl.Visibility = Visibility.Visible;
+                    roleAddPnl.Visibility = Visibility.Collapsed;
+                }
             }
         }
 
@@ -266,11 +276,9 @@ namespace CTOTracker.View.UserControls
 
                     roleNameInput.Text = "";
 
-                    roleDeleteBtn.Visibility = Visibility.Collapsed;
-                    roleUpdateBtn.Visibility = Visibility.Collapsed;
-
-                    roleEditBtn.Visibility = Visibility.Visible;
-                    addBtnClick.Visibility = Visibility.Visible;
+                    // Show the appropriate panel
+                    roleAddEditPnl.Visibility = Visibility.Visible;
+                    roleEditPnl.Visibility = Visibility.Collapsed;
 
                     roleGridView.IsEnabled = false;
                 }
@@ -368,6 +376,8 @@ namespace CTOTracker.View.UserControls
 
         private void roleEditBtn_Click(object sender, RoutedEventArgs e)
         {
+            roleNameInput.IsEnabled = true;
+
             // Show the roleDeleteBtn and roleUpdateBtn
             roleEditPnl.Visibility = Visibility.Visible;
             // Hide the roleEditBtn
@@ -385,21 +395,32 @@ namespace CTOTracker.View.UserControls
 
         private void roleCancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            // Show the roleDeleteBtn and roleUpdateBtn
-            roleEditPnl.Visibility = Visibility.Collapsed;
-            roleAddPnl.Visibility= Visibility.Collapsed;
-            // Hide the roleEditBtn
+            // Reset UI
+            roleNameInput.Text = ""; // Clear input field
+            roleNameInput.IsEnabled = false; // Disable input field
+            isAdding = false; // Reset flag
+
+            // Show the "EDIT" button
+            roleEditBtn.Visibility = Visibility.Visible;
+
+            // Show the appropriate panel
             roleAddEditPnl.Visibility = Visibility.Visible;
+            roleAddPnl.Visibility = Visibility.Collapsed;
+        }
 
+        private void roleCancelBtn_Click_1(object sender, RoutedEventArgs e)
+        {
+            // Reset UI
+            roleNameInput.Text = ""; // Clear input field
+            roleNameInput.IsEnabled = false; // Disable input field
+            isAdding = false; // Reset flag
 
-            // Enable roleGridView (make it selectable)
-            roleGridView.IsEnabled =false;
+            // Show the "EDIT" button
+            roleEditBtn.Visibility = Visibility.Visible;
 
-            // Clear selection in roleGridView
-            roleGridView.SelectedItem = null;
-
-            // Clear input fields (assuming roleNameInput is the only input field)
-            roleNameInput.Text = "";
+            // Show the appropriate panel
+            roleEditPnl.Visibility = Visibility.Collapsed;
+            roleAddEditPnl.Visibility = Visibility.Visible;
         }
 
         private void InitializeTaskGridView()
@@ -530,38 +551,28 @@ namespace CTOTracker.View.UserControls
 
         private void taskSaveBtn_Click_1(object sender, RoutedEventArgs e)
         {
-            // Assuming you have TextBoxes for taskNameInput and taskDescInput where users enter task information
             string taskName = taskNameInput.Text;
             string taskDesc = taskDescInput.Text;
 
-            // Check if input is valid
             if (!IsInputValid(taskName, taskDesc))
             {
                 return;
             }
-                        
-            // Display confirmation dialog
+
             MessageBoxResult result = MessageBox.Show("Are you sure you want to save this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            // Check if the user confirmed the action
             if (result == MessageBoxResult.Yes)
             {
                 try
                 {
-                    // Insert data into the database
                     InsertTaskIntoDatabase(taskName, taskDesc);
-
-                    // Refresh the taskGridView
                     LoadTaskView();
-
-                    // Optionally, clear the input fields after saving
                     taskNameInput.Text = "";
                     taskDescInput.Text = "";
-                }   
+                }
                 catch (Exception ex)
                 {
                     MessageBox.Show("An error occurred while saving the task: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    // Log the exception for debugging or auditing purposes
                     // Logger.Log(ex);
                 }
             }
@@ -569,23 +580,26 @@ namespace CTOTracker.View.UserControls
 
         private void addBtnClick_Click(object sender, RoutedEventArgs e)
         {
-            // Show the roleDeleteBtn and roleUpdateBtn
+            if (isFirstClick)
+            {
+                taskNameInput.IsEnabled = true;
+                taskDescInput.IsEnabled = true;
+                isFirstClick = false;
+            }
+
             taskAddPnl.Visibility = Visibility.Visible;
-            // Hide the roleEditBtn
             taskAddEditPnl.Visibility = Visibility.Collapsed;
-            // Disable roleGridView (make it unselectable)
             taskGridView.IsEnabled = true;
-
-            // Clear selection in roleGridView
             taskGridView.SelectedItem = null;
-
-            // Clear input fields (assuming roleNameInput is the only input field)
             taskNameInput.Text = "";
             taskDescInput.Text = "";
         }
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
         {
+
+            taskNameInput.IsEnabled = true;
+            taskDescInput.IsEnabled = true;
             // Show the roleDeleteBtn and roleUpdateBtn
             taskUpdatePnl.Visibility = Visibility.Visible;
             // Hide the roleEditBtn
@@ -619,6 +633,9 @@ namespace CTOTracker.View.UserControls
             // Clear input fields (assuming roleNameInput is the only input field)
             taskNameInput.Text = "";
             taskDescInput.Text = "";
+
+            taskNameInput.IsEnabled = false;
+            taskDescInput.IsEnabled = false;
         }
 
         private void deleteBtn_Click(object sender, RoutedEventArgs e)
@@ -702,6 +719,13 @@ namespace CTOTracker.View.UserControls
                         return;
                     }
 
+                    // Ask for confirmation before updating
+                    MessageBoxResult result = MessageBox.Show("Are you sure you want to update this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.No)
+                    {
+                        return;
+                    }
+
                     try
                     {
                         // Update data in the database
@@ -714,13 +738,9 @@ namespace CTOTracker.View.UserControls
                         taskNameInput.Text = "";
                         taskDescInput.Text = "";
 
-                        // Hide the deleteBtn and updateBtn
-                        deleteBtn.Visibility = Visibility.Collapsed;
-                        updateBtn.Visibility = Visibility.Collapsed;
-
-                        // Show the editBtn and addBtnClick
-                        editBtn.Visibility = Visibility.Visible;
-                        addBtnClick.Visibility = Visibility.Visible;
+                        // Show the appropriate panel
+                        taskUpdatePnl.Visibility = Visibility.Collapsed;
+                        taskAddEditPnl.Visibility = Visibility.Visible;
 
                         // Disable taskGridView (make it unselectable)
                         taskGridView.IsEnabled = false;
@@ -742,6 +762,7 @@ namespace CTOTracker.View.UserControls
                 MessageBox.Show("Please select a task to update.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
 
         private bool TaskExists(string taskName, string taskDesc, string currentTaskId)
         {
@@ -790,8 +811,13 @@ namespace CTOTracker.View.UserControls
                 {
                     connection.Close();
                 }
+
             }
         }
 
+        private void taskNameInput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
