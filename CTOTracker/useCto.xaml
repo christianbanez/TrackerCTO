@@ -7,12 +7,13 @@
     Title="Use CTO"
     Width="900"
     Height="600"
+    Loaded="MainWindow_Loaded"
     ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
-    mc:Ignorable="d" Loaded="MainWindow_Loaded">
-    <Grid>
+    mc:Ignorable="d">
+    <Grid Margin="0,30,0,0">
         <!--  BG  -->
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
@@ -31,14 +32,17 @@
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
         <Label
-            Margin="10,10,0,0"
+            Margin="20,10,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
-            Content="SELECTED SCHEDULE :" />
+            Content="SELECTED SCHEDULE :"
+            FontWeight="DemiBold"
+            FontSize="14" />
         <DataGrid
             x:Name="SelectedScheduleView"
             Grid.Row="1"
-            Margin="0"
+            Margin="10,0,10,0"
+            IsReadOnly="True"
             CellStyle="{DynamicResource MaterialDesignDataGridCell}"
             ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
             RowStyle="{DynamicResource MaterialDesignDataGridRow}"
@@ -51,10 +55,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label
-                Margin="0"
+                Margin="20,0,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Content="CHANGES :" />
+                Content="CHANGES :"
+                FontWeight="DemiBold"
+                FontSize="14" />
             <Button
                 x:Name="confirmChangesBttn"
                 Grid.Column="2"
@@ -70,7 +76,8 @@
         <DataGrid
             x:Name="ChangesGridView"
             Grid.Row="3"
-            Margin="0"
+            Margin="10,0,10,0"
+            IsReadOnly="True"
             CellStyle="{DynamicResource MaterialDesignDataGridCell}"
             ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
             RowStyle="{DynamicResource MaterialDesignDataGridRow}"
@@ -79,20 +86,24 @@
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="8*" />
             </Grid.ColumnDefinitions>
             <Label
                 Margin="0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Content="TOTAL CTO :" />
+                Content="TOTAL CTO :" 
+                FontWeight="DemiBold"
+                FontSize="14"/>
             <Label
                 x:Name="Total"
                 Grid.Column="1"
                 Margin="0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
+                FontSize="14"
+                FontWeight="Medium"
                 Content="Label" />
         </Grid>
 
@@ -101,7 +112,9 @@
             Margin="0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="Usage Description :" />
+            Content="Usage Description :"
+            FontSize="14"
+            FontWeight="DemiBold"/>
 
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
