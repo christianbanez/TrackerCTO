@@ -8,6 +8,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.Win32;
 using System.IO;
+using iTextSharp.text.pdf.draw;
 
 namespace CTOTracker.View.UserControls
 {
@@ -41,10 +42,10 @@ namespace CTOTracker.View.UserControls
         }
         private void DataReportView()
         {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, Schedule.ctoEarned, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.ctoUsed, Schedule.ctoBalance, Employee.contact, Employee.email " +
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, Schedule.ctoEarned, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
                 "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
                 "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
-                "ON Employee.empID = Schedule.empID;";
+                "ON Employee.empID = Schedule.empID WHERE completed = -1;";
             LoadAllData(query);
 
         }
@@ -61,19 +62,64 @@ namespace CTOTracker.View.UserControls
                     OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
-                    /*reportDataGrid.ItemsSource = null;
-                    reportDataGrid.Items.Clear();
-                    dataTable.Clear();*/
 
                     if (dataTable != null && dataTable.Rows.Count > 0)
                     {
                         reportDataGrid.ItemsSource = dataTable.DefaultView;
+                        if (!columnsAdded)
+                        {
+                            AddDataGridColumns();
+                            columnsAdded = true; // Set the flag to true after adding columns
+                        }
+                        // Enable MouseDoubleClick event
+                        reportDataGrid.MouseDoubleClick += reportDataGrid_MouseDoubleClick;
                     }
                     else
                     {
-                        MessageBox.Show("No data found.", "Information");
+                        MessageBox.Show("No data found in the Records.", "Information");
                         return;
                     }
+                    /*else if (dataTable.Rows.Count == 0)
+                    {
+                        if (!string.IsNullOrEmpty(nameFilter))
+                        {
+                            MessageBox.Show("No data found for the specified name.", "Information");
+                            txtschFname.Text = "";
+                            
+                        }
+                        else if (!string.IsNullOrEmpty(taskFilter))
+                        {
+                            MessageBox.Show("No data found for the specified task.", "Information");
+                            cmbxTask.SelectedIndex = -1;
+                            cmbxTask.Tag = "Task";
+                           
+                        }
+                        else if (!string.IsNullOrEmpty(roleFilter))
+                        {
+                            MessageBox.Show("No data found for the specified role.", "Information");
+                            cmbxRole.SelectedIndex = -1;
+                            cmbxRole.Tag = "Role";
+                            
+                        }
+                        else if (!(dtEDate.SelectedDate.HasValue))
+                        {
+                            MessageBox.Show("No date selected for the date used filter.", "Information");
+                            dtEDate.SelectedDate = null;
+                            return;
+                        }
+                        else if (!(dtUDate.SelectedDate.HasValue))
+                        {
+                            MessageBox.Show("No date selected for the date used filter.", "Information");
+                            dtUDate.SelectedDate = null; 
+                        }
+                        else
+                        {
+                            MessageBox.Show("No data found for the specified filters.", "Information");// Clear filter fields
+                            chkbxBalance.IsChecked = false;
+                            chkbxUsed.IsChecked = false;
+                        }
+                        DataReportView();
+                    }*/
                     if (!columnsAdded)
                     {
                         AddDataGridColumns();
@@ -93,35 +139,52 @@ namespace CTOTracker.View.UserControls
         private void ApplyFiltersAndUpdateDataGrid()
         {
             // Construct the query based on the selected filters
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Schedule.plannedEnd, Schedule.ctoEarned, Schedule.dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
+            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd, Schedule.ctoEarned, FORMAT(Schedule.dateUsed, 'MM/DD/YY') AS dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
                            "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
                            "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
-                           "ON Employee.empID = Schedule.empID WHERE 1=1"; // Start with a dummy condition
+                           "ON Employee.empID = Schedule.empID WHERE 1=1 AND completed = -1"; // Start with a dummy condition
 
-            // Add filter conditions based on the selected filters
-            if (!string.IsNullOrEmpty(nameFilter))
+            try
             {
-                query += $" AND (Employee.fName LIKE '{nameFilter}%' OR Employee.lName LIKE '{nameFilter}%')";
+                if (!string.IsNullOrEmpty(nameFilter))
+                {
+                    query += $" AND (Employee.fName LIKE '{nameFilter}%' OR Employee.lName LIKE '{nameFilter}%')";
+                }
+                if (!string.IsNullOrEmpty(taskFilter))
+                {
+                    query += $" AND Task.taskName = '{taskFilter}'";
+                }
+                if (!string.IsNullOrEmpty(roleFilter))
+                {
+                    query += $" AND Role.roleName = '{roleFilter}'";
+                }
+                if (chkbxBalance.IsChecked == true)
+                {
+                    query += " AND Schedule.ctoBalance > 0";
+                }
+                if (chkbxUsed.IsChecked == true)
+                {
+                    query += " AND Schedule.ctoUsed > 0";
+                }
+                if (dtEDate.SelectedDate.HasValue)
+                {
+                    DateTime selectedDate = dtEDate.SelectedDate.Value;
+                    query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
+                }
+                if (dtUDate.SelectedDate.HasValue)
+                {
+                    DateTime selectedDate = dtUDate.SelectedDate.Value;
+                    query += $" AND (MONTH(Schedule.dateUsed) = {selectedDate.Month} AND YEAR(Schedule.dateUsed) = {selectedDate.Year})";
+                }
+                
+                // Execute the query and update the DataGrid
+                LoadAllData(query);
             }
-            if (!string.IsNullOrEmpty(taskFilter))
+            catch (Exception ex)
             {
-                query += $" AND Task.taskName = '{taskFilter}'";
-            }
-            if (!string.IsNullOrEmpty(roleFilter))
-            {
-                query += $" AND Role.roleName = '{roleFilter}'";
-            }
-            if (chkbxBalance.IsChecked == true)
-            {
-                query += " AND Schedule.ctoBalance > 0";
-            }
-            if (chkbxUsed.IsChecked == true)
-            {
-                query += " AND Schedule.ctoUsed > 0";
+                MessageBox.Show("Error: " + ex.Message, "Error");
             }
 
-            // Execute the query and update the DataGrid
-            LoadAllData(query);
         }
         private void AddDataGridColumns() //Columns for reportDataGrid
         {
@@ -181,17 +244,7 @@ namespace CTOTracker.View.UserControls
                 Header = "CTO Balance",
                 Binding = new Binding("ctoBalance")
             });
-            reportDataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Visibility = Visibility.Collapsed,
-                Binding = new Binding("contact")
-            });
-            reportDataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Visibility = Visibility.Collapsed,
-                Binding = new Binding("email")
-                
-            });
+            
         }
 
         private double originalDtPnlHeight; // Store the original height of dtPnl
@@ -517,13 +570,23 @@ namespace CTOTracker.View.UserControls
 
             roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
             ApplyFiltersAndUpdateDataGrid();
+            if (cmbxRole.SelectedItem != null)
+            {
+                cmbxRole.Tag = "";
+                return;
+            }
         }
 
         private void cmbxTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
             taskFilter = cmbxTask.SelectedItem?.ToString() ?? "";
-            ApplyFiltersAndUpdateDataGrid();
+            if (cmbxTask.SelectedItem != null)
+            {
+                ApplyFiltersAndUpdateDataGrid();
+                cmbxTask.Tag = "";
+
+            }
+
         }
 
         private void reportDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -536,11 +599,9 @@ namespace CTOTracker.View.UserControls
                     // Extract relevant data from the selected row
                     string fullName = row_selected["fName"].ToString() + " " + row_selected["lName"].ToString();
                     string role = row_selected["roleName"].ToString();
-                    string contactNum = row_selected["contact"].ToString();
-                    string email = row_selected["email"].ToString();
                     string empID = row_selected["inforID"].ToString();
 
-                    LoadEmployeeReportHistory(fullName, role,contactNum, email, empID);
+                    LoadEmployeeReportHistory(fullName, role, empID);
                 }
             }
             catch (Exception ex)
@@ -600,6 +661,12 @@ namespace CTOTracker.View.UserControls
             });
             scheduleDataGrid1.Columns.Add(new DataGridTextColumn
             {
+                Header = "Date Earned",
+                Binding = new Binding("plannedEnd"),
+                Width = 100
+            });
+            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
+            {
                 Header = "CTO Earned",
                 Binding = new Binding("ctoEarned"),
                 Width = 100
@@ -608,12 +675,6 @@ namespace CTOTracker.View.UserControls
             {
                 Header = "CTO Used",
                 Binding = new Binding("ctoUsed"),
-                Width = 100
-            });
-            scheduleDataGrid1.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Date Used",
-                Binding = new Binding("dateUsed"),
                 Width = 100
             });
             scheduleDataGrid1.Columns.Add(new DataGridTextColumn
@@ -628,15 +689,15 @@ namespace CTOTracker.View.UserControls
                 Binding = new Binding("ctoBalance")
             });
         }
-        private void LoadEmployeeReportHistory(string fullName, string role,string contactNum, string email, string empID)
+        private void LoadEmployeeReportHistory(string fullName, string role, string empID)
         {
             string employeeId = GetEmployeeId(fullName);
 
             lblEmpName.Content = fullName;
             lblID.Content = empID;
             lblRole.Content = role;
-            lblContactNum.Content = contactNum;
-            lblEmail.Content = email;
+            //lblContactNum.Content = contactNum;
+            //lblEmail.Content = email;
 
             try
             {
@@ -644,7 +705,7 @@ namespace CTOTracker.View.UserControls
                 {
                     // Your code to load the report for employees' history
                     // Modify your query to retrieve employees' history
-                    string query = @"SELECT Task.taskName, timeIn, timeOut, ctoEarned, ctoUsed, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
+                    string query = @"SELECT Task.taskName, Format(timeIn, 'h:mm AM/PM') AS timeIn,  Format(timeout, 'h:mm AM/PM') AS timeOut, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd, ctoEarned, ctoUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
                                    "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE completed = -1 AND Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
@@ -691,15 +752,152 @@ namespace CTOTracker.View.UserControls
 
         private void btnExportEmp_Click(object sender, RoutedEventArgs e)
         {
-            // Convert DataView to DataTable
-            DataView dataView = scheduleDataGrid1.ItemsSource as DataView;
+            // Create a SaveFileDialog to choose the output path
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
+            saveFileDialog.FileName = "exported_data.pdf"; // Default file name
 
-            // Apply the same filters as applied in the UI
-            DataTable filteredDataTable = dataView.ToTable();
-            // You may need to apply additional filters here based on UI inputs, such as nameFilter, roleFilter, etc.
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string outputPath = saveFileDialog.FileName;
 
-            // Call the ExportToPdf method with the filtered data
-            ExportToPdf(filteredDataTable, null);
+                // Create a Document
+                Document doc = new Document();
+
+                try
+                {
+                    // Initialize the PdfWriter with the document and a file stream
+                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+
+                    // Open the document
+                    doc.Open();
+
+                    // Add Header with Company Information
+                    PdfPTable headerTable = new PdfPTable(1);
+                    headerTable.WidthPercentage = 100;
+                    // Add current date and time
+                    DateTime currentDate = DateTime.Now;
+                    doc.Add(new iTextSharp.text.Paragraph("Date generated: " + currentDate.ToString()));
+
+                    // Add company logo (assuming logoPath is the path to the company logo)
+                    iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"C:\Users\dkeh\source\repos\TrackerCTO\CTOTracker\Images\logo.png");
+                    logo.ScaleToFit(50f, 50f); // Adjust size as needed
+                    PdfPCell logoCell = new PdfPCell(logo);
+                    logoCell.HorizontalAlignment = Element.ALIGN_LEFT;
+                    logoCell.Border = PdfPCell.NO_BORDER;
+                    headerTable.AddCell(logoCell);
+                    doc.Add(new iTextSharp.text.Paragraph(" "));
+
+                    // Add company name
+                    PdfPCell companyNameCell = new PdfPCell(new Phrase("EMPLOYEE CTO TRACKER RECORD"));
+                    companyNameCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                    companyNameCell.Border = PdfPCell.NO_BORDER;
+                    headerTable.AddCell(companyNameCell);
+
+                    // Add empty cell to create space between header and table
+                    PdfPCell emptyCell = new PdfPCell(new Phrase(" "));
+                    emptyCell.Border = PdfPCell.NO_BORDER;
+                    headerTable.AddCell(emptyCell);
+                    doc.Add(headerTable);
+                    doc.Add(new Chunk(new LineSeparator(0.5f, 100f, BaseColor.BLACK, Element.ALIGN_CENTER, -1)));
+
+
+                    // Add labels to the document
+                    doc.Add(new iTextSharp.text.Paragraph($"Name: {lblEmpName.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"Role: {lblRole.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph($"ID: {lblID.Content}"));
+                    doc.Add(new iTextSharp.text.Paragraph(" ")); // Add an empty paragraph
+                    doc.Add(new iTextSharp.text.Paragraph("History: ")); // Add an empty paragraph
+                    doc.Add(new iTextSharp.text.Paragraph(" ")); // Add an empty paragraph
+
+                    // Add DataGrid content to the PDF document
+                    PdfPTable pdfTable = new PdfPTable(scheduleDataGrid1.Columns.Count);
+                    pdfTable.WidthPercentage = 100;
+
+                    // Define a style for the header column
+                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
+                    Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
+
+                    // Add headers
+                    foreach (DataGridColumn column in scheduleDataGrid1.Columns)
+                    {
+                        // Get the header text of the column
+                        string columnHeader = column.Header.ToString();
+
+                        // Add the column header to the PDF table
+                        PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
+                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                        headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                        headerCell.Padding = 3;
+                        pdfTable.AddCell(headerCell);
+                    }
+                    // Iterate through the rows and add the corresponding cell data
+                    foreach (var item in scheduleDataGrid1.Items)
+                    {
+                        var row = scheduleDataGrid1.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
+                        if (row != null)
+                        {
+                            foreach (DataGridColumn column in scheduleDataGrid1.Columns)
+                            {
+                                var cellContent = column.GetCellContent(item) as TextBlock;
+                                if (cellContent != null)
+                                {
+                                    // Get the text content of the TextBlock
+                                    string cellText = cellContent.Text;
+
+                                    // Add the text content to the PDF table
+                                    PdfPCell cellToAdd = new PdfPCell(new Phrase(cellText, cellFont));
+                                    cellToAdd.HorizontalAlignment = Element.ALIGN_CENTER;
+                                    cellToAdd.VerticalAlignment = Element.ALIGN_MIDDLE;
+                                    pdfTable.AddCell(cellToAdd);
+                                }
+                            }
+                        }
+                    }
+
+                    // Add table to document
+                    doc.Add(pdfTable);
+
+                    MessageBox.Show("PDF exported successfully! Output path: " + outputPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error exporting PDF: " + ex.Message);
+                }
+                finally
+                {
+                    // Close the document
+                    doc.Close();
+                }
+
+            }
         }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            txtschFname.Text = "";
+            cmbxRole.SelectedIndex = -1;
+            cmbxRole.Tag = "Role";
+            cmbxTask.SelectedIndex = -1;
+            cmbxTask.Tag = "Task";
+            chkbxBalance.IsChecked = false;
+            chkbxUsed.IsChecked = false;
+            dtEDate.SelectedDate = null;
+            dtUDate.SelectedDate = null;
+            DataReportView();
+        }
+
+        private void dtEDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFiltersAndUpdateDataGrid();
+        }
+
+        private void dtUDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFiltersAndUpdateDataGrid();
+        }
+
+        
     }
 }
