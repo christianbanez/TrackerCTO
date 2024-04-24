@@ -56,83 +56,81 @@ namespace CTOTracker.View.UserControls
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
-                try
-                {
-                    connection.Open();
-                    OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
+                connection.Open();
+                OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
+                DataTable dataTable = new DataTable();
+                adapter.Fill(dataTable);
 
-                    if (dataTable != null && dataTable.Rows.Count > 0)
-                    {
-                        reportDataGrid.ItemsSource = dataTable.DefaultView;
-                        if (!columnsAdded)
-                        {
-                            AddDataGridColumns();
-                            columnsAdded = true; // Set the flag to true after adding columns
-                        }
-                        // Enable MouseDoubleClick event
-                        reportDataGrid.MouseDoubleClick += reportDataGrid_MouseDoubleClick;
-                    }
-                    else
-                    {
-                        MessageBox.Show("No data found in the Records.", "Information");
-                        return;
-                    }
-                    /*else if (dataTable.Rows.Count == 0)
-                    {
-                        if (!string.IsNullOrEmpty(nameFilter))
-                        {
-                            MessageBox.Show("No data found for the specified name.", "Information");
-                            txtschFname.Text = "";
-                            
-                        }
-                        else if (!string.IsNullOrEmpty(taskFilter))
-                        {
-                            MessageBox.Show("No data found for the specified task.", "Information");
-                            cmbxTask.SelectedIndex = -1;
-                            cmbxTask.Tag = "Task";
-                           
-                        }
-                        else if (!string.IsNullOrEmpty(roleFilter))
-                        {
-                            MessageBox.Show("No data found for the specified role.", "Information");
-                            cmbxRole.SelectedIndex = -1;
-                            cmbxRole.Tag = "Role";
-                            
-                        }
-                        else if (!(dtEDate.SelectedDate.HasValue))
-                        {
-                            MessageBox.Show("No date selected for the date used filter.", "Information");
-                            dtEDate.SelectedDate = null;
-                            return;
-                        }
-                        else if (!(dtUDate.SelectedDate.HasValue))
-                        {
-                            MessageBox.Show("No date selected for the date used filter.", "Information");
-                            dtUDate.SelectedDate = null; 
-                        }
-                        else
-                        {
-                            MessageBox.Show("No data found for the specified filters.", "Information");// Clear filter fields
-                            chkbxBalance.IsChecked = false;
-                            chkbxUsed.IsChecked = false;
-                        }
-                        DataReportView();
-                    }*/
+                if (dataTable != null && dataTable.Rows.Count > 0)
+                {
+                    reportDataGrid.ItemsSource = dataTable.DefaultView;
                     if (!columnsAdded)
                     {
                         AddDataGridColumns();
                         columnsAdded = true; // Set the flag to true after adding columns
                     }
+                    // Enable MouseDoubleClick event
+                    reportDataGrid.MouseDoubleClick += reportDataGrid_MouseDoubleClick;
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error: " + ex.Message, "Error");
+                    MessageBox.Show("No data found in the Records.", "Information");
+                    txtschFname.Text = "";
+                    cmbxTask.SelectedIndex = -1;
+                    cmbxTask.Tag = "Task";
+                    cmbxRole.SelectedIndex = -1;
+                    cmbxRole.Tag = "Role";
+                    dtEDate.SelectedDate = null;
+                    dtUDate.SelectedDate = null;
+                    DataReportView();
+
+                    return;
                 }
-                finally
+                /*else if (dataTable.Rows.Count == 0)
                 {
-                    connection.Close();
+                    if (!string.IsNullOrEmpty(nameFilter))
+                    {
+                        MessageBox.Show("No data found for the specified name.", "Information");
+                        txtschFname.Text = "";
+
+                    }
+                    else if (!string.IsNullOrEmpty(taskFilter))
+                    {
+                        MessageBox.Show("No data found for the specified task.", "Information");
+                        cmbxTask.SelectedIndex = -1;
+                        cmbxTask.Tag = "Task";
+
+                    }
+                    else if (!string.IsNullOrEmpty(roleFilter))
+                    {
+                        MessageBox.Show("No data found for the specified role.", "Information");
+                        cmbxRole.SelectedIndex = -1;
+                        cmbxRole.Tag = "Role";
+
+                    }
+                    else if (!(dtEDate.SelectedDate.HasValue))
+                    {
+                        MessageBox.Show("No date selected for the date used filter.", "Information");
+                        dtEDate.SelectedDate = null;
+                        return;
+                    }
+                    else if (!(dtUDate.SelectedDate.HasValue))
+                    {
+                        MessageBox.Show("No date selected for the date used filter.", "Information");
+                        dtUDate.SelectedDate = null; 
+                    }
+                    else
+                    {
+                        MessageBox.Show("No data found for the specified filters.", "Information");// Clear filter fields
+                        chkbxBalance.IsChecked = false;
+                        chkbxUsed.IsChecked = false;
+                    }
+                    DataReportView();
+                }*/
+                if (!columnsAdded)
+                {
+                    AddDataGridColumns();
+                    columnsAdded = true; // Set the flag to true after adding columns
                 }
             }
         }
@@ -179,6 +177,11 @@ namespace CTOTracker.View.UserControls
                 
                 // Execute the query and update the DataGrid
                 LoadAllData(query);
+                if (cmbxTask.SelectedItem != null && reportDataGrid.Items.Count == 0 && !string.IsNullOrEmpty(taskFilter))
+                {
+                    MessageBox.Show($"No data found for the selected task: {taskFilter}.", "Information");
+                    cmbxTask.SelectedIndex = -1;
+                }
             }
             catch (Exception ex)
             {
@@ -586,6 +589,7 @@ namespace CTOTracker.View.UserControls
                 cmbxTask.Tag = "";
 
             }
+
 
         }
 
