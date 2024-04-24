@@ -520,6 +520,10 @@ namespace CTOTracker.View.UserControls
                     command.Parameters.AddWithValue("@TaskName", taskName);
                     command.Parameters.AddWithValue("@TaskDesc", taskDesc);
                     command.ExecuteNonQuery();
+
+                    // Disable input fields after successful insertion
+                    taskNameInput.IsEnabled = false;
+                    taskDescInput.IsEnabled = false;
                 }
                 catch (OleDbException ex)
                 {
@@ -564,7 +568,6 @@ namespace CTOTracker.View.UserControls
 
             MessageBoxResult result = MessageBox.Show("Are you sure you want to save this task?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-
             if (result == MessageBoxResult.Yes)
             {
                 try
@@ -580,14 +583,15 @@ namespace CTOTracker.View.UserControls
                     // Logger.Log(ex);
                 }
             }
+            // Reset the flag for enabling input fields on next "Add" click
+            isFirstClick = true;
             taskAddEditPnl.Visibility = Visibility.Visible;
             taskAddPnl.Visibility = Visibility.Collapsed;
-            taskNameInput.IsEnabled = false;
-            taskDescInput.IsEnabled = false;
         }
 
         private void addBtnClick_Click(object sender, RoutedEventArgs e)
         {
+            // Enable input fields only if it's the first click after saving
             if (isFirstClick)
             {
                 taskNameInput.IsEnabled = true;
