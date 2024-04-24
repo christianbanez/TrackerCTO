@@ -169,7 +169,8 @@
                         Grid.Column="1"
                         Width="100"
                         Margin="5,10,10,0"
-                        BorderBrush="#FF5D86A4" />
+                        BorderBrush="#FF5D86A4"
+                        SelectedTimeFormat="Long" />
                     <materialDesign:TimePicker
                         x:Name="endTimeTextBox"
                         Grid.Column="3"

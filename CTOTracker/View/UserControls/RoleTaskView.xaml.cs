@@ -80,6 +80,7 @@ namespace CTOTracker.View.UserControls
                     roleDataTable = new DataTable(); // Initialize roleDataTable
                     adapter.Fill(roleDataTable);
 
+                    roleEditBtn.IsEnabled = false;
                     roleGridView.ItemsSource = roleDataTable.DefaultView; // Bind roleDataTable to roleGridView
                 }
                 catch (Exception ex)
@@ -126,6 +127,9 @@ namespace CTOTracker.View.UserControls
                     {
                         MessageBox.Show("Role inserted successfully.", "Success");
                     }
+
+                    // Disable input field after successful insertion
+                    roleNameInput.IsEnabled = false;
                 }
                 catch (OleDbException ex)
                 {
@@ -144,6 +148,7 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
+
         private bool isAdding = false;
 
         private void roleSave_Click(object sender, RoutedEventArgs e)
@@ -183,7 +188,7 @@ namespace CTOTracker.View.UserControls
                     roleNameInput.Text = "";
 
                     // Reset UI
-                    roleNameInput.IsReadOnly = true;
+                    roleNameInput.IsEnabled = false;
                     isAdding = false;
 
                     // Gray out the editBtn
@@ -277,8 +282,6 @@ namespace CTOTracker.View.UserControls
                     UpdateRoleInDatabase(roleId, roleName);
                     LoadRoleView();
 
-                    roleNameInput.Text = "";
-
                     // Show the appropriate panel
                     roleAddEditPnl.Visibility = Visibility.Visible;
                     roleEditPnl.Visibility = Visibility.Collapsed;
@@ -295,6 +298,7 @@ namespace CTOTracker.View.UserControls
                 MessageBox.Show("Please select a role to update.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
 
         private bool RoleExists(string roleName)
         {
@@ -358,7 +362,6 @@ namespace CTOTracker.View.UserControls
                 }
             }
         }
-
         private void roleSave_Click_1(object sender, RoutedEventArgs e)
         {
             // Show the roleDeleteBtn and roleUpdateBtn
@@ -379,7 +382,7 @@ namespace CTOTracker.View.UserControls
 
         private void roleEditBtn_Click(object sender, RoutedEventArgs e)
         {
-            roleNameInput.IsReadOnly = true;
+            roleNameInput.IsEnabled = true;
 
             // Show the roleDeleteBtn and roleUpdateBtn
             roleEditPnl.Visibility = Visibility.Visible;
@@ -389,11 +392,13 @@ namespace CTOTracker.View.UserControls
             // Disable roleGridView (make it unselectable)
             roleGridView.IsReadOnly = true;
 
+            roleNameInput.IsEnabled = true;
             // Clear selection in roleGridView
-            roleGridView.SelectedItem = null;
+            //roleGridView.SelectedItem = null;
 
             // Clear input fields (assuming roleNameInput is the only input field)
-            roleNameInput.Text = "";
+            //roleNameInput.Text = "";
+
         }
 
         private void roleCancelBtn_Click(object sender, RoutedEventArgs e)
@@ -457,6 +462,7 @@ namespace CTOTracker.View.UserControls
                 // Display data in input fields
                 taskNameInput.Text = taskName;
                 taskDescInput.Text = taskDesc;
+                editBtn.IsEnabled = true;
             }
         }
         private void LoadTaskView()
@@ -471,6 +477,7 @@ namespace CTOTracker.View.UserControls
 
                     taskDataTable = new DataTable(); // Initialize taskDataTable
                     adapter.Fill(taskDataTable);
+                    editBtn.IsEnabled = false;
 
                     taskGridView.ItemsSource = taskDataTable.DefaultView; // Bind taskDataTable to taskGridView
                 }
@@ -603,8 +610,8 @@ namespace CTOTracker.View.UserControls
             taskAddEditPnl.Visibility = Visibility.Collapsed;
             taskGridView.IsReadOnly = true;
             taskGridView.SelectedItem = null;
-            taskNameInput.Text = "";
-            taskDescInput.Text = "";
+            //taskNameInput.Text = "";
+            //taskDescInput.Text = "";
         }
 
         private void editBtn_Click(object sender, RoutedEventArgs e)
@@ -621,11 +628,11 @@ namespace CTOTracker.View.UserControls
             taskGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
-            taskGridView.SelectedItem = null;
+            //taskGridView.SelectedItem = null;
 
             // Clear input fields (assuming roleNameInput is the only input field)
-            taskNameInput.Text = "";
-            taskDescInput.Text = "";
+            //taskNameInput.Text = "";
+            //taskDescInput.Text = "";
         }
 
         private void cancelBtn_Click(object sender, RoutedEventArgs e)
@@ -637,7 +644,7 @@ namespace CTOTracker.View.UserControls
             taskAddEditPnl.Visibility = Visibility.Visible;
 
             // Enable roleGridView (make it selectable)
-            taskGridView.IsReadOnly = false;
+            taskGridView.IsReadOnly = true;
 
             // Clear selection in roleGridView
             taskGridView.SelectedItem = null;
@@ -645,7 +652,7 @@ namespace CTOTracker.View.UserControls
             // Clear input fields (assuming roleNameInput is the only input field)
             taskNameInput.Text = "";
             taskDescInput.Text = "";
-
+            editBtn.IsEnabled = false;
 
         }
 
@@ -756,7 +763,7 @@ namespace CTOTracker.View.UserControls
                         taskAddEditPnl.Visibility = Visibility.Visible;
 
                         // Disable taskGridView (make it unselectable)
-                        taskGridView.IsReadOnly = false;
+                        taskGridView.IsReadOnly = true;
                     }
                     catch (Exception ex)
                     {
@@ -831,6 +838,32 @@ namespace CTOTracker.View.UserControls
         private void taskNameInput_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void taskGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate textboxes
+                editBtn.IsEnabled = true;
+                taskNameInput.Text = row_selected["taskName"].ToString();
+                taskDescInput.Text = row_selected["taskDesc"].ToString();
+            }
+        }
+
+        private void roleGridView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            DataGrid gd = (DataGrid)sender;
+            DataRowView row_selected = (DataRowView)gd.SelectedItem;
+            if (row_selected != null)
+            {
+                // Extract values from the row and populate textboxes
+                roleEditBtn.IsEnabled = true;
+                taskNameInput.Text = row_selected["roleName"].ToString();
+
+            }
         }
     }
 }

@@ -117,7 +117,8 @@
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
                 <Label
@@ -187,6 +188,15 @@
                     Style="{DynamicResource ComboBoxStyle1}"
                     Template="{DynamicResource ComboBoxTemplate1}"
                     Text="Filter by Task" />
+
+                <Button
+                    x:Name="btnClear"
+                    Grid.Column="6"
+                    Margin="120,0,20,0"
+                    HorizontalAlignment="Stretch"
+                    Content="Clear"
+                    FontSize="16"
+                    Style="{StaticResource button_style}" />
             </Grid>
         </Grid>
     </Grid>

@@ -135,7 +135,8 @@
                                 x:Name="txtschFname"
                                 Grid.Column="0"
                                 Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"  VerticalContentAlignment="Center"
+                                HorizontalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
                                 FontSize="14"
                                 Style="{StaticResource txtbx_style}"
                                 Tag="Search Name" />
@@ -150,65 +151,68 @@
                             LostFocus="txtschLname_LostFocus"
                             Style="{StaticResource txtbx_style}"
                             Text="Last Name" />-->
-                        <ComboBox
-                            x:Name="cmbxTask"
-                            Grid.Column="1"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"
-                            Foreground="Gray"
-                            SelectionChanged="cmbxTask_SelectionChanged"
-                            Tag="Task"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
-                        <ComboBox
-                            x:Name="cmbxRole"
-                            Grid.Column="2"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"
-                            Foreground="Gray"
-                            SelectionChanged="cmbxRole_SelectionChanged"
-                            Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
-                        <DatePicker
-                            x:Name="dtEDate"
-                            Grid.Column="3"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Date Earned"
-                            FontSize="14" SelectedDateChanged="dtEDate_SelectedDateChanged" />
-                        <DatePicker
-                            x:Name="dtUDate"
-                            Grid.Column="4"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Date Used"
-                            FontSize="14" SelectedDateChanged="dtUDate_SelectedDateChanged" />
-                        <CheckBox
-                            x:Name="chkbxBalance"
-                            Grid.Column="5"
-                            VerticalAlignment="Center"
-                            Checked="chkbxBalance_Checked"
-                            Content="CTO Balance"
-                            FontFamily="Roboto-Light"
-                            FontSize="14" />
-                        <CheckBox
-                            x:Name="chkbxUsed"
-                            Grid.Column="6"
-                            VerticalAlignment="Center"
-                            Checked="chkbxUsed_Checked"
-                            Content="CTO Used"
-                            FontFamily="Roboto-Light"
-                            FontSize="14" />
+                            <ComboBox
+                                x:Name="cmbxTask"
+                                Grid.Column="1"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                FontSize="14"
+                                Foreground="Gray"
+                                SelectionChanged="cmbxTask_SelectionChanged"
+                                Tag="Task"
+                                Template="{DynamicResource ComboBoxTemplate1}" />
+                            <ComboBox
+                                x:Name="cmbxRole"
+                                Grid.Column="2"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                FontSize="14"
+                                Foreground="Gray"
+                                SelectionChanged="cmbxRole_SelectionChanged"
+                                Tag="Role"
+                                Template="{DynamicResource ComboBoxTemplate1}" />
+                            <DatePicker
+                                x:Name="dtEDate"
+                                Grid.Column="3"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Date Earned"
+                                FontSize="14"
+                                SelectedDateChanged="dtEDate_SelectedDateChanged" />
+                            <DatePicker
+                                x:Name="dtUDate"
+                                Grid.Column="4"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Date Used"
+                                FontSize="14"
+                                SelectedDateChanged="dtUDate_SelectedDateChanged" />
+                            <CheckBox
+                                x:Name="chkbxBalance"
+                                Grid.Column="5"
+                                VerticalAlignment="Center"
+                                Checked="chkbxBalance_Checked"
+                                Content="CTO Balance"
+                                FontFamily="Roboto-Light"
+                                FontSize="14" />
+                            <CheckBox
+                                x:Name="chkbxUsed"
+                                Grid.Column="6"
+                                VerticalAlignment="Center"
+                                Checked="chkbxUsed_Checked"
+                                Content="CTO Used"
+                                FontFamily="Roboto-Light"
+                                FontSize="14" />
 
-                        <Button
-                            x:Name="btnClear"
-                            Grid.Column="9"
-                            HorizontalAlignment="Stretch"
-                            Margin="5,25,5,10"
-                            Content="Clear"
-                            FontSize="16"
-                            Style="{StaticResource button_style}" Click="btnClear_Click" />
+                            <Button
+                                x:Name="btnClear"
+                                Grid.Column="9"
+                                Margin="5,5,5,10"
+                                HorizontalAlignment="Stretch"
+                                Click="btnClear_Click"
+                                Content="Clear"
+                                FontSize="16"
+                                Style="{StaticResource button_style}" />
 
                         </Grid>
                     </StackPanel>
@@ -307,7 +311,7 @@
                     FontSize="20"
                     Foreground="Black" />
 
-               
+
 
                 <Label
                     Grid.Row="2"
@@ -328,7 +332,7 @@
                     FontSize="20"
                     Foreground="Black" />
 
-                
+
 
             </Grid>
 
