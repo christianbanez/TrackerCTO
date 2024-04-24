@@ -90,7 +90,7 @@
                                 Grid.Column="1"
                                 Margin="40,0,10,0"
                                 Content="ADD" 
-                                Click="roleSave_Click_1"
+                                Click="roleSave_Click"
                                 Style="{DynamicResource button_style}" />
                             <Button
                                 x:Name="roleEditBtn"
@@ -101,7 +101,7 @@
                                 Style="{DynamicResource button_style}" />
                         </Grid>
 
-                        <Grid x:Name="roleAddPnl" Visibility="Collapsed">
+                        <Grid x:Name="roleAddPnl"  Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.4*" />
                                 <ColumnDefinition Width="1*" />
@@ -146,7 +146,7 @@
                                 x:Name="roleCancelBtn"
                                 Grid.Column="2"
                                 Margin="0,0,40,0"
-                                Click="roleCancelBtn_Click"
+                                Click="roleCancelBtn_Click_1"
                                 Content="CANCEL"
                                 Style="{DynamicResource button_style}"  />
 
@@ -208,7 +208,7 @@
                             FontSize="16"
                             IsEnabled="False"
                             Text="TextBox"
-                            TextWrapping="Wrap" />
+                            TextWrapping="Wrap" TextChanged="taskNameInput_TextChanged" />
                     </Grid>
 
                     <Grid Grid.Row="1" Grid.Column="1">
@@ -261,7 +261,7 @@
                                 Style="{DynamicResource button_style}"  />
                         </Grid>
 
-                        <Grid x:Name="taskAddPnl" Visibility="Collapsed">
+                        <Grid x:Name="taskAddPnl" Visibility="Collapsed" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1.4*" />
                                 <ColumnDefinition Width="1*" />

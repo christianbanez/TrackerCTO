@@ -103,7 +103,7 @@ namespace CTOTracker
                     newRow["lName"] = row["lName"];
                     newRow["completed"] = false; // Assuming 'completed' is always false for selected rows
                     newRow["ctoEarned"] = row["ctoEarned"];
-                    newRow["ctoUsed"] = row["ctoUsed"];
+                   // newRow["ctoUsed"] = row["ctoUsed"];
                     newRow["ctoBalance"] = row["ctoBalance"];
                     selectedScheduleDataTable.Rows.Add(newRow);
                 }
