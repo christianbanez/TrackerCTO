@@ -662,8 +662,8 @@ namespace CTOTracker.View.UserControls
                             // Bind the DataTable to the DataGrid
                             scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
                             
-                            // Set visibility of EmpFilPnl to visible
-                            EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
+                            AllViewPnl.Visibility = Visibility.Collapsed;
+                            EmpFilPnl.Visibility = Visibility.Visible;
                         }
                         else
                         {
@@ -685,7 +685,8 @@ namespace CTOTracker.View.UserControls
         }
         private void btnBack_Click(object sender, RoutedEventArgs e)
         {
-            EmpFilPnl.Visibility = System.Windows.Visibility.Collapsed;
+            AllViewPnl.Visibility=Visibility.Visible;
+            EmpFilPnl.Visibility = Visibility.Collapsed;
         }
 
         private void btnExportEmp_Click(object sender, RoutedEventArgs e)

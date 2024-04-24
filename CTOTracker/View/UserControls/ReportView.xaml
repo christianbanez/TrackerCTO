@@ -12,133 +12,134 @@
     mc:Ignorable="d">
     <Grid Focusable="True">
 
-        <!--  ScheduleDisplay  -->
-        <Grid
-            Height="45"
-            VerticalAlignment="Top"
-            Focusable="True">
-            <!--  Employee HEADER  -->
-            <Grid Focusable="True">
+        <Grid x:Name="AllViewPnl">
+            <!--  ScheduleDisplay  -->
+            <Grid
+                Height="45"
+                VerticalAlignment="Top"
+                Focusable="True">
+                <!--  Employee HEADER  -->
+                <Grid Focusable="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="425*" />
+                        <ColumnDefinition Width="390*" />
+                        <ColumnDefinition Width="247*" />
+                        <ColumnDefinition Width="213*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Margin="10,0,0,0"
+                        Content="Employee CTO Records"
+                        FontSize="24" />
+
+                    <Button
+                        x:Name="btnExport"
+                        Grid.Column="4"
+                        Width="100"
+                        Margin="5,0,10,0"
+                        Click="btnExport_Click_1"
+                        Content="Export"
+                        FontSize="16"
+                        Style="{StaticResource button_style}" />
+
+                </Grid>
+            </Grid>
+
+            <Grid
+                x:Name="dtPnl"
+                Height="723"
+                Margin="0,45,0,0"
+                Focusable="True">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="425*" />
-                    <ColumnDefinition Width="390*" />
-                    <ColumnDefinition Width="247*" />
-                    <ColumnDefinition Width="213*" />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="413*" />
+                    <ColumnDefinition Width="267*" />
                 </Grid.ColumnDefinitions>
-
-                <Label
-                    Margin="10,0,0,0"
-                    Content="Employee CTO Records"
-                    FontSize="24" />
-
-                <Button
-                    x:Name="btnExport"
-                    Grid.Column="4"
-                    Width="100"
-                    Margin="5,0,10,0"
-                    Click="btnExport_Click_1"
-                    Content="Export"
-                    FontSize="16"
-                    Style="{StaticResource button_style}" />
+                <!--  SCHDULE_TABLE  -->
+                <DataGrid
+                    x:Name="reportDataGrid"
+                    Grid.ColumnSpan="2"
+                    Height="718"
+                    Margin="0,0,10,5"
+                    d:ItemsSource="{d:SampleData ItemCount=5}"
+                    AutoGenerateColumns="false"
+                    CanUserReorderColumns="False"
+                    CanUserResizeColumns="False"
+                    CanUserResizeRows="False"
+                    CellStyle="{DynamicResource MaterialDesignDataGridCell}"
+                    ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
+                    IsReadOnly="True"
+                    MouseDoubleClick="reportDataGrid_MouseDoubleClick"
+                    RowStyle="{DynamicResource MaterialDesignDataGridRow}"
+                    Style="{DynamicResource MaterialDesignDataGrid}" />
 
             </Grid>
-        </Grid>
-
-        <Grid
-            x:Name="dtPnl"
-            Height="723"
-            Margin="0,45,0,0"
-            Focusable="True">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="413*" />
-                <ColumnDefinition Width="267*" />
-            </Grid.ColumnDefinitions>
-            <!--  SCHDULE_TABLE  -->
-            <DataGrid
-                x:Name="reportDataGrid"
-                Grid.ColumnSpan="2"
-                Height="718"
-                Margin="0,0,10,5"
-                d:ItemsSource="{d:SampleData ItemCount=5}"
-                AutoGenerateColumns="false"
-                CanUserReorderColumns="False"
-                CanUserResizeColumns="False"
-                CanUserResizeRows="False"
-                CellStyle="{DynamicResource MaterialDesignDataGridCell}"
-                ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
-                IsReadOnly="True"
-                MouseDoubleClick="reportDataGrid_MouseDoubleClick"
-                RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-                Style="{DynamicResource MaterialDesignDataGrid}" />
-
-        </Grid>
-        <!--  Filter Panel  -->
-        <Grid
-            x:Name="FilterPnl"
-            Height="40"
-            VerticalAlignment="Top"
-            Focusable="True">
-            <StackPanel
-                x:Name="ctrlFilter"
-                Focusable="True"
-                Orientation="Vertical">
-                <Grid Width="1360" Height="40">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="225" />
-                    </Grid.ColumnDefinitions>
-                    <!--  Filter Panel Toggle Button  -->
-                    <ToggleButton
-                        x:Name="tgb_FilterPnl"
-                        Grid.Column="1"
-                        Margin="5,0,10,2"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        HorizontalContentAlignment="Center"
-                        Checked="tgb_FilterPnl_Checked"
-                        Style="{DynamicResource MaterialDesignFlatButton}"
-                        Unchecked="tgb_FilterPnl_Unchecked">
-                        <StackPanel Orientation="Horizontal">
-                            <Label
-                                Padding="0"
-                                Content="Filters"
-                                FontSize="16"
-                                FontWeight="Normal" />
-                            <materialDesign:PackIcon
-                                Margin="10,0,0,0"
-                                VerticalAlignment="Center"
-                                Kind="MenuDownOutline" />
-                        </StackPanel>
-                        <!--<materialDesign:PackIcon Kind="MenuDown" />-->
-                    </ToggleButton>
-                </Grid>
-                <StackPanel Width="1360" Orientation="Horizontal">
-                    <Grid Width="1360" Focusable="True">
+            <!--  Filter Panel  -->
+            <Grid
+                x:Name="FilterPnl"
+                Height="40"
+                VerticalAlignment="Top"
+                Focusable="True">
+                <StackPanel
+                    x:Name="ctrlFilter"
+                    Focusable="True"
+                    Orientation="Vertical">
+                    <Grid Width="1360" Height="40">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="190" />
-                            <ColumnDefinition Width="190" />
-                            <ColumnDefinition Width="125" />
-                            <ColumnDefinition Width="125" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="225" />
                         </Grid.ColumnDefinitions>
+                        <!--  Filter Panel Toggle Button  -->
+                        <ToggleButton
+                            x:Name="tgb_FilterPnl"
+                            Grid.Column="1"
+                            Margin="5,0,10,2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            HorizontalContentAlignment="Center"
+                            Checked="tgb_FilterPnl_Checked"
+                            Style="{DynamicResource MaterialDesignFlatButton}"
+                            Unchecked="tgb_FilterPnl_Unchecked">
+                            <StackPanel Orientation="Horizontal">
+                                <Label
+                                    Padding="0"
+                                    Content="Filters"
+                                    FontSize="16"
+                                    FontWeight="Normal" />
+                                <materialDesign:PackIcon
+                                    Margin="10,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Kind="MenuDownOutline" />
+                            </StackPanel>
+                            <!--<materialDesign:PackIcon Kind="MenuDown" />-->
+                        </ToggleButton>
+                    </Grid>
+                    <StackPanel Width="1360" Orientation="Horizontal">
+                        <Grid Width="1360" Focusable="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="190" />
+                                <ColumnDefinition Width="190" />
+                                <ColumnDefinition Width="125" />
+                                <ColumnDefinition Width="125" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox
-                            x:Name="txtschFname"
-                            Grid.Column="0"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"
-                            Style="{StaticResource txtbx_style}"
-                            Tag="Search Name" />
-                        <!--<TextBox
+                            <TextBox
+                                x:Name="txtschFname"
+                                Grid.Column="0"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                FontSize="14"
+                                Style="{StaticResource txtbx_style}"
+                                Tag="Search Name" />
+                            <!--<TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
                             Margin="0,25,10,10"
@@ -149,69 +150,70 @@
                             LostFocus="txtschLname_LostFocus"
                             Style="{StaticResource txtbx_style}"
                             Text="Last Name" />-->
-                        <ComboBox
-                            x:Name="cmbxTask"
-                            Grid.Column="1"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"
-                            Foreground="Gray"
-                            SelectionChanged="cmbxTask_SelectionChanged"
-                            Tag="Task"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
-                        <ComboBox
-                            x:Name="cmbxRole"
-                            Grid.Column="2"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            FontSize="14"
-                            Foreground="Gray"
-                            SelectionChanged="cmbxRole_SelectionChanged"
-                            Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
-                        <DatePicker
-                            x:Name="dtEDate"
-                            Grid.Column="3"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Date Earned"
-                            FontSize="14" />
-                        <DatePicker
-                            x:Name="dtUDate"
-                            Grid.Column="4"
-                            Margin="0,25,10,10"
-                            HorizontalAlignment="Stretch"
-                            materialDesign:HintAssist.Hint="Date Used"
-                            FontSize="14" />
-                        <CheckBox
-                            x:Name="chkbxBalance"
-                            Grid.Column="5"
-                            VerticalAlignment="Center"
-                            Checked="chkbxBalance_Checked"
-                            Content="CTO Balance"
-                            FontFamily="Roboto-Light"
-                            FontSize="14" />
-                        <CheckBox
-                            x:Name="chkbxUsed"
-                            Grid.Column="6"
-                            VerticalAlignment="Center"
-                            Checked="chkbxUsed_Checked"
-                            Content="CTO Used"
-                            FontFamily="Roboto-Light"
-                            FontSize="14" />
+                            <ComboBox
+                                x:Name="cmbxTask"
+                                Grid.Column="1"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                FontSize="14"
+                                Foreground="Gray"
+                                SelectionChanged="cmbxTask_SelectionChanged"
+                                Tag="Task"
+                                Template="{DynamicResource ComboBoxTemplate1}" />
+                            <ComboBox
+                                x:Name="cmbxRole"
+                                Grid.Column="2"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                FontSize="14"
+                                Foreground="Gray"
+                                SelectionChanged="cmbxRole_SelectionChanged"
+                                Tag="Role"
+                                Template="{DynamicResource ComboBoxTemplate1}" />
+                            <DatePicker
+                                x:Name="dtEDate"
+                                Grid.Column="3"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Date Earned"
+                                FontSize="14" />
+                            <DatePicker
+                                x:Name="dtUDate"
+                                Grid.Column="4"
+                                Margin="0,25,10,10"
+                                HorizontalAlignment="Stretch"
+                                materialDesign:HintAssist.Hint="Date Used"
+                                FontSize="14" />
+                            <CheckBox
+                                x:Name="chkbxBalance"
+                                Grid.Column="5"
+                                VerticalAlignment="Center"
+                                Checked="chkbxBalance_Checked"
+                                Content="CTO Balance"
+                                FontFamily="Roboto-Light"
+                                FontSize="14" />
+                            <CheckBox
+                                x:Name="chkbxUsed"
+                                Grid.Column="6"
+                                VerticalAlignment="Center"
+                                Checked="chkbxUsed_Checked"
+                                Content="CTO Used"
+                                FontFamily="Roboto-Light"
+                                FontSize="14" />
 
-                        <Button
-                            x:Name="btnSearch"
-                            Grid.Column="9"
-                            HorizontalAlignment="Stretch"
-                            Margin="5,25,5,10"
-                            Content="Search"
-                            FontSize="16"
-                            Style="{StaticResource button_style}" />
+                            <Button
+                                x:Name="btnSearch"
+                                Grid.Column="9"
+                                Margin="5,25,5,10"
+                                HorizontalAlignment="Stretch"
+                                Content="Search"
+                                FontSize="16"
+                                Style="{StaticResource button_style}" />
 
-                    </Grid>
+                        </Grid>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </Grid>
 
         <!--  Employee Filtered Panel  -->
@@ -220,14 +222,6 @@
             x:Name="EmpFilPnl"
             Grid.Row="1"
             Visibility="Collapsed">
-
-            <!--  BG  -->
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                    <GradientStop Offset="0" Color="#FFEFF6FB" />
-                    <GradientStop Offset="1" Color="#FFD1D6EA" />
-                </LinearGradientBrush>
-            </Grid.Background>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
@@ -260,16 +254,16 @@
                     <Button
                         x:Name="btnBack"
                         Grid.Column="2"
-                        Width="100"
-                        Margin="100,0,10,0"
+                        Width="70"
+                        Margin="170,0,0,6"
                         Click="btnBack_Click"
                         Content="Back"
                         FontSize="16"
                         Style="{DynamicResource button_style}" />
                     <Button
                         x:Name="btnExportEmp"
-                        Width="100"
-                        Margin="10,0,0,0"
+                        Width="70"
+                        Margin="10,0,0,6"
                         Click="btnExportEmp_Click"
                         Content="Export"
                         FontSize="16"
