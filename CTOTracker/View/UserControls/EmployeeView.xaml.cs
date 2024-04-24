@@ -508,6 +508,15 @@ namespace CTOTracker.View
                 }
                 string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
                 string roleID = GetRoleID(selectedRole);
+
+                if (roleID == null)
+                {
+                    selectedRole = txtRole.Text.Trim();
+                    // If task ID is null, insert the task into the database
+                    InsertRoleIntoDatabase(selectedRole);
+                    // Retrieve the task ID again after insertion
+                    roleID = GetRoleID(selectedRole);
+                }
                 // Retrieve updated values from input fields
                 string inforID = txtEmpID.Text;
                 string firstName = txtFname.Text;
@@ -536,6 +545,7 @@ namespace CTOTracker.View
                 txtEmail.Clear();
                 txtContact.Clear();
                 txtRole.SelectedIndex = -1;
+                txtRole.Text = "";
                 DataGridEmployee1.IsEnabled = true;
             }
             catch (Exception ex)
@@ -543,7 +553,6 @@ namespace CTOTracker.View
                 MessageBox.Show("Error updating employee: " + ex.Message, "Error");
             }
         }
-
         private void UpdateEmployee(string inforID, string firstName, string lastName, string email, string contact, string roleID)
         {
             using (OleDbConnection connection = dataConnection.GetConnection())
