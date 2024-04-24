@@ -17,7 +17,7 @@
         <!--  BG  -->
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                <GradientStop Offset="0" Color="#FFEFF6FB" />
+                <GradientStop Offset="0.008" Color="#FFDAE7EF" />
                 <GradientStop Offset="1" Color="#FFD1D6EA" />
             </LinearGradientBrush>
         </Grid.Background>
@@ -36,17 +36,22 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
             Content="SELECTED SCHEDULE :"
-            FontWeight="DemiBold"
-            FontSize="14" />
+            FontSize="14"
+            FontWeight="DemiBold" />
         <DataGrid
             x:Name="SelectedScheduleView"
             Grid.Row="1"
             Margin="10,0,10,0"
-            IsReadOnly="True"
+            BeginningEdit="SelectedScheduleView_BeginningEdit"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            CanUserResizeRows="False"
+            CanUserSortColumns="False"
             CellStyle="{DynamicResource MaterialDesignDataGridCell}"
             ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
             RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-            SelectionChanged="SelectedScheduleView_SelectionChanged"
             Style="{DynamicResource MaterialDesignDataGrid}" />
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -59,8 +64,8 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
                 Content="CHANGES :"
-                FontWeight="DemiBold"
-                FontSize="14" />
+                FontSize="14"
+                FontWeight="DemiBold" />
             <Button
                 x:Name="confirmChangesBttn"
                 Grid.Column="2"
@@ -77,9 +82,15 @@
             x:Name="ChangesGridView"
             Grid.Row="3"
             Margin="10,0,10,0"
-            IsReadOnly="True"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            CanUserResizeRows="False"
+            CanUserSortColumns="False"
             CellStyle="{DynamicResource MaterialDesignDataGridCell}"
             ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
+            IsReadOnly="True"
             RowStyle="{DynamicResource MaterialDesignDataGridRow}"
             Style="{DynamicResource MaterialDesignDataGrid}" />
 
@@ -93,18 +104,18 @@
                 Margin="0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Content="TOTAL CTO :" 
-                FontWeight="DemiBold"
-                FontSize="14"/>
+                Content="TOTAL CTO :"
+                FontSize="14"
+                FontWeight="DemiBold" />
             <Label
                 x:Name="Total"
                 Grid.Column="1"
                 Margin="0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
+                Content="Label"
                 FontSize="14"
-                FontWeight="Medium"
-                Content="Label" />
+                FontWeight="Medium" />
         </Grid>
 
         <Label
@@ -114,7 +125,7 @@
             VerticalAlignment="Top"
             Content="Usage Description :"
             FontSize="14"
-            FontWeight="DemiBold"/>
+            FontWeight="DemiBold" />
 
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>

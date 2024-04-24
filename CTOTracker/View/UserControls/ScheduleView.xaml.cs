@@ -597,7 +597,7 @@ namespace CTOTracker.View
                         useCto useCtoWindow = new useCto();
                         useCtoWindow.LoadSelectedSchedule(selectedRows);
                         useCtoWindow.Closed += UseCtoWindow_Closed;
-                        useCtoWindow.Show();
+                        useCtoWindow.ShowDialog();
                         
 
                     }
