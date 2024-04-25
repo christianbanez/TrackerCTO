@@ -13,20 +13,37 @@ namespace CTOTracker
 {
     public class DataConnection
     {
-        public string connectionStrings = ConfigurationManager.ConnectionStrings["connectionName"].ConnectionString;
+        public string GetConnectionString()
+        {
+            // Retrieve the connection string from app.config
+            string connectionString = ConfigurationManager.ConnectionStrings["connectionName"].ConnectionString;
+
+            // Get the database file name
+            string databaseFileName = "dbCto.accdb"; // Replace with your actual database file name
+
+            // Construct the full database path
+            string databasePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, databaseFileName);
+
+            // Replace the placeholder with the actual database path
+            connectionString = connectionString.Replace("[DATABASE_PATH]", databasePath);
+
+            return connectionString;
+        }
+        //public string connectionStrings = ConfigurationManager.ConnectionStrings["connectionName"].ConnectionString;
         //public string connection;
         //OleDbConnection connection = new OleDbConnection(connectionString);
         //connection.connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source = Provider = Microsoft.ACE.OLEDB.12.0; Data Source = C:\Users\dkeh\source\repos\EmployeeTracker\dbtk.accdb";
         //public static readonly string ConnectionString = ("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\dkeh\\source\\repos\\EmployeeTracker\\dbtk.accdb");
-        public string conn
-        {
-            get { return connectionStrings; }
-        }
+        //public string conn
+        //{
+        //    get { return connectionString; }
+        //}
 
         public OleDbConnection GetConnection()
         {
             // Create a new OleDbConnection object with the connection string
-            return new OleDbConnection(connectionStrings);
+            return new OleDbConnection(GetConnectionString());
+
         }
 
         public void OpenConnection(OleDbConnection connection)

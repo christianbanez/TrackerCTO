@@ -9,15 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="dbCto.accdb" />
     <None Remove="View\Resource Dictionary\Assets\btnEmp.png" />
     <None Remove="View\Resource Dictionary\Assets\btnRep.png" />
     <None Remove="View\Resource Dictionary\Assets\btnSched.png" />
+    <None Remove="View\Resource Dictionary\Assets\logo.png" />
     <None Remove="View\Resource Dictionary\Assets\Roboto-Light.ttf" />
     <None Remove="View\Resource Dictionary\Assets\Roboto-Regular.ttf" />
     <None Remove="View\Resource Dictionary\Assets\tgbMenu.png" />
     <None Remove="View\Resource Dictionary\Assets\tgbMenu_MouseOver.png" />
     <None Remove="View\Resource Dictionary\Assets\VeCTOr Icon.png" />
     <None Remove="View\Resource Dictionary\Assets\VeCTOr Main Icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="dbCto.accdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
