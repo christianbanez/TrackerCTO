@@ -91,33 +91,9 @@
                             TextWrapping="Wrap" />
                     </Grid>
 
+                    <!--  AddButton only  -->
                     <Grid Grid.Row="2" Grid.Column="1">
-                        <!--  AddEdit  -->
-                        <Grid x:Name="roleAddEditPnl" Visibility="Visible">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-                            <Button
-                                x:Name="c"
-                                Grid.Column="1"
-                                Width="60"
-                                Margin="40,0,5,0"
-                                Click="roleSave_Click"
-                                Content="Add"
-                                Style="{DynamicResource button_style}" />
-                            <Button
-                                x:Name="roleEditBtn"
-                                Grid.Column="2"
-                                Width="60"
-                                Margin="0,0,50,0"
-                                Click="roleEditBtn_Click"
-                                Content="Edit"
-                                Style="{DynamicResource button_style}" />
-                        </Grid>
-
-                        <Grid x:Name="roleAddPnl" Visibility="Collapsed">
+                        <Grid x:Name="roleAddbtnPnl" Visibility="Visible">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="auto" />
@@ -125,6 +101,26 @@
                             </Grid.ColumnDefinitions>
                             <Button
                                 x:Name="roleAddBtn"
+                                Grid.Column="2"
+                                Width="60"
+                                Margin="0,0,50,0"
+                                Click="roleSave_Click"
+                                Content="Add"
+                                Style="{DynamicResource button_style}" />
+                        </Grid>
+
+                        <!--  AddEdit  -->
+                        
+
+                        <!--  SaveAdd  -->
+                        <Grid x:Name="roleAddPnl" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                x:Name="roleSaveBtn"
                                 Grid.Column="1"
                                 Width="60"
                                 Margin="40,0,5,0"
@@ -163,7 +159,7 @@
                                 Content="Delete"
                                 Style="{DynamicResource button_style}" />
                             <Button
-                                x:Name="roleCancelBtn"
+                                x:Name="roleEditBtn"
                                 Grid.Column="2"
                                 Width="60"
                                 Margin="0,0,40,0"
@@ -283,17 +279,9 @@
                                 x:Name="addBtnClick"
                                 Grid.Column="1"
                                 Width="60"
-                                Margin="40,0,5,0"
+                                Margin="40,0,50,0"
                                 Click="addBtnClick_Click"
                                 Content="Add"
-                                Style="{DynamicResource button_style}" />
-                            <Button
-                                x:Name="editBtn"
-                                Grid.Column="2"
-                                Width="60"
-                                Margin="0,0,50,0"
-                                Click="editBtn_Click"
-                                Content="Edit"
                                 Style="{DynamicResource button_style}" />
                         </Grid>
 
