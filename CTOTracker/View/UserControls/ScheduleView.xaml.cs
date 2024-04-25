@@ -452,6 +452,7 @@ namespace CTOTracker.View
                         LoadScheduleData();
                         LoadCTOuseData();
                     }
+                    PopulateTaskComboBox();
                 }
             }
         }
@@ -476,6 +477,7 @@ namespace CTOTracker.View
                 LoadScheduleData();
                 LoadCTOuseData();
             }
+            PopulateTaskComboBox();
 
         }
 
@@ -787,6 +789,16 @@ namespace CTOTracker.View
                 LoadScheduleData();
                 LoadCTOuseData();
             }
+        }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            showallChkBox.IsChecked = true;
+            cbxEmployee.SelectedIndex = -1;
+            //cbxEmployee.IsEnabled = false;
+            cbxEmployee.Text = "Employee";
+            monthPicker.Text = "";
+            cbxFilterTask.Text = "Filter by Task";
         }
     }
 }
