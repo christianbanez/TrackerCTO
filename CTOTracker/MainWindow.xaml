@@ -4,11 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:usercontrol="clr-namespace:CTOTracker.View"
     xmlns:usercontrols="clr-namespace:CTOTracker.View.UserControls"
     x:Name="Employee_Tracker"
-    Title="Employee Tracker"
+    Title="VeCTOr"
     Width="1360"
     Height="768"
     MinWidth="1360"
@@ -44,7 +45,7 @@
         <Grid
             x:Name="MainPnl"
             Width="1290"
-            Margin="0,30,0,0"
+            Margin="0,40,0,0"
             HorizontalAlignment="Right">
 
             <Frame
@@ -52,7 +53,22 @@
                 Grid.RowSpan="2"
                 Margin="10,10,10,10"
                 Loaded="frmMain_Loaded"
-                NavigationUIVisibility="Hidden" />
+                NavigationUIVisibility="Hidden">
+
+                <Frame.Content>
+                    <Page x:Name="startPage">
+                        <Grid>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                Text="Welcome to My App!" />
+                            <!--  You can add more UI elements here as needed  -->
+                        </Grid>
+                    </Page>
+                </Frame.Content>
+
+            </Frame>
 
             <!--  Overlay  -->
             <Grid
@@ -74,7 +90,7 @@
                 </LinearGradientBrush>
             </Grid.Background>
 
-            <StackPanel x:Name="stpnlBtns">
+            <StackPanel x:Name="stpnlBtns" Margin="0,30,0,0">
                 <!--  Menu toggle Grid  -->
                 <Grid Height="90">
 
@@ -93,7 +109,6 @@
                         <!--  // Shadow Effect //  -->
 
                         <Label.Effect>
-
                             <DropShadowEffect
                                 BlurRadius="10"
                                 Direction="-90"
@@ -111,14 +126,12 @@
                         Margin="18,-20,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        BorderThickness="0"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
                         Checked="tgbMenu_Checked"
                         MouseEnter="tgbMenu_MouseEnter"
-                        Style="{StaticResource tb_style}"
+                        Style="{DynamicResource tb_style}"
                         Unchecked="tgbMenu_Unchecked">
-                        <ToggleButton.Background>
-                            <ImageBrush ImageSource="View/Resource Dictionary/Assets/tgbMenu.png" Stretch="Uniform" />
-                        </ToggleButton.Background>
 
                         <!--  Toggle button events  -->
                         <ToggleButton.Triggers>
@@ -176,12 +189,12 @@
                         </ListViewItem.ToolTip>
 
                         <StackPanel Width="230" Orientation="Horizontal">
-
-                            <Image
-                                Width="50"
-                                Height="50"
-                                Source="View/Resource Dictionary/Assets/btnEmp.png"
-                                Stretch="Uniform" />
+                            <materialDesign:PackIcon
+                                Width="40"
+                                Height="40"
+                                Margin="8,0,0,0"
+                                Foreground="White"
+                                Kind="AccountTie" />
 
                             <Label
                                 Margin="25,0,0,0"
@@ -204,13 +217,12 @@
                         </ListViewItem.ToolTip>
 
                         <StackPanel Width="230" Orientation="Horizontal">
-                            <Image
-                                Width="50"
-                                Height="50"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Source="View/Resource Dictionary/Assets/btnSched.png"
-                                Stretch="Uniform" />
+                            <materialDesign:PackIcon
+                                Width="40"
+                                Height="40"
+                                Margin="8,0,0,0"
+                                Foreground="White"
+                                Kind="CalendarClockOutline" />
 
                             <Label
                                 Margin="25,0,0,0"
@@ -233,14 +245,12 @@
                         </ListViewItem.ToolTip>
 
                         <StackPanel Width="230" Orientation="Horizontal">
-                            <Image
-                                Width="50"
-                                Height="50"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Source="View/Resource Dictionary/Assets/btnRep.png"
-                                Stretch="Uniform" />
-
+                            <materialDesign:PackIcon
+                                Width="40"
+                                Height="40"
+                                Margin="8,0,0,0"
+                                Foreground="White"
+                                Kind="FileExportOutline" />
                             <Label
                                 Margin="25,0,0,0"
                                 Content="Reports"
@@ -249,13 +259,29 @@
                     </ListViewItem>
 
                     <ListViewItem
-                        Margin="0,390,0,15"
-                        Width="230"
+                        Margin="0,360,0,15"
                         HorizontalAlignment="Left"
-                        Content="Role/Task"
-                        Foreground="White"
-                        FontWeight="DemiBold" Selected="ListViewItem_Selected_3">
-                        
+                        Selected="ListViewItem_Selected_3">
+                        <ListViewItem.ToolTip>
+                            <ToolTip
+                                x:Name="ttRT"
+                                Content="Roles and Tasks"
+                                Style="{StaticResource tt_style}" />
+                        </ListViewItem.ToolTip>
+
+                        <StackPanel Width="230" Orientation="Horizontal">
+                            <materialDesign:PackIcon
+                                Width="40"
+                                Height="40"
+                                Margin="8,0,0,0"
+                                Foreground="White"
+                                Kind="FormatListBulletedSquare" />
+                            <Label
+                                Margin="25,0,0,0"
+                                Content="Roles and Tasks"
+                                Style="{StaticResource font_style}" />
+                        </StackPanel>
+
                     </ListViewItem>
 
                     <!--  // Listview items style template //  -->

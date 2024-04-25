@@ -19,17 +19,28 @@
             <!--  Title Bar  -->
             <Border
                 x:Name="TitleBar"
-                Height="30"
+                Height="40"
                 VerticalAlignment="Top"
                 Background="#FF5D608C">
                 <Grid>
-                    <TextBlock
-                        Margin="10,0,0,0"
-                        VerticalAlignment="Center"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="{TemplateBinding Title}" />
+                    <StackPanel Orientation="Horizontal">
+                        <Image
+                            Width="33"
+                            Height="30"
+                            Margin="13,3,10,3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Source="Assets/VeCTOr Icon.png"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="{TemplateBinding Title}" />
+                    </StackPanel>
+
                     <Button
                         x:Name="CloseButton"
                         HorizontalAlignment="Right"
@@ -46,11 +57,12 @@
 
     <!--  SIDE NAV  -->
     <!--  Toggle Button Style Template  -->
-    <ImageBrush
-        x:Key="tb_mouse_over"
-        ImageSource="Assets\tgbMenu_MouseOver.png"
-        Stretch="Uniform" />
-
+    <VisualBrush x:Key="tb_mouse_over">
+        <VisualBrush.Visual>
+            <materialDesign:PackIcon Kind="Menu" Foreground="White" Width="20" Height="20"/>
+        </VisualBrush.Visual>
+    </VisualBrush>
+    
     <!--  Text font style  -->
     <Style x:Key="font_style" TargetType="Label">
         <Setter Property="FontFamily" Value="Fonts/Roboto.ttf #Roboto" />
@@ -63,8 +75,8 @@
     <Style x:Key="tt_style" TargetType="ToolTip">
         <Setter Property="Placement" Value="Right" />
         <Setter Property="Height" Value="40" />
-        <Setter Property="Width" Value="100" />
-        <Setter Property="Margin" Value="20,0,0,0" />
+        <Setter Property="Width" Value="auto" />
+        <Setter Property="Margin" Value="20,0,10,0" />
         <Setter Property="Background" Value="#4A5668" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="White" />
@@ -83,9 +95,10 @@
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                     <Border
                         x:Name="border"
-                        Background="{TemplateBinding Background}"
+                        Background="{StaticResource tb_mouse_over}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        SnapsToDevicePixels="True" />
+                        SnapsToDevicePixels="True" >
+                    </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="border" Property="Background" Value="{StaticResource tb_mouse_over}" />
@@ -93,7 +106,7 @@
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
-                                        BlurRadius="10"
+                                        BlurRadius="5"
                                         Direction="-90"
                                         ShadowDepth="1"
                                         Color="White" />
@@ -107,7 +120,7 @@
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
-                                        BlurRadius="10"
+                                        BlurRadius="5"
                                         Direction="-90"
                                         ShadowDepth="1"
                                         Color="White" />
@@ -162,7 +175,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Border x:Name="border"
+                    <Border
+                        x:Name="border"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -187,16 +201,18 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Border x:Name="border"
+                    <Border
+                        x:Name="border"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="4">
                         <Grid>
                             <ScrollViewer x:Name="PART_ContentHost" />
-                            <Label x:Name="CueBanner" 
-                                Content="{TemplateBinding Tag}" 
-                                Foreground="LightGray" 
+                            <Label
+                                x:Name="CueBanner"
+                                Content="{TemplateBinding Tag}"
+                                Foreground="LightGray"
                                 Visibility="Collapsed" />
                         </Grid>
                     </Border>

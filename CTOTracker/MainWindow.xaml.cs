@@ -40,19 +40,9 @@ namespace CTOTracker
             }
         }
 
-        private void SideNav_Loaded(object sender, RoutedEventArgs e)
-        {
-            // Your event handler implementation here
-        }
-
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
-            frmMain.Navigate(new EmployeeView());
-            // Uncheck the ToggleButton when a list view item is selected
-            if (listSideNav.SelectedItem != null)
-            {
-                tgbMenu.IsChecked = false;
-            }
+            frmMain.Navigate(startPage);
         }
 
         private void ListViewItem_Selected(object sender, RoutedEventArgs e)
@@ -129,7 +119,7 @@ namespace CTOTracker
             if (listSideNav.Items.Count > 0)
             {
                 ListViewItem firstItem = (ListViewItem)listSideNav.Items[0];
-                firstItem.IsSelected = true;
+                firstItem.IsSelected = false;
             }
         }
 
