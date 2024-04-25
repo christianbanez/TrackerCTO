@@ -196,7 +196,7 @@
                     HorizontalAlignment="Stretch"
                     Content="Clear"
                     FontSize="16"
-                    Style="{StaticResource button_style}" />
+                    Style="{StaticResource button_style}" Click="btnClear_Click" />
             </Grid>
         </Grid>
     </Grid>
