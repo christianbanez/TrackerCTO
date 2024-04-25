@@ -507,7 +507,7 @@ namespace CTOTracker.View
                 {
                     return;
                 }
-                string selectedRole = txtRole.SelectedItem?.ToString() ?? string.Empty;
+                string selectedRole = txtRole.SelectedItem?.ToString() ?? txtRole.Text;
                 string roleID = GetRoleID(selectedRole);
 
                 if (roleID == null)
@@ -517,8 +517,9 @@ namespace CTOTracker.View
                     InsertRoleIntoDatabase(selectedRole);
                     // Retrieve the task ID again after insertion
                     roleID = GetRoleID(selectedRole);
-                    PopulateRoleComboBox();
+                    
                 }
+                PopulateRoleComboBox();
                 // Retrieve updated values from input fields
                 string inforID = txtEmpID.Text;
                 string firstName = txtFname.Text;
