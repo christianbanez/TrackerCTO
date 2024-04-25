@@ -237,6 +237,20 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     connection.Open();
+
+                    // Check if the roleID is being used in the Employee table
+                    string checkQuery = "SELECT COUNT(*) FROM Employee WHERE roleID = @RoleID";
+                    OleDbCommand checkCommand = new OleDbCommand(checkQuery, connection);
+                    checkCommand.Parameters.AddWithValue("@RoleID", roleId);
+                    int employeeCount = (int)checkCommand.ExecuteScalar();
+
+                    if (employeeCount > 0)
+                    {
+                        MessageBox.Show("Cannot delete role. It is being used by one or more employees.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return; // Exit the method without deleting the role
+                    }
+
+                    // If the roleID is not being used by any employee, proceed with deletion
                     string query = "DELETE FROM Role WHERE roleID = @RoleID";
                     OleDbCommand command = new OleDbCommand(query, connection);
                     command.Parameters.AddWithValue("@RoleID", roleId);
@@ -802,13 +816,6 @@ namespace CTOTracker.View.UserControls
                 {
                     connection.Open();
 
-                    // Check if a task with the same name and description already exists, excluding the current task
-                    if (TaskExists(taskName, taskDesc, taskId))
-                    {
-                        MessageBox.Show("A task with the same name and description already exists.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
                     string query = "UPDATE Task SET taskName = @TaskName, taskDesc = @TaskDesc WHERE taskId = @TaskID";
                     OleDbCommand command = new OleDbCommand(query, connection);
                     command.Parameters.AddWithValue("@TaskName", taskName);
@@ -826,9 +833,9 @@ namespace CTOTracker.View.UserControls
                 {
                     connection.Close();
                 }
-
             }
         }
+
 
         private void taskNameInput_TextChanged(object sender, TextChangedEventArgs e)
         {
