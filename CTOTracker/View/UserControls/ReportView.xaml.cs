@@ -31,10 +31,10 @@ namespace CTOTracker.View.UserControls
             dataConnection = new DataConnection();
             DataReportView();
             txtschFname.TextChanged += txtschFname_TextChanged;
-            chkbxBalance.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
-            chkbxBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
-            chkbxUsed.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
-            chkbxUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            rbBalance.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            rbBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            rbUsed.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            rbUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
             EmpFilPnl.Visibility = Visibility.Collapsed;
@@ -82,7 +82,7 @@ namespace CTOTracker.View.UserControls
                     cmbxRole.SelectedIndex = -1;
                     cmbxRole.Tag = "Role";
                     dtEDate.SelectedDate = null;
-                    dtUDate.SelectedDate = null;
+                    //dtUDate.SelectedDate = null;
                     DataReportView();
 
                     return;
@@ -116,11 +116,11 @@ namespace CTOTracker.View.UserControls
                 {
                     query += $" AND Role.roleName = '{roleFilter}'";
                 }
-                if (chkbxBalance.IsChecked == true)
+                if (rbBalance.IsChecked == true)
                 {
                     query += " AND Schedule.ctoBalance > 0";
                 }
-                if (chkbxUsed.IsChecked == true)
+                if (rbUsed.IsChecked == true)
                 {
                     query += " AND Schedule.ctoUsed > 0";
                 }
@@ -129,11 +129,11 @@ namespace CTOTracker.View.UserControls
                     DateTime selectedDate = dtEDate.SelectedDate.Value;
                     query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
                 }
-                if (dtUDate.SelectedDate.HasValue)
+/*                if (dtUDate.SelectedDate.HasValue)
                 {
                     DateTime selectedDate = dtUDate.SelectedDate.Value;
                     query += $" AND (MONTH(Schedule.dateUsed) = {selectedDate.Month} AND YEAR(Schedule.dateUsed) = {selectedDate.Year})";
-                }
+                }*/
                 
                 // Execute the query and update the DataGrid
                 LoadAllData(query);
@@ -498,14 +498,14 @@ namespace CTOTracker.View.UserControls
             return role;
         }
 
-        private void chkbxBalance_Checked(object sender, RoutedEventArgs e)
+        private void rbBalance_Checked(object sender, RoutedEventArgs e)
         {
-            chkbxUsed.IsChecked = false;
+            rbUsed.IsChecked = false;
             ApplyFiltersAndUpdateDataGrid();
         }
-        private void chkbxUsed_Checked(object sender, RoutedEventArgs e)
+        private void rbUsed_Checked(object sender, RoutedEventArgs e)
         {
-            chkbxBalance.IsChecked = false;
+            rbBalance.IsChecked = false;
             ApplyFiltersAndUpdateDataGrid();
         }
 
@@ -863,10 +863,10 @@ namespace CTOTracker.View.UserControls
             cmbxRole.Tag = "Role";
             cmbxTask.SelectedIndex = -1;
             cmbxTask.Tag = "Task";
-            chkbxBalance.IsChecked = false;
-            chkbxUsed.IsChecked = false;
+            rbBalance.IsChecked = false;
+            rbUsed.IsChecked = false;
             dtEDate.SelectedDate = null;
-            dtUDate.SelectedDate = null;
+            //dtUDate.SelectedDate = null;
             DataReportView();
         }
 
@@ -875,10 +875,10 @@ namespace CTOTracker.View.UserControls
             ApplyFiltersAndUpdateDataGrid();
         }
 
-        private void dtUDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ApplyFiltersAndUpdateDataGrid();
-        }
+        //private void dtUDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ApplyFiltersAndUpdateDataGrid();
+        //}
 
         
     }
