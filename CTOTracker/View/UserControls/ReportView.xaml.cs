@@ -15,9 +15,12 @@ namespace CTOTracker.View.UserControls
     /// <summary>
     /// Interaction logic for ReportView.xaml
     /// </summary>
+    /// 
+
+   
     public partial class ReportView : UserControl
     {
-        string imagePath = "Images/logo.png";
+        string imagePath = @"C:\Users\dkeh\Source\Repos\TrackerCTO\CTOTracker\Images\VeCTOr Main Icon.png";
         private DataConnection dataConnection;
         private DataView dataView;
         private List<string> allEmployees;
@@ -236,16 +239,12 @@ namespace CTOTracker.View.UserControls
                     outputPath = saveFileDialog.FileName;
 
                     // Proceed with PDF creation
-                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+                    PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
                     doc.Open();
 
                     // Add Header with Company Information
                     PdfPTable headerTable = new PdfPTable(1);
                     headerTable.WidthPercentage = 100;
-
-                    // Add current date and time
-                    DateTime currentDate = DateTime.Now;
-                    doc.Add(new Paragraph("Date generated: " + currentDate.ToString()));
 
                     // Add company logo (assuming logoPath is the path to the company logo)
                     iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
@@ -269,7 +268,7 @@ namespace CTOTracker.View.UserControls
                     doc.Add(headerTable);
 
                     // Define a style for the header column
-                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
+                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.BLACK);
                     Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
 
                     // Add DataGrid content to the PDF document
@@ -284,7 +283,7 @@ namespace CTOTracker.View.UserControls
 
                         // Add the column header to the PDF table
                         PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
-                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.BackgroundColor = new BaseColor(230, 230, 250);  // Set background color to a shade of blue
                         headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         headerCell.Padding = 3;
@@ -316,6 +315,14 @@ namespace CTOTracker.View.UserControls
 
                     // Add table to document
                     doc.Add(pdfTable);
+
+                    PdfPTable footerTable = new PdfPTable(1);
+                    footerTable.TotalWidth = doc.PageSize.Width - doc.LeftMargin - doc.RightMargin;
+                    footerTable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    PdfPCell footerCell = new PdfPCell(new Phrase("Date generated: " + DateTime.Now.ToString("MM/dd/yyyy")));
+                    footerCell.Border = 0;
+                    footerTable.AddCell(footerCell);
+                    footerTable.WriteSelectedRows(0, -1, doc.LeftMargin, doc.BottomMargin + 10, writer.DirectContent);
                     doc.Close();
 
                     MessageBox.Show("PDF exported successfully! Output path: " + outputPath, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -736,7 +743,7 @@ namespace CTOTracker.View.UserControls
             // Create a SaveFileDialog to choose the output path
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
-            saveFileDialog.FileName = $"exported_{DateTime.Now:yyyyMMdd}.pdf"; // Default file name
+            saveFileDialog.FileName = $"{lblEmpName.Content}_{DateTime.Now:yyyyMMdd}.pdf";
 
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -748,7 +755,7 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     // Initialize the PdfWriter with the document and a file stream
-                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+                    PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
 
                     // Open the document
                     doc.Open();
@@ -756,9 +763,7 @@ namespace CTOTracker.View.UserControls
                     // Add Header with Company Information
                     PdfPTable headerTable = new PdfPTable(1);
                     headerTable.WidthPercentage = 100;
-                    // Add current date and time
-                    DateTime currentDate = DateTime.Now;
-                    doc.Add(new iTextSharp.text.Paragraph("Date generated: " + currentDate.ToString()));
+                    
 
                     // Add company logo (assuming logoPath is the path to the company logo)
                     iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
@@ -796,7 +801,7 @@ namespace CTOTracker.View.UserControls
                     pdfTable.WidthPercentage = 100;
 
                     // Define a style for the header column
-                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
+                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.BLACK);
                     Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
 
                     // Add headers
@@ -807,7 +812,7 @@ namespace CTOTracker.View.UserControls
 
                         // Add the column header to the PDF table
                         PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
-                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.BackgroundColor = new BaseColor(230, 230, 250); // Set background color to a shade of blue
                         headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         headerCell.Padding = 3;
@@ -840,6 +845,14 @@ namespace CTOTracker.View.UserControls
                     // Add table to document
                     doc.Add(pdfTable);
 
+                    PdfPTable footerTable = new PdfPTable(1);
+                    footerTable.TotalWidth = doc.PageSize.Width - doc.LeftMargin - doc.RightMargin;
+                    footerTable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    PdfPCell footerCell = new PdfPCell(new Phrase("Date generated: " + DateTime.Now.ToString("MM/dd/yyyy")));
+                    footerCell.Border = 0;
+                    footerTable.AddCell(footerCell);
+                    footerTable.WriteSelectedRows(0, -1, doc.LeftMargin, doc.BottomMargin + 10, writer.DirectContent);
+
                     MessageBox.Show("PDF exported successfully! Output path: " + outputPath, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 }
@@ -849,6 +862,7 @@ namespace CTOTracker.View.UserControls
                 }
                 finally
                 {
+
                     // Close the document
                     doc.Close();
                 }
