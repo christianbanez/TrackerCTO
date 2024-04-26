@@ -15,9 +15,12 @@ namespace CTOTracker.View.UserControls
     /// <summary>
     /// Interaction logic for ReportView.xaml
     /// </summary>
+    /// 
+
+
     public partial class ReportView : UserControl
     {
-        string imagePath = "Images/logo.png";
+        string imagePath = @"C:\Users\dkeh\Source\Repos\TrackerCTO\CTOTracker\Images\VeCTOr Main Icon.png";
         private DataConnection dataConnection;
         private DataView dataView;
         private List<string> allEmployees;
@@ -37,6 +40,7 @@ namespace CTOTracker.View.UserControls
             rbUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
+            //cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
             EmpFilPnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
             PopulateTaskComboBox();
@@ -129,12 +133,6 @@ namespace CTOTracker.View.UserControls
                     DateTime selectedDate = dtEDate.SelectedDate.Value;
                     query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
                 }
-/*                if (dtUDate.SelectedDate.HasValue)
-                {
-                    DateTime selectedDate = dtUDate.SelectedDate.Value;
-                    query += $" AND (MONTH(Schedule.dateUsed) = {selectedDate.Month} AND YEAR(Schedule.dateUsed) = {selectedDate.Year})";
-                }*/
-                
                 // Execute the query and update the DataGrid
                 LoadAllData(query);
                 if (cmbxTask.SelectedItem != null && reportDataGrid.Items.Count == 0 && !string.IsNullOrEmpty(taskFilter))
@@ -151,7 +149,7 @@ namespace CTOTracker.View.UserControls
         }
         private void AddDataGridColumns() //Columns for reportDataGrid
         {
-            
+
             // Create DataGrid columns
             reportDataGrid.Columns.Add(new DataGridTextColumn
             {
@@ -208,7 +206,7 @@ namespace CTOTracker.View.UserControls
                 Header = "CTO Balance",
                 Binding = new Binding("ctoBalance")
             });
-            
+
         }
 
         private double originalDtPnlHeight; // Store the original height of dtPnl
@@ -236,16 +234,12 @@ namespace CTOTracker.View.UserControls
                     outputPath = saveFileDialog.FileName;
 
                     // Proceed with PDF creation
-                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+                    PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
                     doc.Open();
 
                     // Add Header with Company Information
                     PdfPTable headerTable = new PdfPTable(1);
                     headerTable.WidthPercentage = 100;
-
-                    // Add current date and time
-                    DateTime currentDate = DateTime.Now;
-                    doc.Add(new Paragraph("Date generated: " + currentDate.ToString()));
 
                     // Add company logo (assuming logoPath is the path to the company logo)
                     iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
@@ -269,7 +263,7 @@ namespace CTOTracker.View.UserControls
                     doc.Add(headerTable);
 
                     // Define a style for the header column
-                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
+                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.BLACK);
                     Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
 
                     // Add DataGrid content to the PDF document
@@ -284,7 +278,7 @@ namespace CTOTracker.View.UserControls
 
                         // Add the column header to the PDF table
                         PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
-                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.BackgroundColor = new BaseColor(230, 230, 250);  // Set background color to a shade of blue
                         headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         headerCell.Padding = 3;
@@ -316,6 +310,14 @@ namespace CTOTracker.View.UserControls
 
                     // Add table to document
                     doc.Add(pdfTable);
+
+                    PdfPTable footerTable = new PdfPTable(1);
+                    footerTable.TotalWidth = doc.PageSize.Width - doc.LeftMargin - doc.RightMargin;
+                    footerTable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    PdfPCell footerCell = new PdfPCell(new Phrase("Date generated: " + DateTime.Now.ToString("MM/dd/yyyy")));
+                    footerCell.Border = 0;
+                    footerTable.AddCell(footerCell);
+                    footerTable.WriteSelectedRows(0, -1, doc.LeftMargin, doc.BottomMargin + 10, writer.DirectContent);
                     doc.Close();
 
                     MessageBox.Show("PDF exported successfully! Output path: " + outputPath, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -340,7 +342,7 @@ namespace CTOTracker.View.UserControls
             // Call the ExportToPdf method with the filtered data
             ExportToPdf(filteredDataTable, null);
         }
-   
+
         private void txtschFname_TextChanged(object sender, TextChangedEventArgs e)
         {
             nameFilter = txtschFname.Text.Trim();
@@ -435,11 +437,6 @@ namespace CTOTracker.View.UserControls
                 {
                     cmbxRole.ItemsSource = role;
                 }
-                //else
-                //{
-                //    // Handle the case when 'allEmployees' is null
-                //    MessageBox.Show("No employees found.");
-                //}
             }
             catch (Exception ex)
             {
@@ -566,8 +563,6 @@ namespace CTOTracker.View.UserControls
                 cmbxTask.Tag = "";
 
             }
-
-
         }
 
         private void reportDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -590,7 +585,7 @@ namespace CTOTracker.View.UserControls
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
-        
+
         private string GetEmployeeId(string employeeName)
         {
             string? employeeId = null; // Initialize employeeId to null
@@ -703,7 +698,7 @@ namespace CTOTracker.View.UserControls
                         {
                             // Bind the DataTable to the DataGrid
                             scheduleDataGrid1.ItemsSource = dataTable.DefaultView;
-                            
+
                             AllViewPnl.Visibility = Visibility.Collapsed;
                             EmpFilPnl.Visibility = Visibility.Visible;
                         }
@@ -727,7 +722,7 @@ namespace CTOTracker.View.UserControls
         }
         private void btnBack_Click(object sender, RoutedEventArgs e)
         {
-            AllViewPnl.Visibility=Visibility.Visible;
+            AllViewPnl.Visibility = Visibility.Visible;
             EmpFilPnl.Visibility = Visibility.Collapsed;
         }
 
@@ -736,7 +731,7 @@ namespace CTOTracker.View.UserControls
             // Create a SaveFileDialog to choose the output path
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "PDF files (*.pdf)|*.pdf|All files (*.*)|*.*";
-            saveFileDialog.FileName = $"exported_{DateTime.Now:yyyyMMdd}.pdf"; // Default file name
+            saveFileDialog.FileName = $"{lblEmpName.Content}_{DateTime.Now:yyyyMMdd}.pdf";
 
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -748,7 +743,7 @@ namespace CTOTracker.View.UserControls
                 try
                 {
                     // Initialize the PdfWriter with the document and a file stream
-                    PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+                    PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
 
                     // Open the document
                     doc.Open();
@@ -756,9 +751,7 @@ namespace CTOTracker.View.UserControls
                     // Add Header with Company Information
                     PdfPTable headerTable = new PdfPTable(1);
                     headerTable.WidthPercentage = 100;
-                    // Add current date and time
-                    DateTime currentDate = DateTime.Now;
-                    doc.Add(new iTextSharp.text.Paragraph("Date generated: " + currentDate.ToString()));
+
 
                     // Add company logo (assuming logoPath is the path to the company logo)
                     iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(imagePath);
@@ -796,7 +789,7 @@ namespace CTOTracker.View.UserControls
                     pdfTable.WidthPercentage = 100;
 
                     // Define a style for the header column
-                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.WHITE);
+                    Font headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.BLACK);
                     Font cellFont = FontFactory.GetFont(FontFactory.HELVETICA, 7); // Adjust font size here
 
                     // Add headers
@@ -807,7 +800,7 @@ namespace CTOTracker.View.UserControls
 
                         // Add the column header to the PDF table
                         PdfPCell headerCell = new PdfPCell(new Phrase(columnHeader, headerFont));
-                        headerCell.BackgroundColor = new BaseColor(51, 122, 183); // Set background color to a shade of blue
+                        headerCell.BackgroundColor = new BaseColor(230, 230, 250); // Set background color to a shade of blue
                         headerCell.HorizontalAlignment = Element.ALIGN_CENTER;
                         headerCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                         headerCell.Padding = 3;
@@ -840,6 +833,14 @@ namespace CTOTracker.View.UserControls
                     // Add table to document
                     doc.Add(pdfTable);
 
+                    PdfPTable footerTable = new PdfPTable(1);
+                    footerTable.TotalWidth = doc.PageSize.Width - doc.LeftMargin - doc.RightMargin;
+                    footerTable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    PdfPCell footerCell = new PdfPCell(new Phrase("Date generated: " + DateTime.Now.ToString("MM/dd/yyyy")));
+                    footerCell.Border = 0;
+                    footerTable.AddCell(footerCell);
+                    footerTable.WriteSelectedRows(0, -1, doc.LeftMargin, doc.BottomMargin + 10, writer.DirectContent);
+
                     MessageBox.Show("PDF exported successfully! Output path: " + outputPath, "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 }
@@ -849,6 +850,7 @@ namespace CTOTracker.View.UserControls
                 }
                 finally
                 {
+
                     // Close the document
                     doc.Close();
                 }
@@ -874,12 +876,7 @@ namespace CTOTracker.View.UserControls
         {
             ApplyFiltersAndUpdateDataGrid();
         }
+        private string EoUFilter;
 
-        //private void dtUDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    ApplyFiltersAndUpdateDataGrid();
-        //}
-
-        
     }
 }

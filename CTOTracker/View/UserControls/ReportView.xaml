@@ -176,7 +176,7 @@
                                 Grid.Column="3"
                                 Margin="0,25,10,10"
                                 HorizontalAlignment="Stretch"
-                                materialDesign:HintAssist.Hint="Date Earned"
+                                materialDesign:HintAssist.Hint="Select Date"
                                 FontSize="14"
                                 SelectedDateChanged="dtEDate_SelectedDateChanged" />
                             <ComboBox
@@ -187,7 +187,11 @@
                                 FontSize="14"
                                 Foreground="Gray"
                                 Tag=""
-                                Template="{DynamicResource ComboBoxTemplate1}" />
+                                Template="{DynamicResource ComboBoxTemplate1}" SelectedIndex="0" 
+                                >
+                                <ComboBoxItem Content="Month/Year"/>
+                                <ComboBoxItem Content="Year"/>
+                            </ComboBox>
                             <ComboBox
                                 x:Name="cmbxEoU"
                                 Grid.Column="5"
@@ -195,8 +199,11 @@
                                 HorizontalAlignment="Stretch"
                                 FontSize="14"
                                 Foreground="Gray"
-                                Tag=""
-                                Template="{DynamicResource ComboBoxTemplate1}" />
+                                Tag="Earn/Use"
+                                Template="{DynamicResource ComboBoxTemplate1}"  >
+                                <ComboBoxItem Content="Earned CTO"/>
+                                <ComboBoxItem Content="Used CTO"/>
+                            </ComboBox>
                             <!--<DatePicker
                                 x:Name="dtUDate"
                                 Grid.Column="4"
@@ -383,7 +390,10 @@
                         FontSize="14"
                         Foreground="Gray"
                         Tag=""
-                        Template="{DynamicResource ComboBoxTemplate1}" />
+                        Template="{DynamicResource ComboBoxTemplate1}" >
+                        <ComboBoxItem Content="Month/Year"/>
+                        <ComboBoxItem Content="Year"/>
+                    </ComboBox>
                     <Button
                         x:Name="btnEmoClear"
                         Grid.Column="3"
