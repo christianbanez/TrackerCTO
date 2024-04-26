@@ -43,6 +43,19 @@ namespace CTOTracker
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
             frmMain.Navigate(startPage);
+            if (listSideNav.SelectedItem != null)
+            {
+                tgbMenu.IsChecked = false;
+            }
+        }
+
+        private void ListViewItem_Selected_4(object sender, RoutedEventArgs e)
+        {
+            frmMain.Navigate(startPage);
+            if (listSideNav.SelectedItem != null)
+            {
+                tgbMenu.IsChecked = false;
+            }
         }
 
         private void ListViewItem_Selected(object sender, RoutedEventArgs e)
@@ -118,8 +131,8 @@ namespace CTOTracker
         {
             if (listSideNav.Items.Count > 0)
             {
-                ListViewItem firstItem = (ListViewItem)listSideNav.Items[0];
-                firstItem.IsSelected = false;
+                ListViewItem firstItem = (ListViewItem)listSideNav.Items[4];
+                firstItem.IsSelected = true;
             }
         }
 
@@ -132,6 +145,7 @@ namespace CTOTracker
         {
             this.DragMove();
         }
+
 
     }
 }
