@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Windows.Threading;
 //using iTextSharp;
 //using iTextSharp.text;
 //using iTextSharp.text.pdf;
@@ -16,6 +17,7 @@ namespace CTOTracker.View
 
     public partial class ScheduleView : UserControl
     {
+        private DispatcherTimer checkCompletionTimer;
         private DataConnection dataConnection;
         private List<string> allEmployees; // Store all employee names
         private List<string> filteredEmployees; //store filtered employee
@@ -41,7 +43,8 @@ namespace CTOTracker.View
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
             cbxFilterTask.SelectionChanged += cbxFilterTask_SelectionChanged;
-            PopulateTaskComboBox();       
+            PopulateTaskComboBox();
+            SetupTimer();
         }
         
 
@@ -53,13 +56,21 @@ namespace CTOTracker.View
                 {
                     string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
                         "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
-                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoBalance " +
+                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeOut, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoBalance " +
                         "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
                     // CTO Balance filter
                     string ctoBalanceFilter = " WHERE (ctoBalance > 0.0 OR ctoBalance IS NULL)";
                     query += ctoBalanceFilter;
+
+                    if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
+                    {
+                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
+                        string employeeId = GetEmployeeId(selectedEmployee);
+                        string empIdFilter = cbxEmployee.SelectedValue != null ? " AND (Employee.empID = ?)" : "";
+                        query += empIdFilter;
+                    }
 
                     // Date filter based on the selected month and year
                     if (monthPicker.SelectedDate.HasValue)
@@ -73,6 +84,13 @@ namespace CTOTracker.View
                     }
                     using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
                     {
+                        if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
+                        {
+                            if (cbxEmployee.SelectedValue != null)
+                            {
+                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
+                            }
+                        }
                         // Add month and year parameters if applicable
                         if (monthPicker.SelectedDate.HasValue)
                         {
@@ -112,6 +130,13 @@ namespace CTOTracker.View
                     string ctoBalanceFilter = " WHERE (CTOuse.ctoUse > 0.0)";
                     query += ctoBalanceFilter;
 
+                    if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
+                    {
+                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
+                        string employeeId = GetEmployeeId(selectedEmployee);
+                        string empIdFilter = cbxEmployee.SelectedValue != null ? " AND (Employee.empID = ?)" : "";
+                        query += empIdFilter;
+                    }
                     // Date filter based on the selected month and year
                     if (monthPicker.SelectedDate.HasValue)
                     {
@@ -125,6 +150,13 @@ namespace CTOTracker.View
 
                     using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
                     {
+                        if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
+                        {
+                            if (cbxEmployee.SelectedValue != null)
+                            {
+                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
+                            }
+                        }
                         // Add month and year parameters if applicable
                         if (monthPicker.SelectedDate.HasValue)
                         {
@@ -149,152 +181,6 @@ namespace CTOTracker.View
 
         }
 
-        private void LoadEmployeeQuery()
-        {
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection())
-                {
-                    // Base query
-                    string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
-                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
-                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoBalance " +
-                        "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
-                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
-
-                    // Initialize the complete query with base query only
-                    string query = baseQuery;
-
-                    // Apply Employee ID filter only if the checkbox for showing all is unchecked
-                    if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
-                    {
-                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-                        string employeeId = GetEmployeeId(selectedEmployee);
-                        string empIdFilter = cbxEmployee.SelectedValue != null ? " WHERE Employee.empID = ?" : "";
-                        query += empIdFilter;
-                    }
-                    if (!string.IsNullOrEmpty(taskFilter))
-                    {
-                        query += $" AND Task.taskName = '{taskFilter}'";
-                    }
-
-                    // CTO Balance filter
-                    string ctoBalanceFilter = " AND (ctoBalance > 0.0 OR ctoBalance IS NULL)";
-                    query += ctoBalanceFilter;
-
-                    // Date filter based on the selected month and year
-                    if (monthPicker.SelectedDate.HasValue)
-                    {
-                        DateTime selectedDate = monthPicker.SelectedDate.Value;
-                        query += " AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?)";
-                    }
-
-                    using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
-                    {
-                        // Add employee ID parameter if applicable and checkbox for showing all is unchecked
-                        if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
-                        {
-                            if (cbxEmployee.SelectedValue != null)
-                            {
-                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
-                            }
-                        }
-
-                        // Add month and year parameters if applicable
-                        if (monthPicker.SelectedDate.HasValue)
-                        {
-                            DateTime selectedDate = monthPicker.SelectedDate.Value;
-                            adapter.SelectCommand.Parameters.AddWithValue("@Month", selectedDate.Month);
-                            adapter.SelectCommand.Parameters.AddWithValue("@Year", selectedDate.Year);
-                        }
-
-                        DataTable dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-
-                        // Bind the DataTable to the DataGrid
-                        scheduleDataGrid.ItemsSource = dataTable.DefaultView;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-        }
-
-        private void LoadCtoEmployeeQuery()
-        {
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection())
-                {
-                    // Base query
-                    string baseQuery = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName,  " +
-                        "Format(Schedule.plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
-                        "Format(Schedule.timeIn, 'h:mm AM/PM') AS timeIn, Format(Schedule.timeout, 'h:mm AM/PM') AS timeOut, "+
-                        "Schedule.ctoEarned, CTOuse.ctoUse, CTOuse.useDesc, CTOuse.dateUsed, Schedule.schedID "+
-                        "FROM Task INNER JOIN(Role INNER JOIN (Employee INNER JOIN (Schedule INNER JOIN CTOuse ON Schedule.schedID = CTOuse.schedID)ON "+
-                        "Employee.empID = Schedule.empID) ON Role.roleID = Employee.roleID) ON Task.taskID = Schedule.taskID";
-
-                    // Initialize the complete query with base query only
-                    string query = baseQuery;
-
-                    // Apply Employee ID filter only if the checkbox for showing all is unchecked
-                    if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
-                    {
-                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-                        string employeeId = GetEmployeeId(selectedEmployee);
-                        string empIdFilter = cbxEmployee.SelectedValue != null ? " WHERE Employee.empID = ?" : "";
-                        query += empIdFilter;
-                    }
-                    if (!string.IsNullOrEmpty(taskFilter))
-                    {
-                        query += $" AND Task.taskName = '{taskFilter}'";
-                    }
-
-                    // CTO Balance filter
-                    string ctoUseFilter = " AND (ctoUsed > 0.0)";
-                    query += ctoUseFilter;
-
-                    // Date filter based on the selected month and year
-                    if (monthPicker.SelectedDate.HasValue)
-                    {
-                        DateTime selectedDate = monthPicker.SelectedDate.Value;
-                        query += " AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?)";
-                    }
-
-                    using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
-                    {
-                        // Add employee ID parameter if applicable and checkbox for showing all is unchecked
-                        if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
-                        {
-                            if (cbxEmployee.SelectedValue != null)
-                            {
-                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
-                            }
-                        }
-
-                        // Add month and year parameters if applicable
-                        if (monthPicker.SelectedDate.HasValue)
-                        {
-                            DateTime selectedDate = monthPicker.SelectedDate.Value;
-                            adapter.SelectCommand.Parameters.AddWithValue("@Month", selectedDate.Month);
-                            adapter.SelectCommand.Parameters.AddWithValue("@Year", selectedDate.Year);
-                        }
-
-                        DataTable dataTable = new DataTable();
-                        adapter.Fill(dataTable);
-
-                        // Bind the DataTable to the DataGrid
-                        ctoUseDataGrid.ItemsSource = dataTable.DefaultView;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-            }
-        }
         private void PopulateEmployeeComboBox()
         {
             try
@@ -446,16 +332,9 @@ namespace CTOTracker.View
                     addTaskWindow.ShowDialog();
 
 
-                    if (cbxEmployee.SelectedItem != null)
-                    {
-                        LoadEmployeeQuery();  // Filter data when a new employee is selected
-                        LoadCtoEmployeeQuery();
-                    }
-                    else
-                    {
-                        LoadScheduleData();
-                        LoadCTOuseData();
-                    }
+                    LoadScheduleData();
+                    LoadCTOuseData();
+                    
                     PopulateTaskComboBox();
                 }
             }
@@ -471,16 +350,12 @@ namespace CTOTracker.View
             // Show the AddTask window
             addTaskWindow.ShowDialog();
 
-            if (cbxEmployee.SelectedItem != null)
-            {
-                LoadEmployeeQuery();  // Filter data when a new employee is selected
-                //LoadCtoEmployeeQuery();
-            }
-            else
-            {
-                LoadScheduleData();
-                //LoadCTOuseData();
-            }
+
+    
+     
+            LoadScheduleData();
+            LoadCTOuseData();
+
             PopulateTaskComboBox();
 
         }
@@ -490,8 +365,8 @@ namespace CTOTracker.View
             if (cbxEmployee.SelectedItem != null)
             {
                 showallChkBox.IsChecked = false;
-                LoadEmployeeQuery();
-                //LoadCtoEmployeeQuery();
+                LoadScheduleData();
+                LoadCTOuseData();
                 /*FilterDataByEmployee(); */ // Filter data when a new employee is selected
             }
         }
@@ -533,22 +408,16 @@ namespace CTOTracker.View
             monthPicker.Text = "";
             cbxEmployee.Text = "Employee";
             cbxFilterTask.Text = "Filter by Task";
-            LoadEmployeeQuery();
-            LoadCtoEmployeeQuery();
+            LoadCTOuseData();
+            LoadScheduleData();
         }
 
         private void monthPicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbxEmployee.SelectedItem != null)
-            {
-                LoadEmployeeQuery();
-                LoadCtoEmployeeQuery();
-            }
-            else
-            {
-                LoadScheduleData();
-                LoadCTOuseData();
-            }
+
+            LoadScheduleData();
+            LoadCTOuseData();
+           
         }
 
         private void btnUseCtoUsed_Click(object sender, RoutedEventArgs e)
@@ -638,17 +507,10 @@ namespace CTOTracker.View
         }
         private void UseCtoWindow_Closed(object sender, EventArgs e)
         {
-            // This method gets called when the useCto window is closed
-            if (cbxEmployee.SelectedItem != null)
-            {
-                LoadEmployeeQuery();  // Filter data when a new employee is selected
-                LoadCtoEmployeeQuery();
-            }
-            else
-            {
-                LoadScheduleData();
-                LoadCTOuseData();
-            }
+
+            LoadScheduleData();
+            LoadCTOuseData();
+            
         }
         private void PopulateTaskComboBox()
         {
@@ -779,16 +641,10 @@ namespace CTOTracker.View
         private void cbxFilterTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             taskFilter = cbxFilterTask.SelectedItem?.ToString() ?? "";
-            if (cbxEmployee.SelectedItem != null)
-            {
-                LoadEmployeeQuery();
-                LoadCtoEmployeeQuery();
-            }
-            else
-            {
-                LoadScheduleData();
-                LoadCTOuseData();
-            }
+     
+            LoadScheduleData();
+            LoadCTOuseData();
+            
         }
 
         private void btnClear_Click(object sender, RoutedEventArgs e)
@@ -800,5 +656,70 @@ namespace CTOTracker.View
             monthPicker.Text = "";
             cbxFilterTask.Text = "Filter by Task";
         }
+
+        ///- Check Completed if past timeout date
+        private void SetupTimer()
+        {
+            checkCompletionTimer = new DispatcherTimer();
+            checkCompletionTimer.Interval = TimeSpan.FromSeconds(10);
+            checkCompletionTimer.Tick += CheckCompletionStatus;
+            checkCompletionTimer.Start();
+        }
+        private void CheckCompletionStatus(object sender, EventArgs e)
+        {
+            LoadScheduleData();  // Re-load and check data
+            UpdateCompletedStatuses();  // Method to check and update the completion status
+        }
+        private void UpdateCompletedStatuses()
+        {
+            bool updatesMade = false;
+            foreach (DataRow row in ((DataView)scheduleDataGrid.ItemsSource).Table.Rows)
+            {
+                if (!Convert.ToBoolean(row["completed"]) && IsPastTimeout(row["timeOut"].ToString()))
+                {
+                    row["completed"] = true;  // Update the row's completed status
+                    UpdateDatabase(row["schedID"].ToString(), true);  // Assume a method to update the database
+                    updatesMade = true;
+                }
+            }
+
+            if (updatesMade)
+            {
+                LoadScheduleData(); // Reload data to reflect changes
+            }
+        }
+        private bool IsPastTimeout(string timeoutValue)
+        {
+            if (string.IsNullOrEmpty(timeoutValue))
+            {
+                return false; // Consider what should be the default behavior if timeout is not set
+            }
+
+            DateTime timeoutDate;
+            if (DateTime.TryParse(timeoutValue, out timeoutDate))
+            {
+                return DateTime.Now > timeoutDate;
+            }
+            else
+            {
+                return false; // Unable to parse date, handle accordingly
+            }
+        }
+
+        private void UpdateDatabase(string scheduleId, bool completed)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                connection.Open();
+                string updateQuery = "UPDATE Schedule SET completed = ? WHERE schedID = ?";
+                using (OleDbCommand command = new OleDbCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("?", completed);
+                    command.Parameters.AddWithValue("?", scheduleId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
     }
 }

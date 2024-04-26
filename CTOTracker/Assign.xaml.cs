@@ -474,8 +474,8 @@ namespace CTOTracker
                             return;
                         }
 
-                        string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, completed, ctoEarned, ctoBalance) " +
-                                       "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @completed, @ctoEarned, @ctoBalance)";
+                        string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoBalance) " +
+                                       "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned, @ctoBalance)";
 
                         using (OleDbCommand command = new OleDbCommand(query, connection))
                         {
@@ -495,7 +495,6 @@ namespace CTOTracker
                                 DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "h:mm tt", CultureInfo.InvariantCulture);
                                 DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate.ToString("MM/dd/yyyy hh:mm tt"));
-                                command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                                 if (ctoEarned >= 0.0)
                                 {
@@ -517,7 +516,6 @@ namespace CTOTracker
                                 
                                 command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
-                                command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
                                 connection.Open();
@@ -630,7 +628,7 @@ namespace CTOTracker
 
                     if (result == MessageBoxResult.Yes)
                     {
-                        string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, completed = @completed, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                        string query = "UPDATE Schedule SET empID = @empID, taskID = @taskID, plannedStart = @plannedStart, plannedEnd = @plannedEnd, timeIn = @timeIn, timeOut = @timeOut, ctoEarned = @ctoEarned, ctoBalance = @ctoBalance WHERE schedID = @schedID";
 
                         using (OleDbCommand command = new OleDbCommand(query, connection))
                         {
@@ -648,7 +646,6 @@ namespace CTOTracker
                                 DateTime timeOutDateTime = DateTime.ParseExact(timeOut, "hh:mm tt", CultureInfo.InvariantCulture);
                                 DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate);
-                                command.Parameters.AddWithValue("@completed", -1);
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
                                 if (ctoEarned >= 0.0)
                                 {
@@ -665,7 +662,6 @@ namespace CTOTracker
                             {
                                 command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
-                                command.Parameters.AddWithValue("@completed", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
                                 
