@@ -19,10 +19,10 @@
             <!--  Title Bar  -->
             <Border
                 x:Name="TitleBar"
-                Height="40"
                 VerticalAlignment="Top"
-                Background="#FF5D608C">
-                <Grid>
+                Background="#FF3A4575"
+                CornerRadius="10,10,0,0">
+                <Grid Height="40">
                     <StackPanel Orientation="Horizontal">
                         <Image
                             Width="33"
@@ -42,13 +42,36 @@
                     </StackPanel>
 
                     <Button
-                        x:Name="CloseButton"
+                        x:Name="MinimizeButton"
+                        Height="40"
+                        Margin="0,0,51,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Background="Transparent"
                         BorderBrush="Transparent"
-                        Foreground="White">
-                        <materialDesign:PackIcon Foreground="White" Kind="CloseThick" />
+                        Style="{DynamicResource MaterialDesignFlatButton}">
+                        <materialDesign:PackIcon
+                            Width="20"
+                            Height="40"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Kind="WindowMinimize" />
+                    </Button>
+
+                    <Button
+                        x:Name="CloseButton"
+                        Height="40"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Style="{DynamicResource MaterialDesignFlatButton}">
+                        <materialDesign:PackIcon
+                            Width="20"
+                            Height="40"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Kind="CloseThick" />
                     </Button>
                 </Grid>
             </Border>
@@ -59,10 +82,14 @@
     <!--  Toggle Button Style Template  -->
     <VisualBrush x:Key="tb_mouse_over">
         <VisualBrush.Visual>
-            <materialDesign:PackIcon Kind="Menu" Foreground="White" Width="20" Height="20"/>
+            <materialDesign:PackIcon
+                Width="20"
+                Height="20"
+                Foreground="White"
+                Kind="Menu" />
         </VisualBrush.Visual>
     </VisualBrush>
-    
+
     <!--  Text font style  -->
     <Style x:Key="font_style" TargetType="Label">
         <Setter Property="FontFamily" Value="Fonts/Roboto.ttf #Roboto" />
@@ -97,8 +124,7 @@
                         x:Name="border"
                         Background="{StaticResource tb_mouse_over}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        SnapsToDevicePixels="True" >
-                    </Border>
+                        SnapsToDevicePixels="True" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="border" Property="Background" Value="{StaticResource tb_mouse_over}" />

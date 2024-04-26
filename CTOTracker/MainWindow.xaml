@@ -10,119 +10,121 @@
     xmlns:usercontrols="clr-namespace:CTOTracker.View.UserControls"
     x:Name="Employee_Tracker"
     Title="VeCTOr"
-    Width="1360"
-    Height="768"
+    Width="1370"
+    Height="778"
     MinWidth="1360"
     MinHeight="768"
     MaxWidth="1360"
     MaxHeight="798"
     Padding="5,5,5,5"
+    AllowsTransparency="True"
+    Background="Transparent"
     ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
 
-    <!--<Border CornerRadius="10" BorderThickness="20">
+    <Border BorderThickness="5" CornerRadius="5">
         <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                <GradientStop Color="#FFECF4FB" Offset="0" />
-                <GradientStop Color="#FFC9D1EA"  Offset="1" />
+                <GradientStop Offset="0" Color="#FF3A4575" />
+                <GradientStop Offset="1" Color="#FF3A2586" />
             </LinearGradientBrush>
-        </Border.BorderBrush>-->
+        </Border.BorderBrush>
 
-    <Grid Focusable="True">
+        <Grid Focusable="True">
 
-        <!--  BG  -->
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                <GradientStop Offset="0.008" Color="#99C0DCEC" />
-                <GradientStop Offset="1" Color="#CCB1BAD8" />
-            </LinearGradientBrush>
-        </Grid.Background>
+            <!--  BG  -->
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
+                    <GradientStop Offset="0.008" Color="#FFCFE2ED" />
+                    <GradientStop Offset="1" Color="#FDB1BAD8" />
+                </LinearGradientBrush>
+            </Grid.Background>
 
-        <!--  Main panel  -->
-        <Grid
-            x:Name="MainPnl"
-            Width="1290"
-            Margin="0,40,0,0"
-            HorizontalAlignment="Right">
+            <!--  Main panel  -->
+            <Grid
+                x:Name="MainPnl"
+                Width="1290"
+                Margin="0,40,0,0"
+                HorizontalAlignment="Right">
 
-            <Frame
-                x:Name="frmMain"
-                Grid.RowSpan="2"
-                Margin="10,10,10,10"
-                Loaded="frmMain_Loaded"
-                NavigationUIVisibility="Hidden">
+                <Frame
+                    x:Name="frmMain"
+                    Grid.RowSpan="2"
+                    Margin="25,10,10,10"
+                    Loaded="frmMain_Loaded"
+                    NavigationUIVisibility="Hidden">
 
-                <Frame.Content>
-                    <Page x:Name="startPage">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="2*" />
-                                <RowDefinition Height="3*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="3*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                    <Frame.Content>
+                        <Page x:Name="startPage">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="2*" />
+                                    <RowDefinition Height="3*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="1.1*" />
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                            <Image
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Width="200"
-                                Height="200"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                Source="View/Resource Dictionary/Assets/VeCTOr Main Icon.png" />
+                                <Image
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="200"
+                                    Height="200"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Source="View/Resource Dictionary/Assets/VeCTOr Main Icon.png" />
 
-                            <!--  Welcome Text  -->
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="2"
-                                Margin="0,50,50,30"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="55"
-                                FontWeight="Bold"
-                                Text="Welcome to VeCTOr!" />
-
-                            <!--  Instructions  -->
-                            <StackPanel
-                                Grid.Row="2"
-                                Grid.Column="2"
-                                Margin="5,0,0,100"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Top"
-                                Orientation="Vertical">
+                                <!--  Welcome Text  -->
                                 <TextBlock
-                                    Margin="0,0,0,10"
-                                    FontSize="26"
-                                    FontWeight="DemiBold"
-                                    Text="Track and manage Compensatory Time Off (CTO) with ease." />
-                                <TextBlock
-                                    Margin="5,0,0,5"
-                                    FontSize="22"
-                                    Text="    • Employees: Add, update, and remove employees." />
-                                <TextBlock
-                                    Margin="5,0,0,5"
-                                    FontSize="22"
-                                    Text="    • Schedule: Assign tasks, track CTO earnings, and usage in one place." />
-                                <TextBlock
-                                    Margin="5,0,0,5"
-                                    FontSize="22"
-                                    Text="    • Reports: Export completed task records." />
-                                <TextBlock
-                                    Margin="5,0,0,5"
-                                    FontSize="22"
-                                    Text="    • Roles and Tasks: Manage roles and tasks." />
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Margin="0,50,170,30"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="55"
+                                    FontWeight="Bold"
+                                    Text="Welcome to VeCTOr!" />
 
-                                <!--  Get Started Button  -->
-                                <!--
+                                <!--  Instructions  -->
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    Margin="28,0,0,100"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Orientation="Vertical">
+                                    <TextBlock
+                                        Margin="0,0,0,10"
+                                        FontSize="26"
+                                        FontWeight="DemiBold"
+                                        Text="Track and manage Compensatory Time Off (CTO) with ease." />
+                                    <TextBlock
+                                        Margin="5,0,0,5"
+                                        FontSize="22"
+                                        Text="    • Employees: Add, update, and remove employees." />
+                                    <TextBlock
+                                        Margin="5,0,0,5"
+                                        FontSize="22"
+                                        Text="    • Schedule: Assign tasks, track CTO earnings, and usage in one place." />
+                                    <TextBlock
+                                        Margin="5,0,0,5"
+                                        FontSize="22"
+                                        Text="    • Reports: Export completed task records." />
+                                    <TextBlock
+                                        Margin="5,0,0,5"
+                                        FontSize="22"
+                                        Text="    • Roles and Tasks: Manage roles and tasks." />
+
+                                    <!--  Get Started Button  -->
+                                    <!--
                             <Button
                                 Margin="0,20,0,10"
                                 HorizontalAlignment="Center"
@@ -131,286 +133,287 @@
                                 Content="Get Started"
                                 FontSize="20"
                                 FontWeight="Bold" />-->
-                            </StackPanel>
-                        </Grid>
-                    </Page>
-                </Frame.Content>
+                                </StackPanel>
+                            </Grid>
+                        </Page>
+                    </Frame.Content>
 
-            </Frame>
+                </Frame>
 
-            <!--  Overlay  -->
+                <!--  Overlay  -->
+                <Grid
+                    x:Name="OverlayGrid"
+                    Background="Black"
+                    Visibility="Collapsed" />
+            </Grid>
+
+            <!--  Side Navigation Drawer  -->
             <Grid
-                x:Name="OverlayGrid"
-                Background="Black"
-                Visibility="Collapsed" />
-        </Grid>
+                x:Name="sideNav"
+                Width="65"
+                Margin="0,30,0,0"
+                HorizontalAlignment="Left">
+                <Grid.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Offset="1" Color="#FF36385D" />
+                        <GradientStop Offset="0" Color="#FF606390" />
+                    </LinearGradientBrush>
+                </Grid.Background>
 
-        <!--  Side Navigation Drawer  -->
-        <Grid
-            x:Name="sideNav"
-            Width="65"
-            Margin="0,30,0,0"
-            HorizontalAlignment="Left">
-            <Grid.Background>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Offset="1" Color="#FF36385D" />
-                    <GradientStop Offset="0" Color="#FF606390" />
-                </LinearGradientBrush>
-            </Grid.Background>
+                <StackPanel x:Name="stpnlBtns" Margin="0,30,0,0">
+                    <!--  Menu toggle Grid  -->
+                    <Grid Height="90">
 
-            <StackPanel x:Name="stpnlBtns" Margin="0,30,0,0">
-                <!--  Menu toggle Grid  -->
-                <Grid Height="90">
+                        <!--  Menu text  -->
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="73,-20,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            Content="M E N U"
+                            FontSize="20"
+                            Foreground="White">
 
-                    <!--  Menu text  -->
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="73,-20,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        Content="M E N U"
-                        FontSize="20"
-                        Foreground="White">
+                            <!--  // Shadow Effect //  -->
 
-                        <!--  // Shadow Effect //  -->
+                            <Label.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="10"
+                                    Direction="-90"
+                                    ShadowDepth="1"
+                                    Color="White" />
+                            </Label.Effect>
+                        </Label>
 
-                        <Label.Effect>
-                            <DropShadowEffect
-                                BlurRadius="10"
-                                Direction="-90"
-                                ShadowDepth="1"
-                                Color="White" />
-                        </Label.Effect>
-                    </Label>
+                        <!--  Toggle Button  -->
+                        <ToggleButton
+                            x:Name="tgbMenu"
+                            Grid.Column="0"
+                            Width="30"
+                            Height="30"
+                            Margin="18,-20,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Checked="tgbMenu_Checked"
+                            MouseEnter="tgbMenu_MouseEnter"
+                            Style="{DynamicResource tb_style}"
+                            Unchecked="tgbMenu_Unchecked">
 
-                    <!--  Toggle Button  -->
-                    <ToggleButton
-                        x:Name="tgbMenu"
-                        Grid.Column="0"
-                        Width="30"
-                        Height="30"
-                        Margin="18,-20,0,0"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
+                            <!--  Toggle button events  -->
+                            <ToggleButton.Triggers>
+
+                                <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                                    <BeginStoryboard>
+                                        <Storyboard x:Name="HideStackPanel">
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="sideNav"
+                                                Storyboard.TargetProperty="Width"
+                                                From="230"
+                                                To="65"
+                                                Duration="0:0:0.2" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+
+                                <EventTrigger RoutedEvent="ToggleButton.Checked">
+                                    <BeginStoryboard>
+                                        <Storyboard x:Name="ShowStackPanel">
+                                            <DoubleAnimation
+                                                BeginTime="0:0:0"
+                                                Storyboard.TargetName="sideNav"
+                                                Storyboard.TargetProperty="Width"
+                                                From="65"
+                                                To="230"
+                                                Duration="0:0:0.3" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </ToggleButton.Triggers>
+                        </ToggleButton>
+                    </Grid>
+
+                    <!--  ListView Menu list items  -->
+                    <ListView
+                        x:Name="listSideNav"
+                        Background="{x:Null}"
                         BorderBrush="Transparent"
-                        Checked="tgbMenu_Checked"
-                        MouseEnter="tgbMenu_MouseEnter"
-                        Style="{DynamicResource tb_style}"
-                        Unchecked="tgbMenu_Unchecked">
+                        Loaded="listSideNav_Loaded"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                        <!--  Toggle button events  -->
-                        <ToggleButton.Triggers>
+                        <!--  EmloyeeView  -->
+                        <ListViewItem
+                            Margin="0,0,0,15"
+                            HorizontalAlignment="Left"
+                            Selected="ListViewItem_Selected">
+                            <!--  EmpView Tooltip  -->
+                            <ListViewItem.ToolTip>
+                                <ToolTip
+                                    x:Name="ttEmp"
+                                    Content="Employee"
+                                    Style="{StaticResource tt_style}" />
+                            </ListViewItem.ToolTip>
 
-                            <EventTrigger RoutedEvent="ToggleButton.Unchecked">
-                                <BeginStoryboard>
-                                    <Storyboard x:Name="HideStackPanel">
-                                        <DoubleAnimation
-                                            BeginTime="0:0:0"
-                                            Storyboard.TargetName="sideNav"
-                                            Storyboard.TargetProperty="Width"
-                                            From="230"
-                                            To="65"
-                                            Duration="0:0:0.2" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
+                            <StackPanel Width="230" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Width="40"
+                                    Height="40"
+                                    Margin="8,0,0,0"
+                                    Foreground="White"
+                                    Kind="AccountTie" />
 
-                            <EventTrigger RoutedEvent="ToggleButton.Checked">
-                                <BeginStoryboard>
-                                    <Storyboard x:Name="ShowStackPanel">
-                                        <DoubleAnimation
-                                            BeginTime="0:0:0"
-                                            Storyboard.TargetName="sideNav"
-                                            Storyboard.TargetProperty="Width"
-                                            From="65"
-                                            To="230"
-                                            Duration="0:0:0.3" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </ToggleButton.Triggers>
-                    </ToggleButton>
-                </Grid>
+                                <Label
+                                    Margin="25,0,0,0"
+                                    Content="Employee"
+                                    Style="{StaticResource font_style}" />
+                            </StackPanel>
+                        </ListViewItem>
 
-                <!--  ListView Menu list items  -->
-                <ListView
-                    x:Name="listSideNav"
-                    Background="{x:Null}"
-                    BorderBrush="Transparent"
-                    Loaded="listSideNav_Loaded"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <!--  ScheduleView  -->
+                        <ListViewItem
+                            Margin="0,0,0,15"
+                            HorizontalAlignment="Left"
+                            Selected="ListViewItem_Selected_1">
+                            <!--  SchedView Tooltip  -->
+                            <ListViewItem.ToolTip>
+                                <ToolTip
+                                    x:Name="ttSched"
+                                    Content="Schedule"
+                                    Style="{StaticResource tt_style}" />
+                            </ListViewItem.ToolTip>
 
-                    <!--  EmloyeeView  -->
-                    <ListViewItem
-                        Margin="0,0,0,15"
-                        HorizontalAlignment="Left"
-                        Selected="ListViewItem_Selected">
-                        <!--  EmpView Tooltip  -->
-                        <ListViewItem.ToolTip>
-                            <ToolTip
-                                x:Name="ttEmp"
-                                Content="Employee"
-                                Style="{StaticResource tt_style}" />
-                        </ListViewItem.ToolTip>
+                            <StackPanel Width="230" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Width="40"
+                                    Height="40"
+                                    Margin="8,0,0,0"
+                                    Foreground="White"
+                                    Kind="CalendarClockOutline" />
 
-                        <StackPanel Width="230" Orientation="Horizontal">
-                            <materialDesign:PackIcon
-                                Width="40"
-                                Height="40"
-                                Margin="8,0,0,0"
-                                Foreground="White"
-                                Kind="AccountTie" />
+                                <Label
+                                    Margin="25,0,0,0"
+                                    Content="Schedule"
+                                    Style="{StaticResource font_style}" />
+                            </StackPanel>
+                        </ListViewItem>
 
-                            <Label
-                                Margin="25,0,0,0"
-                                Content="Employee"
-                                Style="{StaticResource font_style}" />
-                        </StackPanel>
-                    </ListViewItem>
+                        <!--  ReportView  -->
+                        <ListViewItem
+                            Margin="0,0,0,15"
+                            HorizontalAlignment="Left"
+                            Selected="ListViewItem_Selected_2">
+                            <!--  RepView Tooltip  -->
+                            <ListViewItem.ToolTip>
+                                <ToolTip
+                                    x:Name="ttRep"
+                                    Content="Reports"
+                                    Style="{StaticResource tt_style}" />
+                            </ListViewItem.ToolTip>
 
-                    <!--  ScheduleView  -->
-                    <ListViewItem
-                        Margin="0,0,0,15"
-                        HorizontalAlignment="Left"
-                        Selected="ListViewItem_Selected_1">
-                        <!--  SchedView Tooltip  -->
-                        <ListViewItem.ToolTip>
-                            <ToolTip
-                                x:Name="ttSched"
-                                Content="Schedule"
-                                Style="{StaticResource tt_style}" />
-                        </ListViewItem.ToolTip>
+                            <StackPanel Width="230" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Width="40"
+                                    Height="40"
+                                    Margin="8,0,0,0"
+                                    Foreground="White"
+                                    Kind="FileExportOutline" />
+                                <Label
+                                    Margin="25,0,0,0"
+                                    Content="Reports"
+                                    Style="{StaticResource font_style}" />
+                            </StackPanel>
+                        </ListViewItem>
 
-                        <StackPanel Width="230" Orientation="Horizontal">
-                            <materialDesign:PackIcon
-                                Width="40"
-                                Height="40"
-                                Margin="8,0,0,0"
-                                Foreground="White"
-                                Kind="CalendarClockOutline" />
+                        <ListViewItem
+                            Margin="0,360,0,15"
+                            HorizontalAlignment="Left"
+                            Selected="ListViewItem_Selected_3">
+                            <ListViewItem.ToolTip>
+                                <ToolTip
+                                    x:Name="ttRT"
+                                    Content="Roles and Tasks"
+                                    Style="{StaticResource tt_style}" />
+                            </ListViewItem.ToolTip>
 
-                            <Label
-                                Margin="25,0,0,0"
-                                Content="Schedule"
-                                Style="{StaticResource font_style}" />
-                        </StackPanel>
-                    </ListViewItem>
+                            <StackPanel Width="230" Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                    Width="40"
+                                    Height="40"
+                                    Margin="8,0,0,0"
+                                    Foreground="White"
+                                    Kind="FormatListBulletedSquare" />
+                                <Label
+                                    Margin="25,0,0,0"
+                                    Content="Roles and Tasks"
+                                    Style="{StaticResource font_style}" />
+                            </StackPanel>
 
-                    <!--  ReportView  -->
-                    <ListViewItem
-                        Margin="0,0,0,15"
-                        HorizontalAlignment="Left"
-                        Selected="ListViewItem_Selected_2">
-                        <!--  RepView Tooltip  -->
-                        <ListViewItem.ToolTip>
-                            <ToolTip
-                                x:Name="ttRep"
-                                Content="Reports"
-                                Style="{StaticResource tt_style}" />
-                        </ListViewItem.ToolTip>
+                        </ListViewItem>
 
-                        <StackPanel Width="230" Orientation="Horizontal">
-                            <materialDesign:PackIcon
-                                Width="40"
-                                Height="40"
-                                Margin="8,0,0,0"
-                                Foreground="White"
-                                Kind="FileExportOutline" />
-                            <Label
-                                Margin="25,0,0,0"
-                                Content="Reports"
-                                Style="{StaticResource font_style}" />
-                        </StackPanel>
-                    </ListViewItem>
+                        <ListViewItem
+                            Width="50"
+                            Height="50"
+                            Margin="10,0,0,0"
+                            HorizontalAlignment="Left"
+                            Selected="ListViewItem_Selected_4"
+                            Visibility="Collapsed" />
 
-                    <ListViewItem
-                        Margin="0,360,0,15"
-                        HorizontalAlignment="Left"
-                        Selected="ListViewItem_Selected_3">
-                        <ListViewItem.ToolTip>
-                            <ToolTip
-                                x:Name="ttRT"
-                                Content="Roles and Tasks"
-                                Style="{StaticResource tt_style}" />
-                        </ListViewItem.ToolTip>
+                        <!--  // Listview items style template //  -->
+                        <ListView.ItemContainerStyle>
 
-                        <StackPanel Width="230" Orientation="Horizontal">
-                            <materialDesign:PackIcon
-                                Width="40"
-                                Height="40"
-                                Margin="8,0,0,0"
-                                Foreground="White"
-                                Kind="FormatListBulletedSquare" />
-                            <Label
-                                Margin="25,0,0,0"
-                                Content="Roles and Tasks"
-                                Style="{StaticResource font_style}" />
-                        </StackPanel>
+                            <Style TargetType="ListViewItem">
 
-                    </ListViewItem>
+                                <Setter Property="Template">
 
-                    <ListViewItem
-                        Height="50"
-                        Width="50"
-                        Margin="10,0,0,0"
-                        HorizontalAlignment="Left"
-                        Selected="ListViewItem_Selected_4"/>
+                                    <Setter.Value>
 
-                    <!--  // Listview items style template //  -->
-                    <ListView.ItemContainerStyle>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border
+                                                x:Name="Bd"
+                                                Height="50"
+                                                Padding="{TemplateBinding Padding}"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                SnapsToDevicePixels="True">
 
-                        <Style TargetType="ListViewItem">
+                                                <ContentPresenter
+                                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </Border>
 
-                            <Setter Property="Template">
+                                            <ControlTemplate.Triggers>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsMouseOver" Value="True" />
+                                                        <Condition Property="IsSelected" Value="False" />
+                                                    </MultiTrigger.Conditions>
 
-                                <Setter.Value>
+                                                    <Setter TargetName="Bd" Property="Background" Value="#FF6980B7" />
 
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border
-                                            x:Name="Bd"
-                                            Height="50"
-                                            Padding="{TemplateBinding Padding}"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            SnapsToDevicePixels="True">
+                                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#FF6980B7" />
+                                                </MultiTrigger>
 
-                                            <ContentPresenter
-                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                        </Border>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#FF6980B7" />
 
-                                        <ControlTemplate.Triggers>
-                                            <MultiTrigger>
-                                                <MultiTrigger.Conditions>
-                                                    <Condition Property="IsMouseOver" Value="True" />
-                                                    <Condition Property="IsSelected" Value="False" />
-                                                </MultiTrigger.Conditions>
-
-                                                <Setter TargetName="Bd" Property="Background" Value="#FF6980B7" />
-
-                                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF6980B7" />
-                                            </MultiTrigger>
-
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="Bd" Property="Background" Value="#FF6980B7" />
-
-                                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF6980B7" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            </StackPanel>
+                                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#FF6980B7" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </StackPanel>
+            </Grid>
         </Grid>
-    </Grid>
 
-    <!--</Border>-->
+    </Border>
 </Window>
