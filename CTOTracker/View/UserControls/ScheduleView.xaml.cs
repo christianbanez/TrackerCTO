@@ -1,5 +1,7 @@
-﻿using System.Data;
+﻿using Org.BouncyCastle.Ocsp;
+using System.Data;
 using System.Data.OleDb;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -99,14 +101,15 @@ namespace CTOTracker.View
             {
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, " +
-                        "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
-                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, useDesc " +
-                        "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
-                        "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
+                    string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName,  " +
+                        "Format(Schedule.plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd, "+
+                        "Format(Schedule.timeIn, 'h:mm AM/PM') AS timeIn, Format(Schedule.timeout, 'h:mm AM/PM') AS timeOut, "+
+                        "Schedule.ctoEarned, CTOuse.ctoUse, CTOuse.useDesc, CTOuse.dateUsed, Schedule.schedID "+
+                        "FROM Task INNER JOIN(Role INNER JOIN (Employee INNER JOIN (Schedule INNER JOIN CTOuse ON Schedule.schedID = CTOuse.schedID)ON "+
+                        "Employee.empID = Schedule.empID) ON Role.roleID = Employee.roleID) ON Task.taskID = Schedule.taskID";
 
                     // CTO Balance filter
-                    string ctoBalanceFilter = " WHERE (ctoUsed > 0.0)";
+                    string ctoBalanceFilter = " WHERE (CTOuse.ctoUse > 0.0)";
                     query += ctoBalanceFilter;
 
                     // Date filter based on the selected month and year
@@ -219,78 +222,79 @@ namespace CTOTracker.View
             }
         }
 
-        //private void LoadCtoEmployeeQuery()
-        //{
-        //    try
-        //    {
-        //        using (OleDbConnection connection = dataConnection.GetConnection())
-        //        {
-        //            // Base query
-        //            string baseQuery = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, " +
-        //                "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
-        //                "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeout, 'h:mm AM/PM') AS timeOut, ctoEarned, useDesc " +
-        //                "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
-        //                "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
+        private void LoadCtoEmployeeQuery()
+        {
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Base query
+                    string baseQuery = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName,  " +
+                        "Format(Schedule.plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
+                        "Format(Schedule.timeIn, 'h:mm AM/PM') AS timeIn, Format(Schedule.timeout, 'h:mm AM/PM') AS timeOut, "+
+                        "Schedule.ctoEarned, CTOuse.ctoUse, CTOuse.useDesc, CTOuse.dateUsed, Schedule.schedID "+
+                        "FROM Task INNER JOIN(Role INNER JOIN (Employee INNER JOIN (Schedule INNER JOIN CTOuse ON Schedule.schedID = CTOuse.schedID)ON "+
+                        "Employee.empID = Schedule.empID) ON Role.roleID = Employee.roleID) ON Task.taskID = Schedule.taskID";
 
-        //            // Initialize the complete query with base query only
-        //            string query = baseQuery;
+                    // Initialize the complete query with base query only
+                    string query = baseQuery;
 
-        //            // Apply Employee ID filter only if the checkbox for showing all is unchecked
-        //            if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
-        //            {
-        //                string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-        //                string employeeId = GetEmployeeId(selectedEmployee);
-        //                string empIdFilter = cbxEmployee.SelectedValue != null ? " WHERE Employee.empID = ?" : "";
-        //                query += empIdFilter;
-        //            }
-        //            if (!string.IsNullOrEmpty(taskFilter))
-        //            {
-        //                query += $" AND Task.taskName = '{taskFilter}'";
-        //            }
+                    // Apply Employee ID filter only if the checkbox for showing all is unchecked
+                    if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
+                    {
+                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
+                        string employeeId = GetEmployeeId(selectedEmployee);
+                        string empIdFilter = cbxEmployee.SelectedValue != null ? " WHERE Employee.empID = ?" : "";
+                        query += empIdFilter;
+                    }
+                    if (!string.IsNullOrEmpty(taskFilter))
+                    {
+                        query += $" AND Task.taskName = '{taskFilter}'";
+                    }
 
-        //            // CTO Balance filter
-        //            string ctoUseFilter = " AND (ctoUsed > 0.0)";
-        //            query += ctoUseFilter;
+                    // CTO Balance filter
+                    string ctoUseFilter = " AND (ctoUsed > 0.0)";
+                    query += ctoUseFilter;
 
-        //            // Date filter based on the selected month and year
-        //            if (monthPicker.SelectedDate.HasValue)
-        //            {
-        //                DateTime selectedDate = monthPicker.SelectedDate.Value;
-        //                query += " AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?)";
-        //            }
+                    // Date filter based on the selected month and year
+                    if (monthPicker.SelectedDate.HasValue)
+                    {
+                        DateTime selectedDate = monthPicker.SelectedDate.Value;
+                        query += " AND (MONTH(plannedStart) = ? AND YEAR(plannedStart) = ?)";
+                    }
 
-        //            using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
-        //            {
-        //                // Add employee ID parameter if applicable and checkbox for showing all is unchecked
-        //                if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
-        //                {
-        //                    if (cbxEmployee.SelectedValue != null)
-        //                    {
-        //                        adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
-        //                    }
-        //                }
+                    using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
+                    {
+                        // Add employee ID parameter if applicable and checkbox for showing all is unchecked
+                        if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
+                        {
+                            if (cbxEmployee.SelectedValue != null)
+                            {
+                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
+                            }
+                        }
 
-        //                // Add month and year parameters if applicable
-        //                if (monthPicker.SelectedDate.HasValue)
-        //                {
-        //                    DateTime selectedDate = monthPicker.SelectedDate.Value;
-        //                    adapter.SelectCommand.Parameters.AddWithValue("@Month", selectedDate.Month);
-        //                    adapter.SelectCommand.Parameters.AddWithValue("@Year", selectedDate.Year);
-        //                }
+                        // Add month and year parameters if applicable
+                        if (monthPicker.SelectedDate.HasValue)
+                        {
+                            DateTime selectedDate = monthPicker.SelectedDate.Value;
+                            adapter.SelectCommand.Parameters.AddWithValue("@Month", selectedDate.Month);
+                            adapter.SelectCommand.Parameters.AddWithValue("@Year", selectedDate.Year);
+                        }
 
-        //                DataTable dataTable = new DataTable();
-        //                adapter.Fill(dataTable);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
 
-        //                // Bind the DataTable to the DataGrid
-        //                ctoUseDataGrid.ItemsSource = dataTable.DefaultView;
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Error: " + ex.Message);
-        //    }
-        //}
+                        // Bind the DataTable to the DataGrid
+                        ctoUseDataGrid.ItemsSource = dataTable.DefaultView;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
         private void PopulateEmployeeComboBox()
         {
             try
@@ -445,12 +449,12 @@ namespace CTOTracker.View
                     if (cbxEmployee.SelectedItem != null)
                     {
                         LoadEmployeeQuery();  // Filter data when a new employee is selected
-                        //LoadCtoEmployeeQuery();
+                        LoadCtoEmployeeQuery();
                     }
                     else
                     {
                         LoadScheduleData();
-                        //LoadCTOuseData();
+                        LoadCTOuseData();
                     }
                     PopulateTaskComboBox();
                 }
@@ -494,22 +498,22 @@ namespace CTOTracker.View
 
         private void ctoUseDataGrid_AutoGeneratedColumns(object sender, EventArgs e)
         {
- 
-            ctoUseDataGrid.Columns[0].Visibility = Visibility.Collapsed;
-            ctoUseDataGrid.Columns[0].Header = "Schedule ID";
-            ctoUseDataGrid.Columns[1].Header = "Infor ID";
-            ctoUseDataGrid.Columns[1].Width = 75;
-            ctoUseDataGrid.Columns[2].Header = "First Name";
-            ctoUseDataGrid.Columns[2].Width = 100;
-            ctoUseDataGrid.Columns[3].Header = "Last Name";
-            ctoUseDataGrid.Columns[3].Width = 100;
+            ctoUseDataGrid.Columns[0].Header = "Infor ID";
+            ctoUseDataGrid.Columns[1].Header = "First Name";
+            ctoUseDataGrid.Columns[2].Header = "Last Name";
+            ctoUseDataGrid.Columns[3].Header = "Role Name";
             ctoUseDataGrid.Columns[4].Header = "Task";
-            ctoUseDataGrid.Columns[4].Width = 125;
             ctoUseDataGrid.Columns[5].Header = "Start Date";
             ctoUseDataGrid.Columns[6].Header = "End Date";
             ctoUseDataGrid.Columns[7].Header = "Time In";
             ctoUseDataGrid.Columns[8].Header = "Time Out";
             ctoUseDataGrid.Columns[9].Header = "CTO Earned";
+            ctoUseDataGrid.Columns[10].Header = "CTO Used";
+            ctoUseDataGrid.Columns[11].Header = "Use Description";
+            ctoUseDataGrid.Columns[12].Header = "Date Used";
+            ctoUseDataGrid.Columns[13].Header = "Schedule ID";
+            ctoUseDataGrid.Columns[13].Visibility = Visibility.Collapsed;
+
         }
 
         private void showallChecked(object sender, RoutedEventArgs e)
@@ -530,7 +534,7 @@ namespace CTOTracker.View
             cbxEmployee.Text = "Employee";
             cbxFilterTask.Text = "Filter by Task";
             LoadEmployeeQuery();
-            //LoadCtoEmployeeQuery();
+            LoadCtoEmployeeQuery();
         }
 
         private void monthPicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -538,7 +542,7 @@ namespace CTOTracker.View
             if (cbxEmployee.SelectedItem != null)
             {
                 LoadEmployeeQuery();
-                //LoadCtoEmployeeQuery();
+                LoadCtoEmployeeQuery();
             }
             else
             {
@@ -638,12 +642,12 @@ namespace CTOTracker.View
             if (cbxEmployee.SelectedItem != null)
             {
                 LoadEmployeeQuery();  // Filter data when a new employee is selected
-                //LoadCtoEmployeeQuery();
+                LoadCtoEmployeeQuery();
             }
             else
             {
                 LoadScheduleData();
-                //LoadCTOuseData();
+                LoadCTOuseData();
             }
         }
         private void PopulateTaskComboBox()
@@ -778,12 +782,12 @@ namespace CTOTracker.View
             if (cbxEmployee.SelectedItem != null)
             {
                 LoadEmployeeQuery();
-                //LoadCtoEmployeeQuery();
+                LoadCtoEmployeeQuery();
             }
             else
             {
                 LoadScheduleData();
-                //LoadCTOuseData();
+                LoadCTOuseData();
             }
         }
 
