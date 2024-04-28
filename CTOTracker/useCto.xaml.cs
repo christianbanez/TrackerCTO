@@ -132,6 +132,10 @@ namespace CTOTracker
                     SelectedScheduleView.Columns[6].Header = "CTO Earned";
                     SelectedScheduleView.Columns[7].Header = "CTO Used";
                     SelectedScheduleView.Columns[8].Header = "CTO Balance";
+
+                    SelectedScheduleView.Columns.RemoveAt(5); // Remove "Completed" column
+                    SelectedScheduleView.Columns.RemoveAt(6); // Remove "Completed" column
+
                 };
 
                     // Create and bind the DataGridTemplateColumn for ctoUsed column
@@ -263,6 +267,11 @@ namespace CTOTracker
                     ChangesGridView.Columns[5].Header = "CTO Earned";
                     ChangesGridView.Columns[6].Header = "CTO Used";
                     ChangesGridView.Columns[7].Header = "CTO Balance";
+
+                    ChangesGridView.Columns.RemoveAt(4); // Remove "Completed" column
+                    ChangesGridView.Columns.RemoveAt(5); // Remove "Completed" column
+
+
             }
             catch (Exception ex)
             {
@@ -315,7 +324,6 @@ namespace CTOTracker
             // Retrieve the description and date from the user interface
             string useDesc = useDescTextBox.Text.Trim(); // Trim to remove any leading or trailing whitespace
 
-
             DateTime? dateUsed = datePicker.SelectedDate; // Get the selected date
 
             // Check if description is empty or date is null
@@ -359,8 +367,6 @@ namespace CTOTracker
                     }
                 }
             }
-                     
-            
         }
 
         // Method to update the ctoUsed, ctoBalance, and useDesc values in the database
@@ -389,7 +395,7 @@ namespace CTOTracker
         //        throw new Exception("Error updating database record for schedID " + schedID + ": " + ex.Message);
         //    }
         //}
-        private void UpdateCtoUsedInDatabase(int schedID, double ctoUsed, double ctoBalance, string newUseDesc, DateTime dateUsed)
+        private void UpdateCtoUsedInDatabase(int schedID, double ctoUse, double ctoBalance, string useDesc, DateTime dateUsed)
         {
             try
             {
@@ -397,61 +403,37 @@ namespace CTOTracker
                 {
                     connection.Open();
 
-                    // First, retrieve the current useDesc and the old dateUsed from the database
-                    string getCurrentDescAndDateQuery = "SELECT useDesc, dateUsed FROM Schedule WHERE schedID = @schedID";
-                    using (OleDbCommand getDescAndDateCommand = new OleDbCommand(getCurrentDescAndDateQuery, connection))
+                    // Insert the values into the CTOuse table
+                    string insertQuery = "INSERT INTO CTOuse (schedID, ctoUse, useDesc, dateUsed) VALUES (@schedID, @ctoUse, @useDesc, @dateUsed)";
+                    using (OleDbCommand insertCommand = new OleDbCommand(insertQuery, connection))
                     {
-                        getDescAndDateCommand.Parameters.AddWithValue("@schedID", schedID);
-                        using (OleDbDataReader reader = getDescAndDateCommand.ExecuteReader())
-                        {
-                            string currentUseDesc = "";
-                            DateTime oldDateUsed = dateUsed;
-                            if (reader.Read())
-                            {
-                                currentUseDesc = reader["useDesc"] != DBNull.Value ? (string)reader["useDesc"] : "";
-                                oldDateUsed = reader["dateUsed"] != DBNull.Value ? (DateTime)reader["dateUsed"] : dateUsed;
-                            }
+                        insertCommand.Parameters.AddWithValue("@schedID", schedID);
+                        insertCommand.Parameters.AddWithValue("@ctoUse", ctoUse);
+                        insertCommand.Parameters.AddWithValue("@useDesc", useDesc);
+                        insertCommand.Parameters.AddWithValue("@dateUsed", dateUsed);
 
-                            string oldDateString = oldDateUsed.ToString("MM-dd-yyyy");
-                            string newDateString = dateUsed.ToString("MM-dd-yyyy");
-
-                            // Prepare the updated description based on the presence of an initial description
-                            string updatedUseDesc = currentUseDesc;
-                            if (!string.IsNullOrEmpty(currentUseDesc))
-                            {
-                                if (!string.IsNullOrEmpty(newUseDesc))
-                                {
-                                    updatedUseDesc += $" | {newDateString} - {newUseDesc}";
-                                }
-                            }
-                            else
-                            {
-                                updatedUseDesc = $"{oldDateString} - {newUseDesc}";
-                            }
-
-                            // Create a SQL query to update the ctoUsed, ctoBalance, useDesc and both dateUsed values
-                            string updateQuery = "UPDATE Schedule SET ctoUsed = @ctoUsed, ctoBalance = @ctoBalance, useDesc = @useDesc, dateUsed = @dateUsed WHERE schedID = @schedID";
-
-                            // Execute the update query with the concatenated useDesc
-                            using (OleDbCommand updateCommand = new OleDbCommand(updateQuery, connection))
-                            {
-                                updateCommand.Parameters.AddWithValue("@ctoUsed", ctoUsed);
-                                updateCommand.Parameters.AddWithValue("@ctoBalance", ctoBalance);
-                                updateCommand.Parameters.AddWithValue("@useDesc", updatedUseDesc);
-                                updateCommand.Parameters.AddWithValue("@dateUsed", dateUsed);
-                                updateCommand.Parameters.AddWithValue("@schedID", schedID);
-
-                                updateCommand.ExecuteNonQuery();
-                            }
-                        }
+                        insertCommand.ExecuteNonQuery();
                     }
+
+                    // Update the ctoBalance field in the Schedule table
+                    string updateQuery = "UPDATE Schedule SET ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                    using (OleDbCommand updateCommand = new OleDbCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@ctoBalance", ctoBalance);
+                        updateCommand.Parameters.AddWithValue("@schedID", schedID);
+
+                        updateCommand.ExecuteNonQuery();
+                    }
+
+                    MessageBox.Show("Record inserted into CTOuse table and updated ctoBalance in Schedule table successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating database record for schedID " + schedID + ": " + ex.Message);
+                MessageBox.Show("Error inserting record into CTOuse table or updating ctoBalance in Schedule table: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void cancelBttn_Click(object sender, RoutedEventArgs e)
         {
