@@ -9,6 +9,9 @@ using iTextSharp.text.pdf;
 using Microsoft.Win32;
 using System.IO;
 using iTextSharp.text.pdf.draw;
+using Org.BouncyCastle.Ocsp;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace CTOTracker.View.UserControls
 {
@@ -48,14 +51,12 @@ namespace CTOTracker.View.UserControls
         }
         private void DataReportView()
         {
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, Schedule.ctoEarned, Format(dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
-                "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
-                "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
-                "ON Employee.empID = Schedule.empID WHERE completed = -1;";
+            string query = "SELECT Employee.inforID AS inforID, Employee.fName AS fName, Employee.lName AS lName, Role.roleName AS roleName, Task.taskName, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd," +
+                " Schedule.ctoEarned, CTOuse.dateUsed, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.ctoBalance FROM (((Schedule LEFT JOIN Employee ON Schedule.empID = Employee.empID)" +
+                " LEFT JOIN Role ON Employee.roleID = Role.roleID) LEFT JOIN Task ON Schedule.taskID = Task.taskID) LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID" +
+                " WHERE Schedule.completed = -1;";
             LoadAllData(query);
-
         }
-
         private bool columnsAdded = false;
         private bool columnsAddedemp = false;
         private void LoadAllData(string query)
@@ -102,10 +103,10 @@ namespace CTOTracker.View.UserControls
         private void ApplyFiltersAndUpdateDataGrid()
         {
             // Construct the query based on the selected filters
-            string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd, Schedule.ctoEarned, FORMAT(Schedule.dateUsed, 'MM/DD/YY') AS dateUsed, Schedule.ctoUsed, Schedule.ctoBalance " +
-                           "FROM (Role INNER JOIN Employee ON Role.roleID = Employee.roleID) " +
-                           "INNER JOIN (Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID) " +
-                           "ON Employee.empID = Schedule.empID WHERE 1=1 AND completed = -1"; // Start with a dummy condition
+            string query = "SELECT Employee.inforIDAS inforID, Employee.fName AS fName, Employee.lName AS lName, Role.roleName AS roleName, Task.taskName, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd," +
+                " Schedule.ctoEarned, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, CTOuse.ctoUse, Schedule.ctoBalance FROM (((Schedule LEFT JOIN Employee ON Schedule.empID = Employee.empID)" +
+                " LEFT JOIN Role ON Employee.roleID = Role.roleID) LEFT JOIN Task ON Schedule.taskID = Task.taskID) LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID" +
+                " WHERE 1=1 Schedule.completed = -1;";
 
             try
             {
