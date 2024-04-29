@@ -49,9 +49,26 @@ namespace CTOTracker.View
             cbxFilterTask.SelectionChanged += cbxFilterTask_SelectionChanged;
             PopulateTaskComboBox();
             SetupTimer();
-        }
-        
+            scheduleDataGrid.SelectionChanged += ScheduleDataGrid_SelectionChanged;
+            btnUseCtoUsed.IsEnabled = false;
 
+        }
+
+        private void ScheduleDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Check if there's any selected row in the scheduleDataGrid
+            if (scheduleDataGrid.SelectedItems.Count > 0)
+            {
+                // Enable the btnUseCtoUsed button
+                btnUseCtoUsed.IsEnabled = true;
+            }
+            else
+            {
+                // Disable the btnUseCtoUsed button
+                btnUseCtoUsed.IsEnabled = false;
+            }
+        }
+            
         private void LoadScheduleData()
         {
             try
