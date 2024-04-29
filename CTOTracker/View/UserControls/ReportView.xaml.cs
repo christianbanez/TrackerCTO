@@ -52,7 +52,7 @@ namespace CTOTracker.View.UserControls
         private void DataReportView()
         {
             string query = "SELECT Employee.inforID AS inforID, Employee.fName AS fName, Employee.lName AS lName, Role.roleName AS roleName, Task.taskName, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd," +
-                " Schedule.ctoEarned, CTOuse.dateUsed, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.ctoBalance FROM (((Schedule LEFT JOIN Employee ON Schedule.empID = Employee.empID)" +
+                " Schedule.ctoEarned, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, CTOuse.ctoUse, Schedule.ctoBalance FROM (((Schedule LEFT JOIN Employee ON Schedule.empID = Employee.empID)" +
                 " LEFT JOIN Role ON Employee.roleID = Role.roleID) LEFT JOIN Task ON Schedule.taskID = Task.taskID) LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID" +
                 " WHERE Schedule.completed = -1;";
             LoadAllData(query);
@@ -201,7 +201,7 @@ namespace CTOTracker.View.UserControls
             reportDataGrid.Columns.Add(new DataGridTextColumn
             {
                 Header = "CTO Used",
-                Binding = new Binding("ctoUsed")
+                Binding = new Binding("ctoUse")
             });
             reportDataGrid.Columns.Add(new DataGridTextColumn
             {
@@ -693,8 +693,9 @@ namespace CTOTracker.View.UserControls
                 {
                     // Your code to load the report for employees' history
                     // Modify your query to retrieve employees' history
-                    string query = @"SELECT Task.taskName, Format(timeIn, 'h:mm AM/PM') AS timeIn,  Format(timeout, 'h:mm AM/PM') AS timeOut, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd, ctoEarned, ctoUsed, useDesc, ctoBalance FROM (Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID)" +
-                                   "INNER JOIN Task ON Schedule.taskID = Task.taskID WHERE completed = -1 AND Employee.empID = ?;";
+                    string query = @"SELECT Task.taskName, FORMAT(Schedule.timeIn, 'h:mm AM/PM') AS timeIn, FORMAT(Schedule.timeOut, 'h:mm AM/PM') AS timeOut, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd," +
+                        " ctoEarned, CTOuse.ctoUsed, CTOuse.useDesc, ctoBalance FROM Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID INNER JOIN Task ON Schedule.taskID = Task.taskID"+ 
+                        " LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID WHERE Schedule.completed = -1 AND Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
                     {
