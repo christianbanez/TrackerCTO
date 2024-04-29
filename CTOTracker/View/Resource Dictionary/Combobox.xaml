@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
 
-    <!--  TextBox Style Colors  -->
+    <!--  TextBox Style Colors  --><!--
     <Color x:Key="TextBoxBackground">#FFEFF6FB</Color>
     <Color x:Key="TextBoxBorder">#B0C8D9</Color>
     <Color x:Key="TextBoxMouseOverBackground">#D1E6F6</Color>
@@ -259,6 +259,6 @@
                 <Setter TargetName="PlaceholderTextBlock" Property="Visibility" Value="Visible" />
             </Trigger>
         </ControlTemplate.Triggers>
-    </ControlTemplate>
+    </ControlTemplate>-->
 
 </ResourceDictionary>

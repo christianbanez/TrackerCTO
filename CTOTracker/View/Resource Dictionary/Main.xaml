@@ -30,8 +30,8 @@
                             Margin="13,3,10,3"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Source="Assets/VeCTOr Icon.png"
                             RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="Assets\VeCTOr updated icon.ico"
                             Stretch="Uniform" />
                         <TextBlock
                             Margin="10,0,0,0"

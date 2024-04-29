@@ -39,7 +39,8 @@ namespace CTOTracker.View
             PopulateEmployeeComboBox();
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
             cbxFilterTask.SelectionChanged += cbxFilterTask_SelectionChanged;
-            PopulateTaskComboBox();       
+            PopulateTaskComboBox();
+            PopulateMoYComboBox();
         }
         
 
@@ -291,6 +292,13 @@ namespace CTOTracker.View
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+
+        private void PopulateMoYComboBox()
+        {
+            cmbxMoY.Items.Add("Month/Year");
+            cmbxMoY.Items.Add("Year");
+        }
+
         private void PopulateEmployeeComboBox()
         {
             try
@@ -522,9 +530,6 @@ namespace CTOTracker.View
             LoadCTOuseData();
             cbxEmployee.SelectedIndex = -1;
             //cbxEmployee.IsEnabled = false;
-            cbxEmployee.Text = "Employee";
-            monthPicker.Text = "";
-            cbxFilterTask.Text = "Filter by Task";
         }
 
         private void showallUnchecked(object sender, RoutedEventArgs e)
