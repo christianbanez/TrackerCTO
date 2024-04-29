@@ -33,7 +33,7 @@ namespace CTOTracker.View.UserControls
             InitializeComponent();
             dataConnection = new DataConnection();
             DataReportView();
-            txtschFname.TextChanged += txtschFname_TextChanged;
+            //txtschFname.TextChanged += txtschFname_TextChanged;
             rbBalance.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbUsed.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
@@ -44,6 +44,7 @@ namespace CTOTracker.View.UserControls
             EmpFilPnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
             PopulateTaskComboBox();
+            PopulateMoYComboBox();
         }
         private void DataReportView()
         {
@@ -424,6 +425,16 @@ namespace CTOTracker.View.UserControls
             // Return the list of employee names retrieved from the database
             return task;
         }
+
+        private void PopulateMoYComboBox()
+        {
+            cmbxMoY.Items.Add("Month/Year");
+            cmbxMoY.Items.Add("Year");
+
+            cmbxEoU.Items.Add("Earned CTO");
+            cmbxEoU.Items.Add("Used CTO");
+        }
+
         //------------------------------Role------------------------------------
         private void PopulateRoleComboBox()
         {
@@ -878,5 +889,15 @@ namespace CTOTracker.View.UserControls
         }
         private string EoUFilter;
 
+        private void cmbxEoU_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
+            //ApplyFiltersAndUpdateDataGrid();
+            if (cmbxEoU.SelectedItem != null)
+            {
+                cmbxEoU.Tag = "";
+                return;
+            }
+        }
     }
 }

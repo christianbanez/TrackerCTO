@@ -21,7 +21,7 @@
                 x:Name="TitleBar"
                 VerticalAlignment="Top"
                 Background="#FF3A4575"
-                CornerRadius="10,10,0,0">
+                CornerRadius="6,6,0,0">
                 <Grid Height="40">
                     <StackPanel Orientation="Horizontal">
                         <Image
@@ -31,6 +31,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Source="Assets/VeCTOr Icon.png"
+                            RenderOptions.BitmapScalingMode="HighQuality"
                             Stretch="Uniform" />
                         <TextBlock
                             Margin="10,0,0,0"

@@ -9,6 +9,7 @@
     d:DesignHeight="768"
     d:DesignWidth="1360"
     Focusable="True"
+    UseLayoutRounding="True"
     mc:Ignorable="d">
     <Grid Focusable="True">
 
@@ -116,31 +117,16 @@
                         </ToggleButton>
                     </Grid>
                     <StackPanel Width="1360" Orientation="Horizontal">
-                        <Grid Width="1360" Focusable="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="190" />
-                                <ColumnDefinition Width="190" />
-                                <ColumnDefinition Width="125" />
-                                <ColumnDefinition Width="125" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
 
-                            <TextBox
-                                x:Name="txtschFname"
-                                Grid.Column="0"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                FontSize="14"
-                                Style="{StaticResource txtbx_style}"
-                                Tag="Search Name" />
-                            <!--<TextBox
+                        <ComboBox
+                            x:Name="txtschFname"
+                            Width="150"
+                            Margin="0,25,10,10"
+                            VerticalContentAlignment="Center"
+                            FontSize="14"
+                            IsEditable="True"
+                            Tag="Search Name" />
+                        <!--<TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
                             Margin="0,25,10,10"
@@ -151,97 +137,75 @@
                             LostFocus="txtschLname_LostFocus"
                             Style="{StaticResource txtbx_style}"
                             Text="Last Name" />-->
-                            <ComboBox
-                                x:Name="cmbxTask"
-                                Grid.Column="1"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                FontSize="14"
-                                Foreground="Gray"
-                                SelectionChanged="cmbxTask_SelectionChanged"
-                                Tag="Task"
-                                Template="{DynamicResource ComboBoxTemplate1}" />
-                            <ComboBox
-                                x:Name="cmbxRole"
-                                Grid.Column="2"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                FontSize="14"
-                                Foreground="Gray"
-                                SelectionChanged="cmbxRole_SelectionChanged"
-                                Tag="Role"
-                                Template="{DynamicResource ComboBoxTemplate1}" />
-                            <DatePicker
-                                x:Name="dtEDate"
-                                Grid.Column="3"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                materialDesign:HintAssist.Hint="Select Date"
-                                FontSize="14"
-                                SelectedDateChanged="dtEDate_SelectedDateChanged" />
-                            <ComboBox
-                                x:Name="cmbxMoY"
-                                Grid.Column="4"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                FontSize="14"
-                                Foreground="Gray"
-                                Tag=""
-                                Template="{DynamicResource ComboBoxTemplate1}" SelectedIndex="0" 
-                                >
-                                <ComboBoxItem Content="Month/Year"/>
-                                <ComboBoxItem Content="Year"/>
-                            </ComboBox>
-                            <ComboBox
-                                x:Name="cmbxEoU"
-                                Grid.Column="5"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                FontSize="14"
-                                Foreground="Gray"
-                                Tag="Earn/Use"
-                                Template="{DynamicResource ComboBoxTemplate1}"  >
-                                <ComboBoxItem Content="Earned CTO"/>
-                                <ComboBoxItem Content="Used CTO"/>
-                            </ComboBox>
-                            <!--<DatePicker
-                                x:Name="dtUDate"
-                                Grid.Column="4"
-                                Margin="0,25,10,10"
-                                HorizontalAlignment="Stretch"
-                                materialDesign:HintAssist.Hint="Date Used"
-                                FontSize="14"
-                                SelectedDateChanged="dtUDate_SelectedDateChanged" />-->
-                            <RadioButton
-                                x:Name="rbBalance"
-                                Grid.Column="6"
-                                Margin="0,25,0,10"
-                                VerticalAlignment="Center"
-                                Checked="rbBalance_Checked"
-                                Content="CTO Balance"
-                                FontFamily="Roboto-Light"
-                                FontSize="14" />
-                            <RadioButton
-                                x:Name="rbUsed"
-                                Grid.Column="7"
-                                Margin="0,25,0,10"
-                                VerticalAlignment="Center"
-                                Checked="rbUsed_Checked"
-                                Content="CTO Used"
-                                FontFamily="Roboto-Light"
-                                FontSize="14" />
+                        <ComboBox
+                            x:Name="cmbxTask"
+                            Width="150"
+                            Margin="0,25,10,10"
+                            FontSize="14"
+                            Foreground="Gray"
+                            SelectionChanged="cmbxTask_SelectionChanged"
+                            Tag="Task"
+                            Template="{DynamicResource ComboBoxTemplate1}" />
+                        <ComboBox
+                            x:Name="cmbxRole"
+                            Width="150"
+                            Margin="0,25,10,10"
+                            FontSize="14"
+                            Foreground="Gray"
+                            SelectionChanged="cmbxRole_SelectionChanged"
+                            Tag="Role"
+                            Template="{DynamicResource ComboBoxTemplate1}" />
+                        <DatePicker
+                            x:Name="dtEDate"
+                            Width="100"
+                            Margin="0,25,10,10"
+                            materialDesign:HintAssist.Hint="Select Date"
+                            FontSize="14"
+                            SelectedDateChanged="dtEDate_SelectedDateChanged" />
+                        <ComboBox
+                            x:Name="cmbxMoY"
+                            Width="150"
+                            Margin="0,25,10,10"
+                            FontSize="14"
+                            Foreground="Gray"
+                            SelectedIndex="0"
+                            Tag=""
+                            Template="{DynamicResource ComboBoxTemplate1}" />
+                        <ComboBox
+                            x:Name="cmbxEoU"
+                            Width="150"
+                            Margin="0,25,10,10"
+                            FontSize="14"
+                            Foreground="Gray"
+                            SelectionChanged="cmbxEoU_SelectionChanged"
+                            Tag="Earn/Use"
+                            Template="{DynamicResource ComboBoxTemplate1}" />
+                        <RadioButton
+                            x:Name="rbBalance"
+                            Margin="0,25,10,15"
+                            VerticalAlignment="Center"
+                            Checked="rbBalance_Checked"
+                            Content="CTO Balance"
+                            FontFamily="Roboto-Light"
+                            FontSize="14" />
+                        <RadioButton
+                            x:Name="rbUsed"
+                            Margin="0,25,0,15"
+                            VerticalAlignment="Center"
+                            Checked="rbUsed_Checked"
+                            Content="CTO Used"
+                            FontFamily="Roboto-Light"
+                            FontSize="14" />
 
-                            <Button
-                                x:Name="btnClear"
-                                Grid.Column="9"
-                                Margin="5,5,5,10"
-                                HorizontalAlignment="Stretch"
-                                Click="btnClear_Click"
-                                Content="Clear"
-                                FontSize="16"
-                                Style="{StaticResource button_style}" />
-
-                        </Grid>
+                        <Button
+                            x:Name="btnClear"
+                            Width="100"
+                            Margin="43,0,10,0"
+                            HorizontalAlignment="Stretch"
+                            Click="btnClear_Click"
+                            Content="Clear"
+                            FontSize="16"
+                            Style="{StaticResource button_style}" />
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -390,9 +354,9 @@
                         FontSize="14"
                         Foreground="Gray"
                         Tag=""
-                        Template="{DynamicResource ComboBoxTemplate1}" >
-                        <ComboBoxItem Content="Month/Year"/>
-                        <ComboBoxItem Content="Year"/>
+                        Template="{DynamicResource ComboBoxTemplate1}">
+                        <ComboBoxItem Content="Month/Year" />
+                        <ComboBoxItem Content="Year" />
                     </ComboBox>
                     <Button
                         x:Name="btnEmoClear"

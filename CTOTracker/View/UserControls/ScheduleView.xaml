@@ -175,12 +175,24 @@
                         </Style>
                     </DatePicker.Resources>
                 </DatePicker>
-
                 <ComboBox
-                    x:Name="cbxFilterTask"
+                    x:Name="cmbxMoY"
                     Grid.Column="4"
                     Margin="10,5"
                     HorizontalAlignment="Stretch"
+                    FontSize="16"
+                    Foreground="Gray"
+                    SelectedIndex="0"
+                    Tag=""
+                    Template="{DynamicResource ComboBoxTemplate1}">
+                    <ComboBoxItem Content="Month/Year" />
+                    <ComboBoxItem Content="Year" />
+                </ComboBox>
+
+                <ComboBox
+                    x:Name="cbxFilterTask"
+                    Grid.Column="5"
+                    Margin="10,10,10,5"
                     FontSize="16"
                     IsEditable="True"
                     IsReadOnly="True"
@@ -194,9 +206,10 @@
                     Grid.Column="6"
                     Margin="120,0,20,0"
                     HorizontalAlignment="Stretch"
+                    Click="btnClear_Click"
                     Content="Clear"
                     FontSize="16"
-                    Style="{StaticResource button_style}" Click="btnClear_Click" />
+                    Style="{StaticResource button_style}" />
             </Grid>
         </Grid>
     </Grid>
