@@ -136,8 +136,6 @@ namespace CTOTracker.View
                         {
                             MessageBox.Show("Role has been added to the database!");
                             
-                            
-
                         }
                         else
                         {
@@ -386,25 +384,38 @@ namespace CTOTracker.View
                     {
                         return;
                     }
-                    OleDbCommand cmd = connection.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "SELECT COUNT(*) FROM Employee WHERE inforID = @inforID";
-                    cmd.Parameters.AddWithValue("@inforID", inforID);
-                    int count = (int)cmd.ExecuteScalar();
-
-                    if (count > 0)
+                    // Check for existing inforID
+                    using (OleDbCommand cmd = new OleDbCommand("SELECT COUNT(*) FROM Employee WHERE inforID = ?", connection))
                     {
-                        // If a record with the same infoID exists, display an error message to the user
-                        MessageBox.Show("infor ID already exists in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return; // Exit the method to prevent further execution
-                    }
+                        cmd.Parameters.AddWithValue("?", inforID);
+                        int count = (int)cmd.ExecuteScalar();
 
+                        if (count > 0)
+                        {
+                            MessageBox.Show("infor ID already exists in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return; // Exit the method to prevent further execution
+                        }
+                    }
                     string infor_ID = txtEmpID.Text;
                     string firstName = txtFname.Text;
                     string lastName = txtLname.Text;
                     string email = txtEmail.Text;
                     string contact = txtContact.Text;
 
+                    // Check for existing email or contact
+                    using (OleDbCommand command = new OleDbCommand("SELECT COUNT(*) FROM Employee WHERE email = ? OR contact = ?", connection))
+                    {
+                        command.Parameters.AddWithValue("?", email);
+                        command.Parameters.AddWithValue("?", contact);
+                        int ct = (int)command.ExecuteScalar();
+
+                        if (ct > 0)
+                        {
+                            MessageBox.Show("Email or Contact already exists in the database.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return; // Exit the method to prevent further execution
+                        }
+                    }
+                    
                     InsertEmployee(infor_ID, firstName, lastName, email, contact, roleID);
                     MessageBox.Show("Employee added successfully!");
 
