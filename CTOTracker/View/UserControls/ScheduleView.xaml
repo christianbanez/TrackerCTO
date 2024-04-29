@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker.View"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="768"
@@ -130,36 +131,43 @@
                 <ComboBox
                     x:Name="cbxEmployee"
                     Grid.Column="1"
-                    Margin="10,5,10,5"
+                    Margin="10,5"
+                    Padding="5"
                     HorizontalAlignment="Stretch"
-                    FontSize="16"
+                    materialDesign:HintAssist.Hint="Search Employee"
+                    materialDesign:HintAssist.IsFloating="False"
+                    Background="#66B7CDE4"
+                    FontSize="14"
                     IsEditable="True"
-                    IsReadOnly="True"
                     SelectionChanged="cbxEmployee_SelectionChanged"
-                    Style="{DynamicResource ComboBoxStyle1}"
-                    Template="{DynamicResource ComboBoxTemplate1}" />
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 <CheckBox
                     x:Name="showallChkBox"
                     Grid.Column="2"
                     Width="78"
-                    Height="16"
                     Margin="10,0,10,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Checked="showallChecked"
                     Content="Show All"
+                    FontSize="14"
                     Unchecked="showallUnchecked" />
 
                 <DatePicker
                     x:Name="monthPicker"
                     Grid.Column="3"
-                    Width="78"
+                    Width="98"
                     Margin="10,0,10,0"
+                    Padding="5"
                     HorizontalAlignment="Left"
+                    Background="#66B7CDE4"
                     DisplayDate="{x:Static sys:DateTime.Now}"
                     DisplayDateEnd="2100-12-31"
                     DisplayDateStart="2000-01-01"
-                    SelectedDateChanged="monthPicker_SelectedDateChanged">
+                    materialDesign:HintAssist.Hint="Select Date"
+                    materialDesign:HintAssist.IsFloating="False"
+                    SelectedDateChanged="monthPicker_SelectedDateChanged"
+                    Style="{StaticResource MaterialDesignOutlinedDatePicker}">
                     <DatePicker.Resources>
                         <Style TargetType="DatePickerTextBox">
                             <Setter Property="Control.Template">
@@ -179,27 +187,26 @@
                     x:Name="cmbxMoY"
                     Grid.Column="4"
                     Margin="10,5"
+                    Padding="5"
                     HorizontalAlignment="Stretch"
-                    FontSize="16"
-                    Foreground="Gray"
+                    Background="#66B7CDE4"
+                    FontSize="14"
                     SelectedIndex="0"
-                    Tag=""
-                    Template="{DynamicResource ComboBoxTemplate1}">
-                    <ComboBoxItem Content="Month/Year" />
-                    <ComboBoxItem Content="Year" />
-                </ComboBox>
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}" />
 
                 <ComboBox
                     x:Name="cbxFilterTask"
                     Grid.Column="5"
-                    Margin="10,10,10,5"
-                    FontSize="16"
+                    Margin="10,5"
+                    Padding="5"
+                    materialDesign:HintAssist.Hint="Select Task"
+                    materialDesign:HintAssist.IsFloating="False"
+                    Background="#66B7CDE4"
+                    FontSize="14"
                     IsEditable="True"
                     IsReadOnly="True"
                     SelectionChanged="cbxFilterTask_SelectionChanged"
-                    Style="{DynamicResource ComboBoxStyle1}"
-                    Template="{DynamicResource ComboBoxTemplate1}"
-                    Text="Filter by Task" />
+                    Style="{StaticResource MaterialDesignOutlinedComboBox}" />
 
                 <Button
                     x:Name="btnClear"

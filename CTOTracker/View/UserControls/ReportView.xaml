@@ -122,10 +122,14 @@
                             x:Name="txtschFname"
                             Width="150"
                             Margin="0,25,10,10"
+                            Padding="5"
                             VerticalContentAlignment="Center"
+                            materialDesign:HintAssist.Hint="Search Employee"
+                            materialDesign:HintAssist.IsFloating="False"
+                            Background="#66B7CDE4"
                             FontSize="14"
                             IsEditable="True"
-                            Tag="Search Name" />
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                         <!--<TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"
@@ -141,45 +145,54 @@
                             x:Name="cmbxTask"
                             Width="150"
                             Margin="0,25,10,10"
+                            Padding="5"
+                            materialDesign:HintAssist.Hint="Task"
+                            materialDesign:HintAssist.IsFloating="False"
+                            Background="#66B7CDE4"
                             FontSize="14"
-                            Foreground="Gray"
                             SelectionChanged="cmbxTask_SelectionChanged"
-                            Tag="Task"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                         <ComboBox
                             x:Name="cmbxRole"
                             Width="150"
                             Margin="0,25,10,10"
+                            Padding="5"
+                            materialDesign:HintAssist.Hint="Role"
+                            materialDesign:HintAssist.IsFloating="False"
+                            Background="#66B7CDE4"
                             FontSize="14"
-                            Foreground="Gray"
                             SelectionChanged="cmbxRole_SelectionChanged"
-                            Tag="Role"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                         <DatePicker
                             x:Name="dtEDate"
                             Width="100"
                             Margin="0,25,10,10"
+                            Padding="5"
                             materialDesign:HintAssist.Hint="Select Date"
+                            Background="#66B7CDE4"
                             FontSize="14"
-                            SelectedDateChanged="dtEDate_SelectedDateChanged" />
+                            SelectedDateChanged="dtEDate_SelectedDateChanged"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
                         <ComboBox
                             x:Name="cmbxMoY"
                             Width="150"
                             Margin="0,25,10,10"
+                            Padding="5"
+                            Background="#66B7CDE4"
                             FontSize="14"
-                            Foreground="Gray"
                             SelectedIndex="0"
-                            Tag=""
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                         <ComboBox
                             x:Name="cmbxEoU"
                             Width="150"
                             Margin="0,25,10,10"
+                            Padding="5"
+                            materialDesign:HintAssist.Hint="Earned/Used"
+                            materialDesign:HintAssist.IsFloating="False"
+                            Background="#66B7CDE4"
                             FontSize="14"
-                            Foreground="Gray"
                             SelectionChanged="cmbxEoU_SelectionChanged"
-                            Tag="Earn/Use"
-                            Template="{DynamicResource ComboBoxTemplate1}" />
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                         <RadioButton
                             x:Name="rbBalance"
                             Margin="0,25,10,15"

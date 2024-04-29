@@ -141,16 +141,22 @@
                 Grid.Column="1"
                 Width="400"
                 Margin="20,5"
+                Padding="5"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
+                Background="#66CBE0F5"
+                Style="{StaticResource MaterialDesignOutlinedTextBox}"
                 TextWrapping="Wrap" />
             <DatePicker
                 x:Name="datePicker"
                 Grid.Column="2"
                 Width="100"
                 Margin="10,5"
+                Padding="5"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top" />
+                VerticalAlignment="Top"
+                Background="#66CBE0F5"
+                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
 
             <Button
                 x:Name="useCtoBttn"
