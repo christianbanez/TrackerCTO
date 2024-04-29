@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Windows.Threading;
+using System.Windows.Data;
+using System.Globalization;
 //using iTextSharp;
 //using iTextSharp.text;
 //using iTextSharp.text.pdf;
@@ -14,6 +16,7 @@ using System.Windows.Threading;
 
 namespace CTOTracker.View
 {
+    
 
     public partial class ScheduleView : UserControl
     {
@@ -22,7 +25,7 @@ namespace CTOTracker.View
         List<KeyValuePair<string,string>> allEmployees; // Store all employee names
         private List<string> filteredEmployees; //store filtered employee
         private string taskFilter = "";
-
+        
         public class TaskModel
         {
             public string EmployeeName { get; set; }
@@ -41,6 +44,7 @@ namespace CTOTracker.View
             LoadScheduleData();
             LoadCTOuseData();
             PopulateEmployeeComboBox();
+            //scheduleDataGrid.AutoGeneratingColumn += scheduleDataGrid_AutoGeneratingColumn;
             cbxEmployee.SelectionChanged += cbxEmployee_SelectionChanged;
             cbxFilterTask.SelectionChanged += cbxFilterTask_SelectionChanged;
             PopulateTaskComboBox();
@@ -187,46 +191,39 @@ namespace CTOTracker.View
 
         private void PopulateEmployeeComboBox()
         {
-            List<KeyValuePair<string, string>> employees = new List<KeyValuePair<string, string>>();
-
+            
             try
             {
-                try
+                using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    using (OleDbConnection connection = dataConnection.GetConnection())
+                    string query = "SELECT inforID, fName, lName FROM Employee";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
                     {
-                        string query = "SELECT inforID, fName, lName FROM Employee";
-                        using (OleDbCommand command = new OleDbCommand(query, connection))
+                        connection.Open();
+                        using (OleDbDataReader reader = command.ExecuteReader())
                         {
-                            connection.Open();
-                            using (OleDbDataReader reader = command.ExecuteReader())
+                            while (reader.Read())
                             {
-                                while (reader.Read())
+                                string inforID = reader["inforID"].ToString();
+                                string fName = reader.IsDBNull(reader.GetOrdinal("fName")) ? "" : reader["fName"].ToString();
+                                string lName = reader.IsDBNull(reader.GetOrdinal("lName")) ? "" : reader["lName"].ToString();
+                                string fullName = $"{inforID}: {fName} {lName}"; // Concatenate ID with name
+                                ComboBoxItem item = new ComboBoxItem
                                 {
-                                    string inforID = reader["inforID"].ToString();
-                                    string fName = reader.IsDBNull(reader.GetOrdinal("fName")) ? "" : reader["fName"].ToString();
-                                    string lName = reader.IsDBNull(reader.GetOrdinal("lName")) ? "" : reader["lName"].ToString();
-                                    string fullName = $"{inforID}: {fName} {lName}"; // Concatenate ID with name
-                                    ComboBoxItem item = new ComboBoxItem
-                                    {
-                                        Text = fullName,
-                                        Value = inforID
-                                    };
-                                    cbxEmployee.Items.Add(item);
-                                }
+                                    Text = fullName,
+                                    Value = inforID
+                                };
+                                cbxEmployee.Items.Add(item);
                             }
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error populating ComboBox: " + ex.Message);
-                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Error populating ComboBox: " + ex.Message);
             }
+            
         }
 
         public class ComboBoxItem
@@ -251,7 +248,7 @@ namespace CTOTracker.View
                         return selectedItem.Value; // This is the employee ID
                     }
                 }
-                MessageBox.Show("No employee selected or improper ComboBox item.");
+                /*MessageBox.Show("No employee selected or improper ComboBox item.")*/;
                 return null;
             }
             catch (Exception ex)
@@ -625,7 +622,20 @@ namespace CTOTracker.View
 
             return taskID ?? throw new Exception("Task ID not found."); // Return taskId if not null, otherwise throw an exception
         }
-
+        //private void scheduleDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        //{
+        //    if (e.PropertyName == "Completed")
+        //    {
+        //        DataGridTextColumn column = e.Column as DataGridTextColumn;
+        //        if (column != null)
+        //        {
+        //            column.Binding = new Binding(e.PropertyName)
+        //            {
+        //                Converter = (BooleanToSymbolConverter)this.Resources["BooleanToSymbolConverter"]
+        //            };
+        //        }
+        //    }
+        //}
         private void scheduleDataGrid_AutoGeneratedColumns(object sender, EventArgs e)
         {
             scheduleDataGrid.Columns[0].Visibility = Visibility.Collapsed;
@@ -639,6 +649,7 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[4].Header = "Task";
             scheduleDataGrid.Columns[4].Width = 125;
             scheduleDataGrid.Columns[5].Header = "Completed";
+
             scheduleDataGrid.Columns[6].Header = "Start Date";
             scheduleDataGrid.Columns[7].Header = "End Date";
             scheduleDataGrid.Columns[8].Header = "Time In";
@@ -730,5 +741,6 @@ namespace CTOTracker.View
             }
         }
 
+        
     }
 }
