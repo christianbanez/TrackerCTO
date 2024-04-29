@@ -425,7 +425,7 @@ namespace CTOTracker
                         updateCommand.ExecuteNonQuery();
                     }
 
-                    MessageBox.Show("Record inserted into CTOuse table and updated ctoBalance in Schedule table successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    
                 }
             }
             catch (Exception ex)

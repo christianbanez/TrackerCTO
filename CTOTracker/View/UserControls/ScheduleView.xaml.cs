@@ -19,7 +19,7 @@ namespace CTOTracker.View
     {
         private DispatcherTimer checkCompletionTimer;
         private DataConnection dataConnection;
-        private List<string> allEmployees; // Store all employee names
+        List<KeyValuePair<string,string>> allEmployees; // Store all employee names
         private List<string> filteredEmployees; //store filtered employee
         private string taskFilter = "";
 
@@ -35,7 +35,7 @@ namespace CTOTracker.View
         {
             InitializeComponent();
             dataConnection = new DataConnection();
-            allEmployees = new List<string>();
+            allEmployees = new List<KeyValuePair<string,string>>();
             filteredEmployees = new List<string>();
             showallChkBox.IsChecked = true;
             LoadScheduleData();
@@ -66,10 +66,12 @@ namespace CTOTracker.View
 
                     if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
                     {
-                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-                        string employeeId = GetEmployeeId(selectedEmployee);
-                        string empIdFilter = cbxEmployee.SelectedValue != null ? " AND (Employee.empID = ?)" : "";
-                        query += empIdFilter;
+                        string employeeId = GetSelectedEmployeeId();
+                        if (!string.IsNullOrEmpty(employeeId))
+                        {
+                            // Append the employee ID filter to the query
+                            query += " AND (Employee.empID = ?)";
+                        }
                     }
 
                     // Date filter based on the selected month and year
@@ -86,9 +88,10 @@ namespace CTOTracker.View
                     {
                         if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
                         {
-                            if (cbxEmployee.SelectedValue != null)
+                            string employeeId = GetSelectedEmployeeId();
+                            if (!string.IsNullOrEmpty(employeeId))
                             {
-                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
+                                adapter.SelectCommand.Parameters.AddWithValue("@empID", employeeId);
                             }
                         }
                         // Add month and year parameters if applicable
@@ -120,9 +123,7 @@ namespace CTOTracker.View
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
                     string query = "SELECT Employee.inforID, Employee.fName, Employee.lName, Role.roleName, Task.taskName,  " +
-                        "Format(Schedule.plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd, "+
-                        "Format(Schedule.timeIn, 'h:mm AM/PM') AS timeIn, Format(Schedule.timeout, 'h:mm AM/PM') AS timeOut, "+
-                        "Schedule.ctoEarned, CTOuse.ctoUse, CTOuse.useDesc, CTOuse.dateUsed, Schedule.schedID "+
+                        "Schedule.ctoEarned, CTOuse.ctoUse, CTOuse.useDesc, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, Schedule.schedID "+
                         "FROM Task INNER JOIN(Role INNER JOIN (Employee INNER JOIN (Schedule INNER JOIN CTOuse ON Schedule.schedID = CTOuse.schedID)ON "+
                         "Employee.empID = Schedule.empID) ON Role.roleID = Employee.roleID) ON Task.taskID = Schedule.taskID";
 
@@ -132,10 +133,12 @@ namespace CTOTracker.View
 
                     if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
                     {
-                        string selectedEmployee = cbxEmployee.SelectedItem?.ToString() ?? string.Empty;
-                        string employeeId = GetEmployeeId(selectedEmployee);
-                        string empIdFilter = cbxEmployee.SelectedValue != null ? " AND (Employee.empID = ?)" : "";
-                        query += empIdFilter;
+                        string employeeId = GetSelectedEmployeeId();
+                        if (!string.IsNullOrEmpty(employeeId))
+                        {
+                            // Append the employee ID filter to the query
+                            query += " AND (Employee.empID = ?)";
+                        }
                     }
                     // Date filter based on the selected month and year
                     if (monthPicker.SelectedDate.HasValue)
@@ -152,9 +155,10 @@ namespace CTOTracker.View
                     {
                         if (!showallChkBox.IsChecked.HasValue || !showallChkBox.IsChecked.Value)
                         {
-                            if (cbxEmployee.SelectedValue != null)
+                            string employeeId = GetSelectedEmployeeId();
+                            if (!string.IsNullOrEmpty(employeeId))
                             {
-                                adapter.SelectCommand.Parameters.AddWithValue("@empID", GetEmployeeId(cbxEmployee.SelectedItem?.ToString() ?? string.Empty));
+                                adapter.SelectCommand.Parameters.AddWithValue("@empID", employeeId);
                             }
                         }
                         // Add month and year parameters if applicable
@@ -183,105 +187,114 @@ namespace CTOTracker.View
 
         private void PopulateEmployeeComboBox()
         {
-            try
-            {
-                // Fetch data from the Employee table
-                allEmployees = GetDataFromEmployeeTable();
-
-                // Check if 'allEmployees' is null before binding to the ComboBox
-                if (allEmployees != null)
-                {
-                    cbxEmployee.ItemsSource = allEmployees;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Display an error message if an exception occurs
-                MessageBox.Show("Error: " + ex.Message);
-            }
-        }
-        private List<string> GetDataFromEmployeeTable()
-        {
-            // Create a list to store employee names
-            List<string> employees = new List<string>();
+            List<KeyValuePair<string, string>> employees = new List<KeyValuePair<string, string>>();
 
             try
             {
-                // Get connection from DataConnection
-                using (OleDbConnection connection = dataConnection.GetConnection())
+                try
                 {
-                    // Define the SQL query to select first names (fName) and last names (lName) from the Employee table
-                    string query = "SELECT fName, lName FROM Employee";
-
-                    // Create a command object with the query and connection
-                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    using (OleDbConnection connection = dataConnection.GetConnection())
                     {
-                        // Open the connection to the database
-                        connection.Open();
-
-                        // Execute the command and retrieve data using a data reader
-                        using (OleDbDataReader reader = command.ExecuteReader())
+                        string query = "SELECT inforID, fName, lName FROM Employee";
+                        using (OleDbCommand command = new OleDbCommand(query, connection))
                         {
-                            // Iterate through the data reader to read each row
-                            while (reader.Read())
+                            connection.Open();
+                            using (OleDbDataReader reader = command.ExecuteReader())
                             {
-                                // Check if the fName and lName columns contain non-null values
-                                if (!reader.IsDBNull(reader.GetOrdinal("fName")) && !reader.IsDBNull(reader.GetOrdinal("lName")))
+                                while (reader.Read())
                                 {
-                                    // Concatenate the first name and last name to form the full name
-                                    string fullName = $"{reader["fName"]} {reader["lName"]}";
-                                    // Add the full name to the list of employees
-                                    employees.Add(fullName);
+                                    string inforID = reader["inforID"].ToString();
+                                    string fName = reader.IsDBNull(reader.GetOrdinal("fName")) ? "" : reader["fName"].ToString();
+                                    string lName = reader.IsDBNull(reader.GetOrdinal("lName")) ? "" : reader["lName"].ToString();
+                                    string fullName = $"{inforID}: {fName} {lName}"; // Concatenate ID with name
+                                    ComboBoxItem item = new ComboBoxItem
+                                    {
+                                        Text = fullName,
+                                        Value = inforID
+                                    };
+                                    cbxEmployee.Items.Add(item);
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // Display an error message if an exception occurs
-                MessageBox.Show("Error: " + ex.Message);
-            }
-
-            // Return the list of employee names retrieved from the database
-            return employees;
-        }
-        private string GetEmployeeId(string employeeName)
-        {
-            string? employeeId = null; // Initialize employeeId to null
-
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                catch (Exception ex)
                 {
-                    // Modified query to concatenate fName and lName
-                    string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ?";
-
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-                    {
-                        command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
-
-                        connection.Open(); // Open the connection
-                        object? result = command.ExecuteScalar(); // Execute the query and get the result
-
-                        if (result != null) // Check if the result is not null
-                        {
-                            employeeId = result.ToString(); // Assign the employee ID to employeeId
-                        }
-                    }
+                    MessageBox.Show("Error populating ComboBox: " + ex.Message);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
             }
-
-            // Return employeeId if not null, otherwise throw an exception
-
-            return employeeId ?? throw new Exception("Employee ID not found.");
-
         }
+
+        public class ComboBoxItem
+        {
+            public string Text { get; set; }
+            public string Value { get; set; }
+
+            public override string ToString()
+            {
+                return Text;
+            }
+        }
+        private string GetSelectedEmployeeId()
+        {
+            try
+            {
+                if (cbxEmployee.SelectedItem != null)
+                {
+                    ComboBoxItem selectedItem = cbxEmployee.SelectedItem as ComboBoxItem;
+                    if (selectedItem != null)
+                    {
+                        return selectedItem.Value; // This is the employee ID
+                    }
+                }
+                MessageBox.Show("No employee selected or improper ComboBox item.");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message);
+                return null;
+            }
+        }
+        //private string GetEmployeeId(string employeeName)
+        //{
+        //    string? employeeId = null; // Initialize employeeId to null
+
+        //    try
+        //    {
+        //        using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+        //        {
+        //            // Modified query to concatenate fName and lName
+        //            string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ? AND inforID = ?";
+
+        //            using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+        //            {
+        //                command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
+
+        //                connection.Open(); // Open the connection
+        //                object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+        //                if (result != null) // Check if the result is not null
+        //                {
+        //                    employeeId = result.ToString(); // Assign the employee ID to employeeId
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+        //    }
+
+        //    // Return employeeId if not null, otherwise throw an exception
+
+        //    return employeeId ?? throw new Exception("Employee ID not found.");
+
+        //}
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -378,16 +391,12 @@ namespace CTOTracker.View
             ctoUseDataGrid.Columns[2].Header = "Last Name";
             ctoUseDataGrid.Columns[3].Header = "Role Name";
             ctoUseDataGrid.Columns[4].Header = "Task";
-            ctoUseDataGrid.Columns[5].Header = "Start Date";
-            ctoUseDataGrid.Columns[6].Header = "End Date";
-            ctoUseDataGrid.Columns[7].Header = "Time In";
-            ctoUseDataGrid.Columns[8].Header = "Time Out";
-            ctoUseDataGrid.Columns[9].Header = "CTO Earned";
-            ctoUseDataGrid.Columns[10].Header = "CTO Used";
-            ctoUseDataGrid.Columns[11].Header = "Use Description";
-            ctoUseDataGrid.Columns[12].Header = "Date Used";
-            ctoUseDataGrid.Columns[13].Header = "Schedule ID";
-            ctoUseDataGrid.Columns[13].Visibility = Visibility.Collapsed;
+            ctoUseDataGrid.Columns[5].Header = "CTO Earned";
+            ctoUseDataGrid.Columns[6].Header = "CTO Used";
+            ctoUseDataGrid.Columns[7].Header = "Use Description";
+            ctoUseDataGrid.Columns[8].Header = "Date Used";
+            ctoUseDataGrid.Columns[9].Header = "Schedule ID";
+            ctoUseDataGrid.Columns[9].Visibility = Visibility.Collapsed;
 
         }
 

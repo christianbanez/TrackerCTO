@@ -126,28 +126,80 @@ namespace CTOTracker
         }
         private void PopulateEmployeeComboBox()
         {
+            List<KeyValuePair<string, string>> employees = new List<KeyValuePair<string, string>>();
+
             try
             {
-                // Fetch data from the Employee table
-                allEmployees = GetDataFromEmployeeTable();
+                try
+                {
+                    using (OleDbConnection connection = dataConnection.GetConnection())
+                    {
+                        string query = "SELECT inforID, fName, lName FROM Employee";
+                        using (OleDbCommand command = new OleDbCommand(query, connection))
+                        {
+                            connection.Open();
+                            using (OleDbDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    string inforID = reader["inforID"].ToString();
+                                    string fName = reader.IsDBNull(reader.GetOrdinal("fName")) ? "" : reader["fName"].ToString();
+                                    string lName = reader.IsDBNull(reader.GetOrdinal("lName")) ? "" : reader["lName"].ToString();
+                                    string fullName = $"{inforID}: {fName} {lName}"; // Concatenate ID with name
 
-                // Check if 'allEmployees' is null before binding to the ComboBox
-                if (allEmployees != null)
-                {
-                    Employee_Cmbox.ItemsSource = allEmployees;
+                                    ComboBoxItem item = new ComboBoxItem
+                                    {
+                                        Text = fullName,
+                                        Value = inforID
+                                    };
+                                    Employee_Cmbox.Items.Add(item);
+                                }
+                            }
+                        }
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Handle the case when 'allEmployees' is null
-                    MessageBox.Show("No employees found.");
+                    MessageBox.Show("Error populating ComboBox: " + ex.Message);
                 }
             }
             catch (Exception ex)
             {
-                // Display an error message if an exception occurs
                 MessageBox.Show("Error: " + ex.Message);
             }
+        }
+
+        public class ComboBoxItem
+        {
+            public string Text { get; set; }
+            public string Value { get; set; }
+
+            public override string ToString()
+            {
+                return Text;
             }
+        }
+        private string GetSelectedEmployeeId()
+        {
+            try
+            {
+                if (Employee_Cmbox.SelectedItem != null)
+                {
+                    ComboBoxItem selectedItem = Employee_Cmbox.SelectedItem as ComboBoxItem;
+                    if (selectedItem != null)
+                    {
+                        return selectedItem.Value; // This is the employee ID
+                    }
+                }
+                MessageBox.Show("No employee selected or improper ComboBox item.");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message);
+                return null;
+            }
+        }
 
         private void PopulateTaskComboBox()
         {
@@ -333,38 +385,38 @@ namespace CTOTracker
 
         //Add Schedule button
 
-        private string GetEmployeeId(string employeeName)
-        {
-            string? employeeId = null; // Initialize employeeId to null
+        //private string GetEmployeeId(string employeeName)
+        //{
+        //    string? employeeId = null; // Initialize employeeId to null
 
-            try
-            {
-                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
-                {
-                    // Modified query to concatenate fName and lName
-                    string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ?";
+        //    try
+        //    {
+        //        using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+        //        {
+        //            // Modified query to concatenate fName and lName
+        //            string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ?";
 
-                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-                    {
-                        command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
+        //            using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+        //            {
+        //                command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
 
-                        connection.Open(); // Open the connection
-                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+        //                connection.Open(); // Open the connection
+        //                object? result = command.ExecuteScalar(); // Execute the query and get the result
 
-                        if (result != null) // Check if the result is not null
-                        {
-                            employeeId = result.ToString(); // Assign the employee ID to employeeId
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
-            }
+        //                if (result != null) // Check if the result is not null
+        //                {
+        //                    employeeId = result.ToString(); // Assign the employee ID to employeeId
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+        //    }
 
-            return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
-        }
+        //    return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
+        //}
 
         private string? GetTaskId(string taskName)
         {
@@ -426,7 +478,7 @@ namespace CTOTracker
                         return;
                     }
 
-                    string employeeId = GetEmployeeId(selectedEmployee);
+                    string employeeId = GetSelectedEmployeeId();
 
                     // Check if the task exists in the database
                     string taskId = GetTaskId(selectedTask);
@@ -559,7 +611,7 @@ namespace CTOTracker
                     return;
                 }
 
-                string employeeId = GetEmployeeId(selectedEmployee);
+                string employeeId = GetSelectedEmployeeId();
                 string taskId = GetTaskId(selectedTask);
 
                 DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
