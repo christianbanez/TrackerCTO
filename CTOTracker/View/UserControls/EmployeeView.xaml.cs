@@ -87,6 +87,7 @@ namespace CTOTracker.View
             txtContact.Clear();
             txtRole.SelectedIndex = -1;
             DataGridEmployee1.IsEnabled = true;
+            DataGridEmployee1.SelectedItem = null;
             //}
         }
 
@@ -113,6 +114,7 @@ namespace CTOTracker.View
             txtContact.Clear();
             txtRole.SelectedIndex = -1;
             DataGridEmployee1.IsEnabled = true;
+            DataGridEmployee1.SelectedItem = null;
             //}
             //dataConnection = new DataConnection();
             LoadEmployeeView();
@@ -484,9 +486,23 @@ namespace CTOTracker.View
         private void DataGridEmployee1_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
         {
             DataGrid gd = (DataGrid)sender;
-            DataRowView row_selected = (DataRowView)gd.SelectedItem;
-            if (row_selected != null)
+
+            if (gd.SelectedItems.Count > 1) // Check if only one row is selected for multiple deletion
             {
+                txtEmpID.Clear();
+                txtFname.Clear();
+                txtLname.Clear();
+                txtEmail.Clear();
+                txtContact.Clear();
+                txtRole.Text = "";
+                btnDeleteEmp.Visibility = Visibility.Visible;
+                btnDeleteEmp.IsEnabled = true;
+            }
+            
+            if (gd.SelectedItems.Count == 1) // Only one row is selected
+            {
+                DataRowView row_selected = (DataRowView)gd.SelectedItem;
+
                 // Extract values from the row and populate textboxes
                 btnEdit.IsEnabled = true;
                 txtEmpID.Text = row_selected["inforID"].ToString();
@@ -692,6 +708,7 @@ namespace CTOTracker.View
                             txtContact.IsEnabled = false;
                             txtRole.IsEnabled = false;
                             DataGridEmployee1.IsEnabled = true;
+                            DataGridEmployee1.SelectedItem = null;
                         }
                     }
                 }
@@ -703,8 +720,6 @@ namespace CTOTracker.View
                 {
                     connection.Close();
                 }
-
-
             }
         }
 
@@ -762,6 +777,75 @@ namespace CTOTracker.View
             DataGridEmployee1.Columns[3].Header = "Email";
             DataGridEmployee1.Columns[4].Header = "Contact Number";
             DataGridEmployee1.Columns[5].Header = "Role";
+        }
+
+        private void btnDeleteEmp_Click(object sender, RoutedEventArgs e)
+        {
+            using (OleDbConnection connection = dataConnection.GetConnection())
+            {
+                try
+                {
+                    MessageBoxResult msgRes = MessageBox.Show("Are you sure you want to delete this?", "Cancel", MessageBoxButton.YesNo);
+                    if (msgRes == MessageBoxResult.Yes)
+                    {
+                        connection.Open();
+                        OleDbCommand cmd = connection.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
+
+                        foreach (DataRowView selectedItem in DataGridEmployee1.SelectedItems)
+                        {
+                            string inforID = selectedItem["inforID"].ToString();
+                            cmd.CommandText = "DELETE FROM Employee WHERE inforID = @inforID";
+                            cmd.Parameters.Clear();
+                            cmd.Parameters.AddWithValue("@inforID", inforID);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        MessageBox.Show("Records Successfully Deleted");
+                        LoadEmployeeView();
+
+                        btnDeleteEmp.IsEnabled = false;
+                        btnDeleteEmp.Visibility = Visibility.Collapsed;
+                        btnEdit.IsEnabled = false;
+                        txtEmpID.IsEnabled = false;
+                        txtFname.IsEnabled = false;
+                        txtLname.IsEnabled = false;
+                        txtEmail.IsEnabled = false;
+                        txtContact.IsEnabled = false;
+                        txtRole.IsEnabled = false;
+                        txtRole.SelectedIndex = -1;
+                        AddEdit.Visibility = Visibility.Visible;
+                        AddPnl.Visibility = Visibility.Collapsed;
+                        UpdatePnl.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        // Reset UI if user cancels deletion
+                        btnDeleteEmp.IsEnabled = false;
+                        btnDeleteEmp.Visibility = Visibility.Collapsed;
+                        btnEdit.IsEnabled = false;
+                        txtRole.SelectedIndex = -1;
+                        AddEdit.Visibility = Visibility.Visible;
+                        AddPnl.Visibility = Visibility.Collapsed;
+                        UpdatePnl.Visibility = Visibility.Collapsed;
+                        txtFname.IsEnabled = false;
+                        txtLname.IsEnabled = false;
+                        txtEmail.IsEnabled = false;
+                        txtContact.IsEnabled = false;
+                        txtRole.IsEnabled = false;
+                        DataGridEmployee1.IsEnabled = true;
+                        DataGridEmployee1.SelectedItem = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error deleting employee: " + ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
         }
     }
 }
