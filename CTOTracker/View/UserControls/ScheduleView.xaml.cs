@@ -238,6 +238,10 @@ namespace CTOTracker.View
                                 };
                                 cbxEmployee.Items.Add(item);
                             }
+                            if (cbxEmployee.Items.Count > 0)
+                            {
+                                cbxEmployee.SelectedIndex = 0; // This should trigger cbxEmployee_SelectionChanged
+                            }
                         }
                     }
                 }
@@ -400,7 +404,6 @@ namespace CTOTracker.View
                 showallChkBox.IsChecked = false;
                 LoadScheduleData();
                 LoadCTOuseData();
-                /*FilterDataByEmployee(); */ // Filter data when a new employee is selected
             }
         }
 
@@ -425,7 +428,10 @@ namespace CTOTracker.View
             //LoadEmployeeQuery();
             LoadScheduleData();
             LoadCTOuseData();
-            cbxEmployee.SelectedIndex = -1;
+            if (cbxEmployee.Items.Count > 0)
+            {
+                cbxEmployee.SelectedIndex = -1; // This should trigger cbxEmployee_SelectionChanged
+            }
             //cbxEmployee.IsEnabled = false;
         }
 
@@ -433,6 +439,9 @@ namespace CTOTracker.View
         {
             monthPicker.Text = "";
             cbxEmployee.Text = "Employee";
+
+            cbxEmployee.SelectedIndex = -1; // This should trigger cbxEmployee_SelectionChanged
+            
             cbxFilterTask.Text = "Filter by Task";
             LoadCTOuseData();
             LoadScheduleData();
@@ -690,7 +699,8 @@ namespace CTOTracker.View
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             showallChkBox.IsChecked = true;
-            cbxEmployee.SelectedIndex = -1;
+
+            cbxEmployee.SelectedIndex = -1; // This should trigger cbxEmployee_SelectionChange
             //cbxEmployee.IsEnabled = false;
             cbxEmployee.Text = "Employee";
             monthPicker.Text = "";
