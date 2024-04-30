@@ -662,7 +662,7 @@ namespace CTOTracker.View.UserControls
             scheduleDataGrid1.Columns.Add(new DataGridTextColumn
             {
                 Header = "CTO Used",
-                Binding = new Binding("ctoUsed"),
+                Binding = new Binding("ctoUse"),
                 Width = 100
             });
             scheduleDataGrid1.Columns.Add(new DataGridTextColumn
@@ -693,8 +693,10 @@ namespace CTOTracker.View.UserControls
                 {
                     // Your code to load the report for employees' history
                     // Modify your query to retrieve employees' history
-                    string query = @"SELECT Task.taskName, FORMAT(Schedule.timeIn, 'h:mm AM/PM') AS timeIn, FORMAT(Schedule.timeOut, 'h:mm AM/PM') AS timeOut, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd," +
-                        " ctoEarned, CTOuse.ctoUsed, CTOuse.useDesc, ctoBalance FROM Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID INNER JOIN Task ON Schedule.taskID = Task.taskID"+ 
+                    string query = @"SELECT Task.taskName, FORMAT(Schedule.timeIn, 'h:mm AM/PM') AS timeIn," +
+                        " FORMAT(Schedule.timeOut, 'h:mm AM/PM') AS timeOut, FORMAT(Schedule.plannedEnd, 'MM/DD/YY') AS plannedEnd," +
+                        " ctoEarned, CTOuse.ctoUse, CTOuse.useDesc, ctoBalance FROM ((Schedule INNER JOIN Employee ON Schedule.empID = Employee.empID )" +
+                        "INNER JOIN Task ON Schedule.taskID = Task.taskID)"+ 
                         " LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID WHERE Schedule.completed = -1 AND Employee.empID = ?;";
 
                     using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
