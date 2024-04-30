@@ -66,10 +66,13 @@ namespace CTOTracker
         }
         
         // Method to populate AddTask form with selected data
-        public void PopulateWithData(string fullName, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
+        public void PopulateWithData(string inforID, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
         {
-            // Populate UI controls with selected data
-            Employee_Cmbox.Text = fullName;
+            // Set the selected item in Employee_Cmbox by matching inforID
+            Employee_Cmbox.SelectedItem = Employee_Cmbox.Items
+                .Cast<ComboBoxItem>()
+                .FirstOrDefault(item => item.Value.Equals(inforID));
+
             Task_Cmbox.Text = taskName;
             startDatePicker.SelectedDate = startDate;
             endDatePicker.SelectedDate = endDate;
