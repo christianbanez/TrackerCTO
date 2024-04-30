@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Use CTO"
     Width="900"
+    UseLayoutRounding="True"
     Height="600"
     Loaded="MainWindow_Loaded"
     ResizeMode="NoResize"

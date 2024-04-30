@@ -434,6 +434,9 @@ namespace CTOTracker.View.UserControls
 
             cmbxEoU.Items.Add("Earned CTO");
             cmbxEoU.Items.Add("Used CTO");
+
+            cmbxEmpMoY.Items.Add("Month/Year");
+            cmbxEmpMoY.Items.Add("Year");
         }
 
         //------------------------------Role------------------------------------
@@ -902,6 +905,11 @@ namespace CTOTracker.View.UserControls
                 cmbxEoU.Tag = "";
                 return;
             }
+        }
+
+        private void EmpFilPnl_Loaded(object sender, RoutedEventArgs e)
+        {
+            PopulateMoYComboBox();
         }
     }
 }
