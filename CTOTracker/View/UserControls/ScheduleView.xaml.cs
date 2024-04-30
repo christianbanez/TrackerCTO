@@ -40,7 +40,8 @@ namespace CTOTracker.View
             dataConnection = new DataConnection();
             allEmployees = new List<KeyValuePair<string,string>>();
             filteredEmployees = new List<string>();
-            showallChkBox.IsChecked = true;
+            
+            cbxEmployee.IsEnabled = false;
             LoadScheduleData();
             LoadCTOuseData();
             PopulateEmployeeComboBox();
@@ -51,6 +52,7 @@ namespace CTOTracker.View
             SetupTimer();
             scheduleDataGrid.SelectionChanged += ScheduleDataGrid_SelectionChanged;
             btnUseCtoUsed.IsEnabled = false;
+            showallChkBox.IsChecked = true;
 
         }
 
@@ -238,6 +240,10 @@ namespace CTOTracker.View
                                 };
                                 cbxEmployee.Items.Add(item);
                             }
+                            if (cbxEmployee.Items.Count > 0)
+                            {
+                                cbxEmployee.SelectedIndex = 0; // This should trigger cbxEmployee_SelectionChanged
+                            }
                         }
                     }
                 }
@@ -400,7 +406,6 @@ namespace CTOTracker.View
                 showallChkBox.IsChecked = false;
                 LoadScheduleData();
                 LoadCTOuseData();
-                /*FilterDataByEmployee(); */ // Filter data when a new employee is selected
             }
         }
 
@@ -425,7 +430,9 @@ namespace CTOTracker.View
             //LoadEmployeeQuery();
             LoadScheduleData();
             LoadCTOuseData();
-            cbxEmployee.SelectedIndex = -1;
+            cbxEmployee.Text = "";
+            cbxEmployee.IsEnabled = false;  // This should trigger cbxEmployee_SelectionChanged
+
             //cbxEmployee.IsEnabled = false;
         }
 
@@ -433,6 +440,10 @@ namespace CTOTracker.View
         {
             monthPicker.Text = "";
             cbxEmployee.Text = "Employee";
+            cbxEmployee.IsEnabled = true; // Re-enable ComboBox
+
+            cbxEmployee.SelectedIndex = -1; // Reset to the first item or to a default state
+
             cbxFilterTask.Text = "Filter by Task";
             LoadCTOuseData();
             LoadScheduleData();
@@ -699,7 +710,8 @@ namespace CTOTracker.View
         private void btnClear_Click(object sender, RoutedEventArgs e)
         {
             showallChkBox.IsChecked = true;
-            cbxEmployee.SelectedIndex = -1;
+
+            cbxEmployee.SelectedIndex = -1; // This should trigger cbxEmployee_SelectionChange
             //cbxEmployee.IsEnabled = false;
             cbxEmployee.Text = "Employee";
             monthPicker.Text = "";
@@ -737,21 +749,26 @@ namespace CTOTracker.View
                 LoadScheduleData(); // Reload data to reflect changes
             }
         }
+
         private bool IsPastTimeout(string timeoutValue)
         {
+            // Check if the input string is null or empty.
             if (string.IsNullOrEmpty(timeoutValue))
             {
-                return false; // Consider what should be the default behavior if timeout is not set
+                return false; // Optionally, consider a default behavior if timeout is not set.
             }
 
-            DateTime timeoutDate;
-            if (DateTime.TryParse(timeoutValue, out timeoutDate))
+            // Attempt to parse the timeoutValue to a DateTime object.
+            if (DateTime.TryParse(timeoutValue, out DateTime timeoutDate))
             {
+                // Return true if the current date/time is greater than the parsed timeout date/time.
+                // This indicates that the timeout date/time has already passed.
                 return DateTime.Now > timeoutDate;
             }
             else
             {
-                return false; // Unable to parse date, handle accordingly
+                // Return false if the date/time could not be parsed.
+                return false;
             }
         }
 
