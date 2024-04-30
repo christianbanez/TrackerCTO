@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace CTOTracker
 {
@@ -64,12 +65,15 @@ namespace CTOTracker
         {
             this.DragMove();
         }
-        
+
         // Method to populate AddTask form with selected data
-        public void PopulateWithData(string fullName, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
+        public void PopulateWithData(string inforID, string taskName, DateTime startDate, DateTime endDate, string timeIn, string timeOut, int schedID)
         {
-            // Populate UI controls with selected data
-            Employee_Cmbox.Text = fullName;
+            // Set the selected item in Employee_Cmbox by matching inforID
+            Employee_Cmbox.SelectedItem = Employee_Cmbox.Items
+                .Cast<ComboBoxItem>()
+                .FirstOrDefault(item => item.Value.Equals(inforID));
+
             Task_Cmbox.Text = taskName;
             startDatePicker.SelectedDate = startDate;
             endDatePicker.SelectedDate = endDate;
@@ -109,7 +113,7 @@ namespace CTOTracker
             }
             else if (duration.Ticks < 0)
             {
-               
+
                 return 0.0;
             }
             else
@@ -200,7 +204,38 @@ namespace CTOTracker
                 return null;
             }
         }
+        private string GetEmployeeId(string inforID)
+        {
+            string? employeeId = null; // Initialize employeeId to null
 
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
+                {
+                    // Modified query to concatenate fName and lName
+                    string query = "SELECT empID FROM Employee WHERE inforID = ?";
+
+                    using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
+                    {
+                        command.Parameters.AddWithValue("@inforID", inforID); // Add parameter for employee name
+
+                        connection.Open(); // Open the connection
+                        object? result = command.ExecuteScalar(); // Execute the query and get the result
+
+                        if (result != null) // Check if the result is not null
+                        {
+                            employeeId = result.ToString(); // Assign the employee ID to employeeId
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
+            }
+
+            return employeeId ?? throw new Exception("Employee ID not found."); // Return employeeId if not null, otherwise throw an exception
+        }
         private void PopulateTaskComboBox()
         {
             try
@@ -457,7 +492,8 @@ namespace CTOTracker
                 if (result == MessageBoxResult.Yes)
                 {
                     // Get selected employee name from ComboBox
-                    string selectedEmployee = Employee_Cmbox.SelectedItem?.ToString() ?? string.Empty;
+
+                    string selectedEmployee = GetSelectedEmployeeId();
 
                     // Get selected task name from ComboBox
                     string selectedTask = Task_Cmbox.Text.Trim(); // Retrieve directly from Text property
@@ -478,7 +514,11 @@ namespace CTOTracker
                         return;
                     }
 
-                    string employeeId = GetSelectedEmployeeId();
+                    //if (selectedEmployee != null)
+                    //{
+                    //    return selectedItem.Value; // This is the employee ID
+                    //}
+                    string employeeId = GetEmployeeId(selectedEmployee);
 
                     // Check if the task exists in the database
                     string taskId = GetTaskId(selectedTask);
@@ -561,11 +601,11 @@ namespace CTOTracker
                                 {
                                     MessageBox.Show("The time you have inputted is in a wrong order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
-                            
+
                             }
                             else
                             {
-                                
+
                                 command.Parameters.AddWithValue("@timeIn", DBNull.Value);
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
@@ -573,10 +613,10 @@ namespace CTOTracker
                                 connection.Open();
                                 int rowsAffected = command.ExecuteNonQuery();
                                 MessageBox.Show("Schedule has been added!");
-                                
+
                             }
-                            
-                            
+
+
                         }
                     }
                     catch (Exception ex)
@@ -611,7 +651,8 @@ namespace CTOTracker
                     return;
                 }
 
-                string employeeId = GetSelectedEmployeeId();
+                string empid = GetSelectedEmployeeId();
+                string employeeId = GetEmployeeId(empid);
                 string taskId = GetTaskId(selectedTask);
 
                 DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
@@ -716,7 +757,7 @@ namespace CTOTracker
                                 command.Parameters.AddWithValue("@timeOut", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoEarned", DBNull.Value);
                                 command.Parameters.AddWithValue("@ctoBalance", DBNull.Value);
-                                
+
                             }
                             command.Parameters.AddWithValue("@schedID", schedID);
                             connection.Open();

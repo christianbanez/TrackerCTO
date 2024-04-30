@@ -229,6 +229,7 @@
         <Grid
             x:Name="EmpFilPnl"
             Grid.Row="1"
+            Loaded="EmpFilPnl_Loaded"
             Visibility="Collapsed">
 
             <Grid.RowDefinitions>
@@ -354,23 +355,27 @@
                     <DatePicker
                         x:Name="dtEmpDate"
                         Grid.Column="0"
-                        Margin="10,10,15,10"
+                        Margin="10,10,0,10"
+                        Padding="5"
                         HorizontalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
                         materialDesign:HintAssist.Hint="Date Earned"
+                        materialDesign:HintAssist.IsFloating="False"
+                        Background="#66B7CDE4"
                         FontSize="14"
-                        SelectedDateChanged="dtEDate_SelectedDateChanged" />
+                        SelectedDateChanged="dtEDate_SelectedDateChanged"
+                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
                     <ComboBox
                         x:Name="cmbxEmpMoY"
                         Grid.Column="1"
-                        Margin="0,10,20,10"
+                        Margin="10,10,0,10"
+                        Padding="5"
+                        VerticalContentAlignment="Center"
                         HorizontalAlignment="Stretch"
+                        Background="#66B7CDE4"
                         FontSize="14"
-                        Foreground="Gray"
-                        Tag=""
-                        Template="{DynamicResource ComboBoxTemplate1}">
-                        <ComboBoxItem Content="Month/Year" />
-                        <ComboBoxItem Content="Year" />
-                    </ComboBox>
+                        SelectedIndex="0"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     <Button
                         x:Name="btnEmoClear"
                         Grid.Column="3"

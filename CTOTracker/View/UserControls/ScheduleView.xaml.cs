@@ -344,7 +344,7 @@ namespace CTOTracker.View
                 }
 
                 // Extract relevant data from the selected row
-                string fullName = selectedRow["fName"].ToString() + " " + selectedRow["lName"].ToString();
+                string inforID = selectedRow["inforID"].ToString();
                 string taskName = selectedRow["taskName"].ToString();
                 string startDateString = selectedRow["plannedStart"].ToString();
                 string endDateString = selectedRow["plannedEnd"].ToString();
@@ -361,7 +361,7 @@ namespace CTOTracker.View
                     AddTask addTaskWindow = new AddTask();
 
                     // Pass selected data to AddTask form, including schedID
-                    addTaskWindow.PopulateWithData(fullName, taskName, startDate, endDate, timeIn, timeOut, schedID);
+                    addTaskWindow.PopulateWithData(inforID, taskName, startDate, endDate, timeIn, timeOut, schedID);
 
                     // Ensure the buttons are configured properly
                     addTaskWindow.AddButton.Visibility = Visibility.Collapsed;

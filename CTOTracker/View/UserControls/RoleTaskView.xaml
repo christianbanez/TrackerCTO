@@ -4,9 +4,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:CTOTracker.View.UserControls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="768"
     d:DesignWidth="1360"
+    UseLayoutRounding="True"
     mc:Ignorable="d">
     <Grid>
         <Grid>
@@ -38,7 +40,8 @@
                     ItemsSource="{Binding dataTable}"
                     RenderTransformOrigin="0.5,0.5"
                     RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-                    Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="roleGridView_SelectionChanged_1">
+                    SelectionChanged="roleGridView_SelectionChanged_1"
+                    Style="{DynamicResource MaterialDesignDataGrid}">
                     <DataGrid.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform />
@@ -81,13 +84,16 @@
                             x:Name="roleNameInput"
                             Grid.Row="1"
                             Margin="70,0,0,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            FontSize="16"
-                            IsEnabled="False"
-                            Style="{DynamicResource txtbx_style}"
-                            Tag="Type role name"
+                           Padding="0"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           VerticalContentAlignment="Center"
+                           materialDesign:HintAssist.Hint="Role Name"
+                           materialDesign:HintAssist.IsFloating="False"
+                           Background="#66B7CDE4"
+                           FontSize="16"
+                           IsEnabled="False"
+                           Style="{DynamicResource MaterialDesignOutlinedTextBox}"
                             TextWrapping="Wrap" />
                     </Grid>
 
@@ -110,7 +116,7 @@
                         </Grid>
 
                         <!--  AddEdit  -->
-                        
+
 
                         <!--  SaveAdd  -->
                         <Grid x:Name="roleAddPnl" Visibility="Collapsed">
@@ -194,7 +200,8 @@
                     IsReadOnly="True"
                     ItemsSource="{Binding dataTable}"
                     RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-                    Style="{DynamicResource MaterialDesignDataGrid}" SelectionChanged="taskGridView_SelectionChanged_1" />
+                    SelectionChanged="taskGridView_SelectionChanged_1"
+                    Style="{DynamicResource MaterialDesignDataGrid}" />
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -228,13 +235,16 @@
                             x:Name="taskNameInput"
                             Grid.Row="1"
                             Margin="70,0,0,0"
+                            Padding="0"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
+                            materialDesign:HintAssist.Hint="Task Name"
+                            materialDesign:HintAssist.IsFloating="False"
+                            Background="#66B7CDE4"
                             FontSize="16"
                             IsEnabled="False"
-                            Style="{DynamicResource txtbx_style}"
-                            Tag="Type task name"
+                            Style="{DynamicResource MaterialDesignOutlinedTextBox}"
                             TextChanged="taskNameInput_TextChanged"
                             TextWrapping="Wrap" />
                     </Grid>
@@ -256,13 +266,16 @@
                             x:Name="taskDescInput"
                             Grid.Row="1"
                             Margin="30,0,50,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            FontSize="16"
-                            IsEnabled="False"
-                            Style="{DynamicResource txtbx_style}"
-                            Tag="Type task description"
+                           Padding="0"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           VerticalContentAlignment="Center"
+                           materialDesign:HintAssist.Hint="Task Description"
+                           materialDesign:HintAssist.IsFloating="False"
+                           Background="#66B7CDE4"
+                           FontSize="16"
+                           IsEnabled="False"
+                           Style="{DynamicResource MaterialDesignOutlinedTextBox}"
                             TextWrapping="Wrap" />
 
                     </Grid>

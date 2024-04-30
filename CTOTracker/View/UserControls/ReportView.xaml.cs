@@ -903,5 +903,10 @@ namespace CTOTracker.View.UserControls
                 return;
             }
         }
+
+        private void EmpFilPnl_Loaded(object sender, RoutedEventArgs e)
+        {
+            PopulateMoYComboBox();
+        }
     }
 }
