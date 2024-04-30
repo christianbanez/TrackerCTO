@@ -41,6 +41,8 @@ namespace CTOTracker.View.UserControls
             rbBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbUsed.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
+            cmbxMoY.SelectionChanged += cmbxMoY_SelectionChanged;
+            //cmbxEmpMoY_SelectionChanged += cmbxEmpMoY_SelectionChanged;
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
             //cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
@@ -54,7 +56,7 @@ namespace CTOTracker.View.UserControls
             string query = "SELECT Employee.inforID AS inforID, Employee.fName AS fName, Employee.lName AS lName, Role.roleName AS roleName, Task.taskName, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd," +
                 " Schedule.ctoEarned, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, CTOuse.ctoUse, Schedule.ctoBalance FROM (((Schedule LEFT JOIN Employee ON Schedule.empID = Employee.empID)" +
                 " LEFT JOIN Role ON Employee.roleID = Role.roleID) LEFT JOIN Task ON Schedule.taskID = Task.taskID) LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID" +
-                " WHERE Schedule.completed = -1;";
+                " WHERE Schedule.completed = -1";
             LoadAllData(query);
         }
         private bool columnsAdded = false;
@@ -106,34 +108,46 @@ namespace CTOTracker.View.UserControls
             string query = "SELECT Employee.inforID AS inforID, Employee.fName AS fName, Employee.lName AS lName, Role.roleName AS roleName, Task.taskName, Format(Schedule.plannedEnd, 'MM/dd/yyyy') AS plannedEnd," +
                 " Schedule.ctoEarned, Format(CTOuse.dateUsed, 'MM/dd/yyyy') AS dateUsed, CTOuse.ctoUse, Schedule.ctoBalance FROM (((Schedule LEFT JOIN Employee ON Schedule.empID = Employee.empID)" +
                 " LEFT JOIN Role ON Employee.roleID = Role.roleID) LEFT JOIN Task ON Schedule.taskID = Task.taskID) LEFT JOIN CTOuse ON Schedule.schedID = CTOuse.schedID" +
-                " WHERE Schedule.completed = -1;";
+                " WHERE Schedule.completed = -1";
 
             try
             {
                 if (!string.IsNullOrEmpty(nameFilter))
                 {
-                    query += $" AND (Employee.fName LIKE '{nameFilter}%' OR Employee.lName LIKE '{nameFilter}%')";
+                    query += $" AND (Employee.fName LIKE '{nameFilter}' OR Employee.lName LIKE '{nameFilter}')";
                 }
                 if (!string.IsNullOrEmpty(taskFilter))
                 {
-                    query += $" AND Task.taskName = '{taskFilter}'";
+                    query += $" AND (Task.taskName = '{taskFilter}')";
                 }
                 if (!string.IsNullOrEmpty(roleFilter))
                 {
-                    query += $" AND Role.roleName = '{roleFilter}'";
+                    query += $" AND (Role.roleName = '{roleFilter}')";
                 }
                 if (rbBalance.IsChecked == true)
                 {
-                    query += " AND Schedule.ctoBalance > 0";
+                    query += " AND (Schedule.ctoBalance > 0)";
                 }
                 if (rbUsed.IsChecked == true)
                 {
-                    query += " AND Schedule.ctoUsed > 0";
+                    query += " AND (Schedule.ctoUsed > 0)";
                 }
-                if (dtEDate.SelectedDate.HasValue)
+                if (cmbxMoY.SelectedItem != null && cmbxMoY.SelectedItem.ToString() == "Month/Year")
                 {
-                    DateTime selectedDate = dtEDate.SelectedDate.Value;
-                    query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
+                    // Check if the date picker has a selected date
+                    if (dtEDate.SelectedDate.HasValue)
+                    {
+                        DateTime selectedDate = dtEDate.SelectedDate.Value;
+                        query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
+                    }
+                }
+                else if (cmbxMoY.SelectedItem != null && cmbxMoY.SelectedItem.ToString() == "Year")
+                {
+                    // Get the selected year from the date picker
+                    int selectedYear = dtEDate.SelectedDate.HasValue ? dtEDate.SelectedDate.Value.Year : DateTime.Now.Year;
+
+                    // Apply the "Year" filter to the query
+                    query += $" AND YEAR(Schedule.plannedEnd) = {selectedYear}";
                 }
                 // Execute the query and update the DataGrid
                 LoadAllData(query);
@@ -434,6 +448,9 @@ namespace CTOTracker.View.UserControls
 
             cmbxEoU.Items.Add("Earned CTO");
             cmbxEoU.Items.Add("Used CTO");
+
+            cmbxEmpMoY.Items.Add("Earned CTO");
+            cmbxEmpMoY.Items.Add("Used CTO");
         }
 
         //------------------------------Role------------------------------------
@@ -907,6 +924,16 @@ namespace CTOTracker.View.UserControls
         private void EmpFilPnl_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateMoYComboBox();
+        }
+
+        private void cmbxMoY_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFiltersAndUpdateDataGrid();
+        }
+
+        private void cmbxEmpMoY_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFiltersAndUpdateDataGrid();
         }
     }
 }
