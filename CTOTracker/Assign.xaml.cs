@@ -80,7 +80,7 @@ namespace CTOTracker
             // Extract only time component from the selected time strings
             if (!string.IsNullOrEmpty(timeIn))
             {
-                startTimeTextBox.SelectedTime = DateTime.Parse(timeIn);
+                startTimeTextBox.Text = DateTime.Parse(timeIn).ToString("hh:mm tt");
             }
 
             if (!string.IsNullOrEmpty(timeOut))
