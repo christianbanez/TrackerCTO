@@ -77,7 +77,7 @@ namespace CTOTracker.View
                 {
                     string query = "SELECT Schedule.schedID, Employee.inforID, Employee.fName, Employee.lName, Task.taskName, completed, " +
                         "Format(plannedStart, 'MM/dd/yyyy') AS plannedStart, Format(plannedEnd, 'MM/dd/yyyy') AS plannedEnd, " +
-                        "Format(timeIn, 'h:mm AM/PM') AS timeIn, Format(timeOut, 'h:mm AM/PM') AS timeOut, ctoEarned, ctoBalance " +
+                        "timeIn, timeOut, ctoEarned, ctoBalance " +
                         "FROM (Schedule LEFT JOIN  Employee ON Schedule.empID = Employee.empID) " +
                         "LEFT JOIN Task ON Schedule.taskID = Task.taskID";
 
@@ -676,6 +676,15 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[9].Header = "Time Out";
             scheduleDataGrid.Columns[10].Header = "CTO Earned";
             scheduleDataGrid.Columns[11].Header = "CTO Balance";
+
+            DataGridTextColumn timeInColumn = scheduleDataGrid.Columns[8] as DataGridTextColumn;
+            DataGridTextColumn timeOutColumn = scheduleDataGrid.Columns[9] as DataGridTextColumn;
+
+            if (timeInColumn != null && timeOutColumn != null)
+            {
+                timeInColumn.Binding.StringFormat = "h:mm tt"; // Format time in 12-hour format with AM/PM
+                timeOutColumn.Binding.StringFormat = "h:mm tt"; // Format time in 12-hour format with AM/PM
+            }
         }
 
         private void cbxFilterTask_SelectionChanged(object sender, SelectionChangedEventArgs e)
