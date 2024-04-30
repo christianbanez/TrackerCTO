@@ -134,12 +134,10 @@
                     Margin="10,5"
                     Padding="5"
                     HorizontalAlignment="Stretch"
-                    materialDesign:HintAssist.Hint="Search Employee"
-                    materialDesign:HintAssist.IsFloating="False"
                     Background="#66B7CDE4"
                     FontSize="14"
                     IsEditable="True"
-                    IsReadOnly="False"
+                    IsReadOnly="True"
                     SelectionChanged="cbxEmployee_SelectionChanged"
                     Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                 <CheckBox
