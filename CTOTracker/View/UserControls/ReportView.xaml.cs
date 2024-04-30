@@ -550,6 +550,7 @@ namespace CTOTracker.View.UserControls
             animation.To = new Thickness(0, 90, 0, 0); // Adjust this value as needed
             animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
             dtPnl.BeginAnimation(MarginProperty, animation);
+            dtPnl.Height = 590;
             //dtPnl.Height -= filterPnlHeight;
         }
 
@@ -568,6 +569,7 @@ namespace CTOTracker.View.UserControls
             animation.To = new Thickness(0, 45, 0, 0);
             animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
             dtPnl.BeginAnimation(MarginProperty, animation);
+            dtPnl.Height = 600;
             //dtPnl.Height = originalDtPnlHeight;
         }
 
