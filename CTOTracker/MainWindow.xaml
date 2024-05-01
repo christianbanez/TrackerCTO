@@ -15,7 +15,7 @@
     MinWidth="1360"
     MinHeight="768"
     MaxWidth="1360"
-    MaxHeight="798"
+    MaxHeight="768"
     Padding="5,5,5,5"
     AllowsTransparency="True"
     Background="Transparent"
@@ -166,30 +166,6 @@
                 <StackPanel x:Name="stpnlBtns" Margin="0,20,0,0">
                     <!--  Menu toggle Grid  -->
                     <Grid Height="75">
-
-                        <!--  Menu text  -->
-                        <Label
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="73,-20,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            Content="M E N U"
-                            FontSize="20"
-                            Foreground="White">
-
-                            <!--  // Shadow Effect //  -->
-
-                            <Label.Effect>
-                                <DropShadowEffect
-                                    BlurRadius="10"
-                                    Direction="-90"
-                                    ShadowDepth="1"
-                                    Color="White" />
-                            </Label.Effect>
-                        </Label>
-
                         <!--  Toggle Button  -->
                         <ToggleButton
                             x:Name="tgbMenu"
@@ -237,7 +213,36 @@
                                     </BeginStoryboard>
                                 </EventTrigger>
                             </ToggleButton.Triggers>
+                            <ToggleButton.ToolTip>
+                                <ToolTip
+                                    x:Name="ttMenu"
+                                    Content="Menu"
+                                    Style="{StaticResource tt_style}" />
+                            </ToggleButton.ToolTip>
                         </ToggleButton>
+
+                        <!--  Menu text  -->
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="73,-20,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            Content="M E N U"
+                            FontSize="20"
+                            Foreground="White">
+
+                            <!--  // Shadow Effect //  -->
+
+                            <Label.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="10"
+                                    Direction="-90"
+                                    ShadowDepth="1"
+                                    Color="White" />
+                            </Label.Effect>
+                        </Label>
                     </Grid>
 
                     <!--  ListView Menu list items  -->

@@ -58,6 +58,7 @@ namespace CTOTracker
         private void ListViewItem_Selected_4(object sender, RoutedEventArgs e)
         {
             frmMain.Navigate(startPage);
+            // Uncheck the ToggleButton when a list view item is selected
             if (listSideNav.SelectedItem != null)
             {
                 tgbMenu.IsChecked = false;
@@ -108,17 +109,21 @@ namespace CTOTracker
         {
             // Set tooltip visibility
 
-            if (tgbMenu.IsChecked != true)
+            if (tgbMenu.IsChecked == true)
             {
+                ttMenu.Visibility = Visibility.Collapsed;
                 ttEmp.Visibility = Visibility.Collapsed;
                 ttSched.Visibility = Visibility.Collapsed;
                 ttRep.Visibility = Visibility.Collapsed;
+                ttRT.Visibility = Visibility.Collapsed;
             }
             else
             {
+                ttMenu.Visibility = Visibility.Visible;
                 ttEmp.Visibility = Visibility.Visible;
                 ttSched.Visibility = Visibility.Visible;
                 ttRep.Visibility = Visibility.Visible;
+                ttRT.Visibility = Visibility.Visible;
             }
         }
 

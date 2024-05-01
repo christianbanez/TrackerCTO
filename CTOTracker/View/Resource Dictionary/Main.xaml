@@ -128,8 +128,6 @@
                         SnapsToDevicePixels="True" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource tb_mouse_over}" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource tb_mouse_over}" />
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
@@ -142,8 +140,6 @@
                         </Trigger>
 
                         <Trigger Property="IsChecked" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource tb_mouse_over}" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource tb_mouse_over}" />
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
