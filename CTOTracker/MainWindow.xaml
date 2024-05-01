@@ -19,12 +19,13 @@
     Padding="5,5,5,5"
     AllowsTransparency="True"
     Background="Transparent"
+    Icon="/Images/VeCTOr updated icon.ico"
     ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
     UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
-    mc:Ignorable="d" Icon="/Images/VeCTOr updated icon.ico">
+    mc:Ignorable="d">
 
     <Border BorderThickness="3" CornerRadius="3">
         <Border.BorderBrush>
@@ -162,9 +163,9 @@
                     </LinearGradientBrush>
                 </Grid.Background>
 
-                <StackPanel x:Name="stpnlBtns" Margin="0,30,0,0">
+                <StackPanel x:Name="stpnlBtns" Margin="0,20,0,0">
                     <!--  Menu toggle Grid  -->
-                    <Grid Height="90">
+                    <Grid Height="75">
 
                         <!--  Menu text  -->
                         <Label
@@ -195,7 +196,7 @@
                             Grid.Column="0"
                             Width="30"
                             Height="30"
-                            Margin="18,-20,0,0"
+                            Margin="17,-20,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Background="Transparent"
@@ -264,7 +265,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="AccountTie" />
 
@@ -292,7 +293,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="CalendarClockOutline" />
 
@@ -320,7 +321,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="FileExportOutline" />
                                 <Label
@@ -331,7 +332,7 @@
                         </ListViewItem>
 
                         <ListViewItem
-                            Margin="0,360,0,15"
+                            Margin="0,385,0,15"
                             HorizontalAlignment="Left"
                             Selected="ListViewItem_Selected_3">
                             <ListViewItem.ToolTip>
@@ -345,7 +346,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="FormatListBulletedSquare" />
                                 <Label
