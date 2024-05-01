@@ -539,21 +539,21 @@ namespace CTOTracker.View.UserControls
         {
             //filter panel animation
             DoubleAnimation showAnimation = new DoubleAnimation();
-            showAnimation.From = 40;
+            showAnimation.From = 42;
             showAnimation.To = 150;
             showAnimation.Duration = TimeSpan.FromSeconds(0.3);
             FilterPnl.BeginAnimation(HeightProperty, showAnimation);
 
             //dtpnl animation
             ThicknessAnimation animation = new ThicknessAnimation();
-            animation.From = new Thickness(0, 40, 0, 0);
+            animation.From = new Thickness(0, 42, 0, 0);
             animation.To = new Thickness(0, 90, 0, 0); // Adjust this value as needed
             animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
             dtPnl.BeginAnimation(MarginProperty, animation);
 
             DoubleAnimation gridHeightAnimation = new DoubleAnimation();
             gridHeightAnimation.From = reportDataGrid.ActualHeight;
-            gridHeightAnimation.To = 600; // Adjust this value as needed
+            gridHeightAnimation.To = 602; // Adjust this value as needed
             gridHeightAnimation.Duration = TimeSpan.FromSeconds(0.3);
             reportDataGrid.BeginAnimation(HeightProperty, gridHeightAnimation);
             //dtPnl.Height -= filterPnlHeight;
@@ -564,14 +564,14 @@ namespace CTOTracker.View.UserControls
             //filter panel animation
             DoubleAnimation hideAnimation = new DoubleAnimation();
             hideAnimation.From = 150;
-            hideAnimation.To = 40;
+            hideAnimation.To = 42;
             hideAnimation.Duration = TimeSpan.FromSeconds(0.2);
             FilterPnl.BeginAnimation(HeightProperty, hideAnimation);
 
             //dtpnl animation
             ThicknessAnimation animation = new ThicknessAnimation();
             animation.From = new Thickness(0, 90, 0, 0); // Adjust this value as needed
-            animation.To = new Thickness(0, 40, 0, 0);
+            animation.To = new Thickness(0, 42, 0, 0);
             animation.Duration = TimeSpan.FromSeconds(0.3); // Adjust the duration as needed
             dtPnl.BeginAnimation(MarginProperty, animation);
 

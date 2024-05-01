@@ -6,180 +6,192 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Use CTO"
     Width="900"
-    UseLayoutRounding="True"
     Height="600"
+    Padding="5,5,5,5"
+    AllowsTransparency="True"
+    Background="Transparent"
     Loaded="MainWindow_Loaded"
     ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
+    UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Grid Margin="0,30,0,0">
-        <!--  BG  -->
-        <Grid.Background>
+
+    <Border BorderThickness="3" CornerRadius="3">
+        <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                <GradientStop Offset="0.008" Color="#FFDAE7EF" />
-                <GradientStop Offset="1" Color="#FFD1D6EA" />
+                <GradientStop Offset="0" Color="#FF3A4575" />
+                <GradientStop Offset="1" Color="#FF3A2586" />
             </LinearGradientBrush>
-        </Grid.Background>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="4*" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="4*" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="5" />
-        </Grid.RowDefinitions>
-        <Label
-            Margin="20,10,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Content="SELECTED SCHEDULE :"
-            FontSize="14"
-            FontWeight="DemiBold" />
-        <DataGrid
-            x:Name="SelectedScheduleView"
-            Grid.Row="1"
-            Margin="10,0,10,0"
-            BeginningEdit="SelectedScheduleView_BeginningEdit"
-            CanUserAddRows="False"
-            CanUserDeleteRows="False"
-            CanUserReorderColumns="False"
-            CanUserResizeColumns="False"
-            CanUserResizeRows="False"
-            CanUserSortColumns="False"
-            CellStyle="{DynamicResource MaterialDesignDataGridCell}"
-            ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
-            RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-            Style="{DynamicResource MaterialDesignDataGrid}" />
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        </Border.BorderBrush>
+        <Grid Margin="0,30,0,0">
+            <!--  BG  -->
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
+                    <GradientStop Offset="0.008" Color="#FFDAE7EF" />
+                    <GradientStop Offset="1" Color="#FFD1D6EA" />
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="5" />
+            </Grid.RowDefinitions>
             <Label
-                Margin="20,0,0,0"
+                Margin="20,10,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Content="CHANGES :"
+                Content="SELECTED SCHEDULE :"
                 FontSize="14"
                 FontWeight="DemiBold" />
-            <Button
-                x:Name="confirmChangesBttn"
-                Grid.Column="2"
-                Width="60"
-                Margin="50,5,5,5"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Click="confirmChangesBttn_Click"
-                Content="Confirm"
-                Style="{DynamicResource button_style}" />
-        </Grid>
+            <DataGrid
+                x:Name="SelectedScheduleView"
+                Grid.Row="1"
+                Margin="10,0,10,0"
+                BeginningEdit="SelectedScheduleView_BeginningEdit"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                CellStyle="{DynamicResource MaterialDesignDataGridCell}"
+                ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
+                RowStyle="{DynamicResource MaterialDesignDataGridRow}"
+                Style="{DynamicResource MaterialDesignDataGrid}" />
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    Margin="20,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Content="CHANGES :"
+                    FontSize="14"
+                    FontWeight="DemiBold" />
+                <Button
+                    x:Name="confirmChangesBttn"
+                    Grid.Column="2"
+                    Width="60"
+                    Margin="50,5,5,5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Click="confirmChangesBttn_Click"
+                    Content="Confirm"
+                    Style="{DynamicResource button_style}" />
+            </Grid>
 
-        <DataGrid
-            x:Name="ChangesGridView"
-            Grid.Row="3"
-            Margin="10,0,10,0"
-            CanUserAddRows="False"
-            CanUserDeleteRows="False"
-            CanUserReorderColumns="False"
-            CanUserResizeColumns="False"
-            CanUserResizeRows="False"
-            CanUserSortColumns="False"
-            CellStyle="{DynamicResource MaterialDesignDataGridCell}"
-            ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
-            IsReadOnly="True"
-            RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-            Style="{DynamicResource MaterialDesignDataGrid}" />
+            <DataGrid
+                x:Name="ChangesGridView"
+                Grid.Row="3"
+                Margin="10,0,10,0"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="False"
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                CellStyle="{DynamicResource MaterialDesignDataGridCell}"
+                ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader}"
+                IsReadOnly="True"
+                RowStyle="{DynamicResource MaterialDesignDataGridRow}"
+                Style="{DynamicResource MaterialDesignDataGrid}" />
 
-        <Grid Grid.Row="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="8*" />
-            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="8*" />
+                </Grid.ColumnDefinitions>
+                <Label
+                    Margin="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="TOTAL CTO :"
+                    FontSize="14"
+                    FontWeight="DemiBold" />
+                <Label
+                    x:Name="Total"
+                    Grid.Column="1"
+                    Margin="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Content="Label"
+                    FontSize="14"
+                    FontWeight="Medium" />
+            </Grid>
+
             <Label
+                Grid.Row="5"
                 Margin="0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
-                Content="TOTAL CTO :"
+                Content="Usage Description :"
                 FontSize="14"
                 FontWeight="DemiBold" />
-            <Label
-                x:Name="Total"
-                Grid.Column="1"
-                Margin="0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Content="Label"
-                FontSize="14"
-                FontWeight="Medium" />
+
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="useDescTextBox"
+                    Grid.Column="1"
+                    Width="400"
+                    Margin="20,5"
+                    Padding="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="#66CBE0F5"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    TextWrapping="Wrap" />
+                <DatePicker
+                    x:Name="datePicker"
+                    Grid.Column="2"
+                    Width="100"
+                    Margin="10,5"
+                    Padding="5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="#66CBE0F5"
+                    Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+
+                <Button
+                    x:Name="useCtoBttn"
+                    Grid.Column="4"
+                    Width="50"
+                    Margin="10,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="useCtoBttn_Click"
+                    Content="Use"
+                    Style="{DynamicResource button_style}" />
+                <Button
+                    x:Name="cancelBttn"
+                    Grid.Column="5"
+                    Width="50"
+                    Margin="10,5"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Click="cancelBttn_Click"
+                    Content="Cancel"
+                    Style="{DynamicResource button_style}" />
+            </Grid>
+
         </Grid>
-
-        <Label
-            Grid.Row="5"
-            Margin="0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Content="Usage Description :"
-            FontSize="14"
-            FontWeight="DemiBold" />
-
-        <Grid Grid.Row="6">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <TextBox
-                x:Name="useDescTextBox"
-                Grid.Column="1"
-                Width="400"
-                Margin="20,5"
-                Padding="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Background="#66CBE0F5"
-                Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                TextWrapping="Wrap" />
-            <DatePicker
-                x:Name="datePicker"
-                Grid.Column="2"
-                Width="100"
-                Margin="10,5"
-                Padding="5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Background="#66CBE0F5"
-                Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
-
-            <Button
-                x:Name="useCtoBttn"
-                Grid.Column="4"
-                Width="50"
-                Margin="10,5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Click="useCtoBttn_Click"
-                Content="Use"
-                Style="{DynamicResource button_style}" />
-            <Button
-                x:Name="cancelBttn"
-                Grid.Column="5"
-                Width="50"
-                Margin="10,5"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Click="cancelBttn_Click"
-                Content="Cancel"
-                Style="{DynamicResource button_style}" />
-        </Grid>
-
-    </Grid>
+    </Border>
 </Window>

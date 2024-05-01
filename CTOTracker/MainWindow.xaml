@@ -45,6 +45,7 @@
                 </LinearGradientBrush>
             </Grid.Background>
 
+
             <!--  Main panel  -->
             <Grid
                 x:Name="MainPnl"
@@ -146,6 +147,7 @@
                 <!--  Overlay  -->
                 <Grid
                     x:Name="OverlayGrid"
+                    Margin="0,-20,0,0"
                     Background="Black"
                     Visibility="Collapsed" />
             </Grid>
@@ -178,7 +180,6 @@
                             Background="Transparent"
                             BorderBrush="Transparent"
                             Checked="tgbMenu_Checked"
-                            MouseEnter="tgbMenu_MouseEnter"
                             Style="{DynamicResource tb_style}"
                             Unchecked="tgbMenu_Unchecked">
 

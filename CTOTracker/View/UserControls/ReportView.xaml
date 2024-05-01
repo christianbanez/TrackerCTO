@@ -76,7 +76,7 @@
             <!--  Filter Panel  -->
             <Grid
                 x:Name="FilterPnl"
-                Height="40"
+                Height="42"
                 VerticalAlignment="Top"
                 Focusable="True">
                 <StackPanel

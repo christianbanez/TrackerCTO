@@ -105,30 +105,13 @@ namespace CTOTracker
             }
         }
 
-        private void tgbMenu_MouseEnter(object sender, MouseEventArgs e)
-        {
-            // Set tooltip visibility
-
-            if (tgbMenu.IsChecked == true)
-            {
-                ttMenu.Visibility = Visibility.Collapsed;
-                ttEmp.Visibility = Visibility.Collapsed;
-                ttSched.Visibility = Visibility.Collapsed;
-                ttRep.Visibility = Visibility.Collapsed;
-                ttRT.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ttMenu.Visibility = Visibility.Visible;
-                ttEmp.Visibility = Visibility.Visible;
-                ttSched.Visibility = Visibility.Visible;
-                ttRep.Visibility = Visibility.Visible;
-                ttRT.Visibility = Visibility.Visible;
-            }
-        }
-
         private void tgbMenu_Checked(object sender, RoutedEventArgs e)
         {
+            ttMenu.Visibility = Visibility.Collapsed;
+            ttEmp.Visibility = Visibility.Collapsed;
+            ttSched.Visibility = Visibility.Collapsed;
+            ttRep.Visibility = Visibility.Collapsed;
+            ttRT.Visibility = Visibility.Collapsed;
             OverlayGrid.Visibility = Visibility.Visible;
             OverlayGrid.Opacity = 0.5;
         }
@@ -136,6 +119,11 @@ namespace CTOTracker
         private void tgbMenu_Unchecked(object sender, RoutedEventArgs e)
         {
             OverlayGrid.Visibility = Visibility.Collapsed;
+            ttMenu.Visibility = Visibility.Visible;
+            ttEmp.Visibility = Visibility.Visible;
+            ttSched.Visibility = Visibility.Visible;
+            ttRep.Visibility = Visibility.Visible;
+            ttRT.Visibility = Visibility.Visible;
         }
 
         private void listSideNav_Loaded(object sender, RoutedEventArgs e)
