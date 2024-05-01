@@ -128,10 +128,10 @@ namespace CTOTracker.View.UserControls
                 {
                     query += " AND (Schedule.ctoBalance > 0)";
                 }
-                if (rbUsed.IsChecked == true)
-                {
-                    query += " AND (Schedule.ctoUsed > 0)";
-                }
+                //if (rbUsed.IsChecked == true)
+                //{
+                //    query += " AND (Schedule.ctoUsed > 0)";
+                //}
                 if (cmbxMoY.SelectedItem != null && cmbxMoY.SelectedItem.ToString() == "Month/Year")
                 {
                     // Check if the date picker has a selected date
@@ -148,6 +148,14 @@ namespace CTOTracker.View.UserControls
 
                     // Apply the "Year" filter to the query
                     query += $" AND YEAR(Schedule.plannedEnd) = {selectedYear}";
+                }
+                if (cmbxEoU.SelectedItem != null && cmbxEoU.SelectedItem.ToString() == "Earned CTO")
+                {
+                    query += " AND (Schedule.ctoEarned > 0)";
+                }
+                else if (cmbxEoU.SelectedItem != null && cmbxEoU.SelectedItem.ToString() == "Used CTO")
+                {
+                    query += " AND (CTOuse.ctoUse > 0)";
                 }
                 // Execute the query and update the DataGrid
                 LoadAllData(query);
@@ -449,8 +457,8 @@ namespace CTOTracker.View.UserControls
             cmbxEoU.Items.Add("Earned CTO");
             cmbxEoU.Items.Add("Used CTO");
 
-            cmbxEmpMoY.Items.Add("Earned CTO");
-            cmbxEmpMoY.Items.Add("Used CTO");
+            //cmbxEmpMoY.Items.Add("Earned CTO");
+            //cmbxEmpMoY.Items.Add("Used CTO");
         }
 
         //------------------------------Role------------------------------------
