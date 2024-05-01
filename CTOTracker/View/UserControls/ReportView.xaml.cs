@@ -23,7 +23,7 @@ namespace CTOTracker.View.UserControls
 
     public partial class ReportView : UserControl
     {
-        string imagePath = @"C:\Users\dkeh\Source\Repos\TrackerCTO\CTOTracker\Images\VeCTOr Main Icon.png";
+        string imagePath = @"\Images\VeCTOr Main Icon.png";
         private DataConnection dataConnection;
         private DataView dataView;
         private List<string> allEmployees;
@@ -83,17 +83,17 @@ namespace CTOTracker.View.UserControls
                 }
                 else
                 {
-                    MessageBox.Show("No data found in the Records.", "Information");
-                    txtschFname.Text = "";
-                    cmbxTask.SelectedIndex = -1;
-                    cmbxTask.Tag = "Task";
-                    cmbxRole.SelectedIndex = -1;
-                    cmbxRole.Tag = "Role";
-                    dtEDate.SelectedDate = null;
-                    //dtUDate.SelectedDate = null;
-                    DataReportView();
+                    //MessageBox.Show("No data found in the Records.", "Information");
+                    //txtschFname.Text = "";
+                    //cmbxTask.SelectedIndex = -1;
+                    //cmbxTask.Tag = "Task";
+                    //cmbxRole.SelectedIndex = -1;
+                    //cmbxRole.Tag = "Role";
+                    //dtEDate.SelectedDate = null;
+                    ////dtUDate.SelectedDate = null;
+                    //DataReportView();
 
-                    return;
+                    //return;
                 }
                 if (!columnsAdded)
                 {
