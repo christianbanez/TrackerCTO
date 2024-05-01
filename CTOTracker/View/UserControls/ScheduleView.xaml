@@ -140,17 +140,6 @@
                     IsReadOnly="True"
                     SelectionChanged="cbxEmployee_SelectionChanged"
                     Style="{StaticResource MaterialDesignOutlinedComboBox}" />
-                <CheckBox
-                    x:Name="showallChkBox"
-                    Grid.Column="2"
-                    Width="78"
-                    Margin="10,0,10,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Checked="showallChecked"
-                    Content="Show All"
-                    FontSize="14"
-                    Unchecked="showallUnchecked" />
 
                 <DatePicker
                     x:Name="monthPicker"

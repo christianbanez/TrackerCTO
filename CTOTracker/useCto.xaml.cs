@@ -125,7 +125,7 @@ namespace CTOTracker
                 {
                     SelectedScheduleView.Columns[0].Header = "Select CTO";
                     SelectedScheduleView.Columns[1].Header = "Schedule ID";
-                    SelectedScheduleView.Columns[2].Header = "Information ID";
+                    SelectedScheduleView.Columns[2].Header = "Infor ID";
                     SelectedScheduleView.Columns[3].Header = "First Name";
                     SelectedScheduleView.Columns[4].Header = "Last Name";
                     SelectedScheduleView.Columns[5].Header = "Completed";
@@ -133,7 +133,7 @@ namespace CTOTracker
                     SelectedScheduleView.Columns[7].Header = "CTO Used";
                     SelectedScheduleView.Columns[8].Header = "CTO Balance";
 
-                    SelectedScheduleView.Columns.RemoveAt(5); // Remove "Completed" column
+                    //SelectedScheduleView.Columns.RemoveAt(5); // Remove "Completed" column
                     SelectedScheduleView.Columns.RemoveAt(6); // Remove "Completed" column
 
                 };
@@ -215,7 +215,12 @@ namespace CTOTracker
                         double ctoEarned = Convert.ToDouble(rowView["ctoEarned"]);
                         double ctoUsed = Convert.ToDouble(rowView["ctoUsed"]);
                         double ctoBalance = Convert.ToDouble(rowView["ctoBalance"]);
+                        bool completed = Convert.ToBoolean(rowView["completed"]);
 
+                        if (!completed)
+                        {
+                            completed = true;
+                        }
                         // Check if ctoUsed is greater than ctoEarned
                         if (ctoUsed > ctoBalance)
                         {
@@ -248,7 +253,7 @@ namespace CTOTracker
                         newRow["inforID"] = Convert.ToInt32(rowView["inforID"]);
                         newRow["fName"] = rowView["fName"];
                         newRow["lName"] = rowView["lName"];
-                        newRow["completed"] = rowView["completed"];
+                        newRow["completed"] = completed;
                         newRow["ctoEarned"] = ctoEarned;
                         newRow["ctoUsed"] = ctoUsed;
                         newRow["ctoBalance"] = ctoBalance;
@@ -268,7 +273,7 @@ namespace CTOTracker
                     ChangesGridView.Columns[6].Header = "CTO Used";
                     ChangesGridView.Columns[7].Header = "CTO Balance";
 
-                    ChangesGridView.Columns.RemoveAt(4); // Remove "Completed" column
+                    //ChangesGridView.Columns.RemoveAt(4); // Remove "Completed" column
                     ChangesGridView.Columns.RemoveAt(5); // Remove "Completed" column
 
 
@@ -352,9 +357,9 @@ namespace CTOTracker
                             int schedID = Convert.ToInt32(row["schedID"]);
                             double ctoUsed = Convert.ToDouble(row["ctoUsed"]);
                             double ctoBalance = Convert.ToDouble(row["ctoBalance"]);
-
+                            bool completed = Convert.ToBoolean(row["completed"]);
                             // Call the method to update the database
-                            UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, useDesc, dateUsed.Value); // Use the validated dateUsed
+                            UpdateCtoUsedInDatabase(schedID, ctoUsed, ctoBalance, completed, useDesc, dateUsed.Value); // Use the validated dateUsed
                         }
 
                         MessageBox.Show("Database updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -395,7 +400,7 @@ namespace CTOTracker
         //        throw new Exception("Error updating database record for schedID " + schedID + ": " + ex.Message);
         //    }
         //}
-        private void UpdateCtoUsedInDatabase(int schedID, double ctoUse, double ctoBalance, string useDesc, DateTime dateUsed)
+        private void UpdateCtoUsedInDatabase(int schedID, double ctoUse, double ctoBalance, bool completed, string useDesc, DateTime dateUsed)
         {
             try
             {
@@ -416,10 +421,11 @@ namespace CTOTracker
                     }
 
                     // Update the ctoBalance field in the Schedule table
-                    string updateQuery = "UPDATE Schedule SET ctoBalance = @ctoBalance WHERE schedID = @schedID";
+                    string updateQuery = "UPDATE Schedule SET ctoBalance = @ctoBalance, completed = @completed WHERE schedID = @schedID";
                     using (OleDbCommand updateCommand = new OleDbCommand(updateQuery, connection))
                     {
                         updateCommand.Parameters.AddWithValue("@ctoBalance", ctoBalance);
+                        updateCommand.Parameters.AddWithValue("@completed", completed);
                         updateCommand.Parameters.AddWithValue("@schedID", schedID);
 
                         updateCommand.ExecuteNonQuery();

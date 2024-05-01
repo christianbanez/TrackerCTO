@@ -902,6 +902,7 @@ namespace CTOTracker.View.UserControls
             rbBalance.IsChecked = false;
             rbUsed.IsChecked = false;
             dtEDate.SelectedDate = null;
+            cmbxEmpMoY.SelectedIndex = 0;
             //dtUDate.SelectedDate = null;
             DataReportView();
         }
