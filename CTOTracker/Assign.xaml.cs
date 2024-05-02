@@ -540,7 +540,19 @@ namespace CTOTracker
                     string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
 
                     // Insert data into Schedule table
+                    if (string.IsNullOrEmpty(timeIn) && !string.IsNullOrEmpty(timeOut))
+                    {
+                        MessageBox.Show("Please enter a time in.");
+                        return;
+                    }
+                    else if (!string.IsNullOrEmpty(timeIn) && string.IsNullOrEmpty(timeOut))
+                    {
+                        MessageBox.Show("Please enter a time out.");
+                        return;
+                    }
+
                     InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
+
                 }
             }
             catch (Exception ex)
