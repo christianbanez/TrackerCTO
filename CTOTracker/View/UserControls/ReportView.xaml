@@ -369,7 +369,7 @@
                         materialDesign:HintAssist.IsFloating="False"
                         Background="#66B7CDE4"
                         FontSize="14"
-                        SelectedDateChanged="dtEDate_SelectedDateChanged"
+                        SelectedDateChanged="dtEmpDate_SelectedDateChanged"
                         Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
                     <ComboBox
                         x:Name="cmbxEmpMoY"
@@ -391,13 +391,13 @@
                         VerticalAlignment="Center"
                         Content="CTO Earned"
                         FontFamily="Roboto-Light"
-                        FontSize="14" />
+                        FontSize="14" Checked="rbEmpEarned_Checked" />
                     <RadioButton
                         x:Name="rbEmpBalance"
                         Margin="10,10,0,15"
                         Grid.Column="3"
                         VerticalAlignment="Center"
-                        Checked="rbBalance_Checked"
+                        Checked="rbEmpBalance_Checked"
                         Content="CTO Balance"
                         FontFamily="Roboto-Light"
                         FontSize="14" />
@@ -406,16 +406,16 @@
                         Margin="10,10,10,15"
                         Grid.Column="4"
                         VerticalAlignment="Center"
-                        Checked="rbUsed_Checked"
+                        Checked="rbEmpUsed_Checked"
                         Content="CTO Used"
                         FontFamily="Roboto-Light"
                         FontSize="14" />
                     <Button
-                        x:Name="btnEmoClear"
+                        x:Name="btnEmpClear"
                         Grid.Column="5"
                         Margin="60,5,10,10"
                         HorizontalAlignment="Stretch"
-                        Click="btnClear_Click"
+                        Click="btnEmpClear_Click"
                         Content="Clear"
                         FontSize="16"
                         Style="{StaticResource button_style}" />
