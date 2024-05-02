@@ -738,6 +738,25 @@ namespace CTOTracker.View.UserControls
                         // Set visibility of EmpFilPnl to visible
                         //EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
                         //Check if any rows were returned with completed = -1
+                        if (cmbxMoY.SelectedItem != null && cmbxMoY.SelectedItem.ToString() == "Month/Year")
+                        {
+                            // Check if the date picker has a selected date
+                            if (dtEmpDate.SelectedDate.HasValue)
+                            {
+                                DateTime selectedDate = dtEmpDate.SelectedDate.Value;
+                                query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
+                            }
+                        }
+                        else if (cmbxEmpMoY.SelectedItem != null && cmbxEmpMoY.SelectedItem.ToString() == "Year")
+                        {
+                            // Get the selected year from the date picker
+                            int selectedYear = dtEmpDate.SelectedDate.HasValue ? dtEmpDate.SelectedDate.Value.Year : DateTime.Now.Year;
+
+                            // Apply the "Year" filter to the query
+                            query += $" AND YEAR(Schedule.plannedEnd) = {selectedYear}";
+                        }
+                        // Execute the query and update the DataGrid
+                        LoadEmployeeReportHistory(fullName, role, empID) ;
                         if (dataTable.Rows.Count > 0)
                         {
                             // Bind the DataTable to the DataGrid
