@@ -45,7 +45,7 @@ namespace CTOTracker.View.UserControls
             //cmbxEmpMoY_SelectionChanged += cmbxEmpMoY_SelectionChanged;
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
-            //cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
+            cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
             EmpFilPnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
             PopulateTaskComboBox();
