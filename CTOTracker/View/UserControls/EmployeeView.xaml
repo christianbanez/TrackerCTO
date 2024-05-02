@@ -10,6 +10,11 @@
     d:DesignWidth="1360"
     UseLayoutRounding="True"
     mc:Ignorable="d">
+
+    <UserControl.DataContext>
+        <local:EmpData/>
+    </UserControl.DataContext>
+    
     <Grid>
         <!--  EmployeeView  -->
         <Grid>
@@ -118,6 +123,8 @@
                             VerticalContentAlignment="Center"
                             materialDesign:HintAssist.Hint="Infor ID"
                             materialDesign:HintAssist.IsFloating="False"
+                            materialDesign:ValidationAssist.OnlyShowOnFocus="True"
+                            materialDesign:ValidationAssist.Background="Transparent"
                             Background="#66B7CDE4"
                             FontSize="14"
                             IsEnabled="False"
@@ -125,9 +132,9 @@
                             PreviewTextInput="txtEmpID_PreviewTextInput"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}">
                             <TextBox.Text>
-                                <Binding Path="InforID" UpdateSourceTrigger="PropertyChanged">
+                                <Binding Path="InforID" UpdateSourceTrigger="Explicit">
                                     <Binding.ValidationRules>
-                                        <local:FieldRequiredValidation ValidatesOnTargetUpdated="True"  />
+                                        <local:FieldRequiredValidation ValidatesOnTargetUpdated="True" />
                                     </Binding.ValidationRules>
                                 </Binding>
                             </TextBox.Text>
