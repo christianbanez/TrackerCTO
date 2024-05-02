@@ -101,7 +101,7 @@ namespace CTOTracker.View.UserControls
                     }
                     else
                     {
-                        MessageBox.Show("No data found in the Records.", "Information");
+                        //MessageBox.Show("No data found in the Records.", "Information");
                         txtschFname.Text = "";
                         cmbxTask.SelectedIndex = -1;
                         cmbxTask.Tag = "Task";
@@ -109,9 +109,9 @@ namespace CTOTracker.View.UserControls
                         cmbxRole.Tag = "Role";
                         dtEDate.SelectedDate = null;
                         //dtUDate.SelectedDate = null;
-                        DataReportView();
+                        //DataReportView();
 
-                        return;
+                        //return;
                     }
                     if (!columnsAdded)
                     {
