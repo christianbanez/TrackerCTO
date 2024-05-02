@@ -168,10 +168,7 @@ namespace CTOTracker.View
                     {
                         DataGridEmployee1.ItemsSource = dataTable.DefaultView;     // Bind the DataTable to the DataGridView
                     }
-                    else
-                    {
-                        MessageBox.Show("No data found.", "Information");
-                    }
+                    
                     // Call the method to open the connection
                 }
                 catch (Exception ex)
