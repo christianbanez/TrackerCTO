@@ -45,7 +45,7 @@ namespace CTOTracker.View.UserControls
             //cmbxEmpMoY_SelectionChanged += cmbxEmpMoY_SelectionChanged;
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
-            //cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
+            cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
             EmpFilPnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
             PopulateTaskComboBox();
@@ -130,7 +130,7 @@ namespace CTOTracker.View.UserControls
                 }
                 if (rbUsed.IsChecked == true)
                 {
-                    query += " AND (Schedule.ctoUsed > 0)";
+                    query += " AND (CTOuse.ctoUse > 0)";
                 }
                 if (cmbxMoY.SelectedItem != null && cmbxMoY.SelectedItem.ToString() == "Month/Year")
                 {
@@ -151,11 +151,11 @@ namespace CTOTracker.View.UserControls
                 }
                 // Execute the query and update the DataGrid
                 LoadAllData(query);
-                if (cmbxTask.SelectedItem != null && reportDataGrid.Items.Count == 0 && !string.IsNullOrEmpty(taskFilter))
+               /* if (cmbxTask.SelectedItem != null && reportDataGrid.Items.Count == 0 && !string.IsNullOrEmpty(taskFilter))
                 {
                     MessageBox.Show($"No data found for the selected task: {taskFilter}.", "Information", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     cmbxTask.SelectedIndex = -1;
-                }
+                }*/
             }
             catch (Exception ex)
             {
@@ -945,5 +945,7 @@ namespace CTOTracker.View.UserControls
         {
             ApplyFiltersAndUpdateDataGrid();
         }
+
+        
     }
 }
