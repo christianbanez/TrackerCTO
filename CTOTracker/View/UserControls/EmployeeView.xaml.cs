@@ -783,11 +783,25 @@ namespace CTOTracker.View
             //DataGridEmployee1.Columns[0].Header = "Employee ID";
             //DataGridEmployee1.Columns[0].Visibility = Visibility.Collapsed;
             DataGridEmployee1.Columns[0].Header = "Infor ID";
+            DataGridEmployee1.Columns[0].Width = 75;
             DataGridEmployee1.Columns[1].Header = "First Name";
             DataGridEmployee1.Columns[2].Header = "Last Name";
             DataGridEmployee1.Columns[3].Header = "Email";
             DataGridEmployee1.Columns[4].Header = "Contact Number";
             DataGridEmployee1.Columns[5].Header = "Role";
+
+            foreach (var column in DataGridEmployee1.Columns)
+            {
+                if (column is DataGridTextColumn textColumn)
+                {
+                    // Apply the custom cell style to specific columns
+                    if (textColumn.Header.ToString() == "Infor ID")
+                    {
+                        textColumn.CellStyle = FindResource("CenteredDataGridCell") as Style;
+                        textColumn.HeaderStyle = FindResource("CenteredDataGridColumnHeader") as Style;
+                    }
+                }
+            }
         }
 
         private void btnDeleteEmp_Click(object sender, RoutedEventArgs e)
