@@ -305,41 +305,6 @@ namespace CTOTracker.View
                 return null;
             }
         }
-        //private string GetEmployeeId(string employeeName)
-        //{
-        //    string? employeeId = null; // Initialize employeeId to null
-
-        //    try
-        //    {
-        //        using (OleDbConnection connection = dataConnection.GetConnection()) // Create a connection using DataConnection
-        //        {
-        //            // Modified query to concatenate fName and lName
-        //            string query = "SELECT empID FROM Employee WHERE fName & ' ' & lName = ? AND inforID = ?";
-
-        //            using (OleDbCommand command = new OleDbCommand(query, connection)) // Create a command with the query and connection
-        //            {
-        //                command.Parameters.AddWithValue("@employeeName", employeeName); // Add parameter for employee name
-
-        //                connection.Open(); // Open the connection
-        //                object? result = command.ExecuteScalar(); // Execute the query and get the result
-
-        //                if (result != null) // Check if the result is not null
-        //                {
-        //                    employeeId = result.ToString(); // Assign the employee ID to employeeId
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Error retrieving employee ID: " + ex.Message); // Display error message if an exception occurs
-        //    }
-
-        //    // Return employeeId if not null, otherwise throw an exception
-
-        //    return employeeId ?? throw new Exception("Employee ID not found.");
-
-        //}
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
