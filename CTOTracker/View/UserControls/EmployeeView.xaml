@@ -177,8 +177,7 @@
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtContact_PreviewTextInput"
-                            Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                            TabIndex="11" />
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                         <ComboBox
                             x:Name="txtRole"
                             Grid.Row="3"
