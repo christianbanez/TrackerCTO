@@ -449,8 +449,8 @@ namespace CTOTracker.View.UserControls
             cmbxEoU.Items.Add("Earned CTO");
             cmbxEoU.Items.Add("Used CTO");
 
-            cmbxEmpMoY.Items.Add("Earned CTO");
-            cmbxEmpMoY.Items.Add("Used CTO");
+            cmbxEmpMoY.Items.Add("Month/Year");
+            cmbxEmpMoY.Items.Add("Year");
         }
 
         //------------------------------Role------------------------------------
