@@ -446,9 +446,6 @@ namespace CTOTracker.View.UserControls
             cmbxMoY.Items.Add("Month/Year");
             cmbxMoY.Items.Add("Year");
 
-            cmbxEoU.Items.Add("Earned CTO");
-            cmbxEoU.Items.Add("Used CTO");
-
             cmbxEmpMoY.Items.Add("Month/Year");
             cmbxEmpMoY.Items.Add("Year");
         }
@@ -946,11 +943,11 @@ namespace CTOTracker.View.UserControls
         {
             //roleFilter = cmbxRole.SelectedItem?.ToString() ?? "";
             //ApplyFiltersAndUpdateDataGrid();
-            if (cmbxEoU.SelectedItem != null)
-            {
-                cmbxEoU.Tag = "";
-                return;
-            }
+            //if (cmbxEoU.SelectedItem != null)
+            //{
+            //    cmbxEoU.Tag = "";
+            //    return;
+            //}
         }
 
         private void EmpFilPnl_Loaded(object sender, RoutedEventArgs e)

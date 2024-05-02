@@ -707,6 +707,7 @@ namespace CTOTracker.View
             scheduleDataGrid.Columns[10].Header = "CTO Earned";
             scheduleDataGrid.Columns[11].Header = "CTO Balance";
 
+
             DataGridTextColumn timeInColumn = scheduleDataGrid.Columns[8] as DataGridTextColumn;
             DataGridTextColumn timeOutColumn = scheduleDataGrid.Columns[9] as DataGridTextColumn;
 

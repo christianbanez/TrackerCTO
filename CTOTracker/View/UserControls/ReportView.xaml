@@ -58,8 +58,8 @@
                     x:Name="reportDataGrid"
                     Grid.ColumnSpan="2"
                     Height="650"
-                    VerticalAlignment="Top"
                     Margin="0,0,10,0"
+                    VerticalAlignment="Top"
                     d:ItemsSource="{d:SampleData ItemCount=5}"
                     AutoGenerateColumns="false"
                     CanUserReorderColumns="False"
@@ -70,7 +70,8 @@
                     IsReadOnly="True"
                     MouseDoubleClick="reportDataGrid_MouseDoubleClick"
                     RowStyle="{DynamicResource MaterialDesignDataGridRow}"
-                    Style="{DynamicResource MaterialDesignDataGrid}" ScrollViewer.CanContentScroll="False" />
+                    ScrollViewer.CanContentScroll="False"
+                    Style="{DynamicResource MaterialDesignDataGrid}" />
 
             </Grid>
             <!--  Filter Panel  -->
@@ -179,8 +180,9 @@
                             Background="#66B7CDE4"
                             FontSize="14"
                             SelectedIndex="0"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectionChanged="cmbxMoY_SelectionChanged" />
-                        <ComboBox
+                            SelectionChanged="cmbxMoY_SelectionChanged"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                        <!--<ComboBox
                             x:Name="cmbxEoU"
                             Width="150"
                             Margin="0,10,10,10"
@@ -190,7 +192,14 @@
                             Background="#66B7CDE4"
                             FontSize="14"
                             SelectionChanged="cmbxEoU_SelectionChanged"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />-->
+                        <RadioButton
+                            x:Name="rbEarned"
+                            Margin="0,10,10,15"
+                            VerticalAlignment="Center"
+                            Content="CTO Earned"
+                            FontFamily="Roboto-Light"
+                            FontSize="14" />
                         <RadioButton
                             x:Name="rbBalance"
                             Margin="0,10,10,15"
@@ -247,7 +256,6 @@
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
 
@@ -276,8 +284,6 @@
                         FontSize="16"
                         Style="{DynamicResource button_style}" />
                 </StackPanel>
-
-
 
                 <Label
                     Grid.Row="1"
@@ -341,12 +347,14 @@
                     Content="Filter:"
                     FontSize="20"
                     Foreground="Black" />
-                <Grid Grid.Row="2" Grid.Column="3">
+                <Grid Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2">
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
@@ -373,18 +381,46 @@
                         Background="#66B7CDE4"
                         FontSize="14"
                         SelectedIndex="0"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectionChanged="cmbxEmpMoY_SelectionChanged" />
+                        SelectionChanged="cmbxEmpMoY_SelectionChanged"
+                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+
+                    <RadioButton
+                        x:Name="rbEmpEarned"
+                        Grid.Column="2"
+                        Margin="10,10,0,15"
+                        VerticalAlignment="Center"
+                        Content="CTO Earned"
+                        FontFamily="Roboto-Light"
+                        FontSize="14" />
+                    <RadioButton
+                        x:Name="rbEmpBalance"
+                        Margin="10,10,0,15"
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        Checked="rbBalance_Checked"
+                        Content="CTO Balance"
+                        FontFamily="Roboto-Light"
+                        FontSize="14" />
+                    <RadioButton
+                        x:Name="rbEmpUsed"
+                        Margin="10,10,10,15"
+                        Grid.Column="4"
+                        VerticalAlignment="Center"
+                        Checked="rbUsed_Checked"
+                        Content="CTO Used"
+                        FontFamily="Roboto-Light"
+                        FontSize="14" />
                     <Button
                         x:Name="btnEmoClear"
-                        Grid.Column="3"
-                        Margin="5,5,5,10"
+                        Grid.Column="5"
+                        Margin="60,5,10,10"
                         HorizontalAlignment="Stretch"
                         Click="btnClear_Click"
                         Content="Clear"
                         FontSize="16"
                         Style="{StaticResource button_style}" />
-                </Grid>
 
+                </Grid>
             </Grid>
 
             <DataGrid
