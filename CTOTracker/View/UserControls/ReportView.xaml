@@ -128,7 +128,8 @@
                             Background="#66B7CDE4"
                             FontSize="14"
                             IsEditable="True"
-                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                            
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectionChanged="txtschFname_SelectionChanged" />
                         <!--<TextBox
                             x:Name="txtschLname"
                             Grid.Column="1"

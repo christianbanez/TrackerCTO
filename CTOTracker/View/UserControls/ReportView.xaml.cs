@@ -12,6 +12,7 @@ using iTextSharp.text.pdf.draw;
 using Org.BouncyCastle.Ocsp;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.VisualBasic;
 
 namespace CTOTracker.View.UserControls
 {
@@ -36,6 +37,7 @@ namespace CTOTracker.View.UserControls
             InitializeComponent();
             dataConnection = new DataConnection();
             DataReportView();
+            PopulateEmployeeComboBox();
             //txtschFname.TextChanged += txtschFname_TextChanged;
             rbBalance.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
@@ -51,6 +53,7 @@ namespace CTOTracker.View.UserControls
             cmbxEmpMoY.SelectionChanged += cmbxEmpMoY_SelectionChanged;
             cmbxTask.SelectionChanged += cmbxTask_SelectionChanged;
             cmbxRole.SelectionChanged += cmbxRole_SelectionChanged;
+            txtschFname.SelectionChanged += txtschFname_SelectionChanged;
             //cmbxEoU.SelectionChanged += cmbxEoU_SelectionChanged;
             EmpFilPnl.Visibility = Visibility.Collapsed;
             PopulateRoleComboBox();
@@ -72,40 +75,53 @@ namespace CTOTracker.View.UserControls
             using (OleDbConnection connection = dataConnection.GetConnection())
             {
                 connection.Open();
-                OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection);
-                DataTable dataTable = new DataTable();
-                adapter.Fill(dataTable);
-
-                if (dataTable != null && dataTable.Rows.Count > 0)
+                
+                using (OleDbDataAdapter adapter = new OleDbDataAdapter(query, connection))
                 {
-                    reportDataGrid.ItemsSource = dataTable.DefaultView;
+                    if (txtschFname.SelectedItem != null)
+                    {
+                        string employeeId = GetSelectedEmployeeId();
+                        if (!string.IsNullOrEmpty(employeeId))
+                        {
+                            adapter.SelectCommand.Parameters.AddWithValue("@empID", employeeId);
+                        }
+                    }
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    if (dataTable != null && dataTable.Rows.Count > 0)
+                    {
+                        reportDataGrid.ItemsSource = dataTable.DefaultView;
+                        if (!columnsAdded)
+                        {
+                            AddDataGridColumns();
+                            columnsAdded = true; // Set the flag to true after adding columns
+                        }
+                        // Enable MouseDoubleClick event
+                        reportDataGrid.MouseDoubleClick += reportDataGrid_MouseDoubleClick;
+                    }
+                    else
+                    {
+                        MessageBox.Show("No data found in the Records.", "Information");
+                        txtschFname.Text = "";
+                        cmbxTask.SelectedIndex = -1;
+                        cmbxTask.Tag = "Task";
+                        cmbxRole.SelectedIndex = -1;
+                        cmbxRole.Tag = "Role";
+                        dtEDate.SelectedDate = null;
+                        //dtUDate.SelectedDate = null;
+                        DataReportView();
+
+                        return;
+                    }
                     if (!columnsAdded)
                     {
                         AddDataGridColumns();
                         columnsAdded = true; // Set the flag to true after adding columns
                     }
-                    // Enable MouseDoubleClick event
-                    reportDataGrid.MouseDoubleClick += reportDataGrid_MouseDoubleClick;
                 }
-                else
-                {
-                    //MessageBox.Show("No data found in the Records.", "Information");
-                    txtschFname.Text = "";
-                    cmbxTask.SelectedIndex = -1;
-                    cmbxTask.Tag = "Task";
-                    cmbxRole.SelectedIndex = -1;
-                    cmbxRole.Tag = "Role";
-                    dtEDate.SelectedDate = null;
-                    //dtUDate.SelectedDate = null;
-                    //DataReportView();
+                
 
-                    //return;
-                }
-                if (!columnsAdded)
-                {
-                    AddDataGridColumns();
-                    columnsAdded = true; // Set the flag to true after adding columns
-                }
+               
             }
         }
         private void ApplyFiltersAndUpdateDataGrid()
@@ -118,9 +134,14 @@ namespace CTOTracker.View.UserControls
 
             try
             {
-                if (!string.IsNullOrEmpty(nameFilter))
+                if (txtschFname.SelectedItem != null)
                 {
-                    query += $" AND (Employee.fName LIKE '{nameFilter}' OR Employee.lName LIKE '{nameFilter}')";
+                    string employeeId = GetSelectedEmployeeId();
+                    if (!string.IsNullOrEmpty(employeeId))
+                    {
+                        // Append the employee ID filter to the query
+                        query += " AND (Employee.empID = ?)";
+                    }
                 }
                 if (!string.IsNullOrEmpty(taskFilter))
                 {
@@ -396,6 +417,163 @@ namespace CTOTracker.View.UserControls
                 MessageBox.Show("Error: " + ex.Message);
             }
 
+        }
+        private void PopulateTaskEmpComboBox()
+        {
+            try
+            {
+                // Fetch data from the Employee table
+                List<string> task = GetDataFromTaskEmp();
+
+                // Check if 'allEmployees' is null before binding to the ComboBox
+                if (task != null)
+                {
+                    cmbxTask.ItemsSource = task;
+                }
+                //else
+                //{
+                //    // Handle the case when 'allEmployees' is null
+                //    MessageBox.Show("No employees found.");
+                //}
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+        }
+
+        private void PopulateEmployeeComboBox()
+        {
+
+            try
+            {
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    string query = "SELECT inforID, fName, lName FROM Employee";
+                    using (OleDbCommand command = new OleDbCommand(query, connection))
+                    {
+                        connection.Open();
+                        using (OleDbDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string inforID = reader["inforID"].ToString();
+                                string fName = reader.IsDBNull(reader.GetOrdinal("fName")) ? "" : reader["fName"].ToString();
+                                string lName = reader.IsDBNull(reader.GetOrdinal("lName")) ? "" : reader["lName"].ToString();
+                                string fullName = $"{inforID}: {fName} {lName}"; // Concatenate ID with name
+                                ComboBoxItem item = new ComboBoxItem
+                                {
+                                    Text = fullName,
+                                    Value = inforID
+                                };
+                                txtschFname.Items.Add(item);
+                            }
+                            //if (cbxEmployee.Items.Count > 0)
+                            //{
+                            //    cbxEmployee.SelectedIndex = 0; // This should trigger cbxEmployee_SelectionChanged
+                            //}
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error populating ComboBox: " + ex.Message);
+            }
+
+        }
+
+        public class ComboBoxItem
+        {
+            public string Text { get; set; }
+            public string Value { get; set; }
+
+            public override string ToString()
+            {
+                return Text;
+            }
+        }
+        private string GetSelectedEmployeeId()
+        {
+            try
+            {
+                if (txtschFname.SelectedItem != null)
+                {
+                    ComboBoxItem selectedItem = txtschFname.SelectedItem as ComboBoxItem;
+                    if (selectedItem != null)
+                    {
+                        return selectedItem.Value; // This is the Infor ID
+                    }
+                }
+                /*MessageBox.Show("No employee selected or improper ComboBox item.")*/;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving employee ID: " + ex.Message);
+                return null;
+            }
+        }
+        private List<string> GetDataFromTaskEmp()
+        {
+            List<string> tasks = new List<string>();
+
+            try
+            {
+                // Get connection from DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Define the Access query to select task ID (taskID) and task name (taskName) from the Task table
+                    string query = "SELECT DISTINCT Task.taskName FROM Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID WHERE Schedule.empID = ?";
+
+                    // Create a command object with the query and connection
+                    OleDbCommand command = new OleDbCommand(query, connection);
+
+                    // Check if the selected item is not null and employee ID is not empty
+                    if (txtschFname.SelectedItem != null)
+                    {
+                        string employeeId = GetSelectedEmployeeId();
+                        if (!string.IsNullOrEmpty(employeeId))
+                        {
+                            command.Parameters.AddWithValue("?", employeeId); // Add parameter using AddWithValue
+                        }
+                    }
+
+                    // Open the connection to the database
+                    connection.Open();
+
+                    // Execute the command and retrieve data using a data reader
+                    OleDbDataReader reader = command.ExecuteReader();
+
+                    // Iterate through the data reader to read each row
+                    while (reader.Read())
+                    {
+                        // Check if the taskName column contains non-null values
+                        if (!reader.IsDBNull(reader.GetOrdinal("taskName")))
+                        {
+                            // Get the task name
+                            string taskName = reader["taskName"].ToString();
+
+                            // Add the task name to the list
+                            tasks.Add(taskName);
+                        }
+                    }
+
+                    // Close the data reader
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+            // Return the list of employee names retrieved from the database
+            return tasks;
+            
         }
         private List<string> GetDataFromTask()
         {
@@ -911,6 +1089,8 @@ namespace CTOTracker.View.UserControls
             rbUsed.IsChecked = false;
             dtEDate.SelectedDate = null;
             cmbxEmpMoY.SelectedIndex = 0;
+            //dtUDate.SelectedDate = null;
+            PopulateTaskComboBox();
             DataReportView();
         }
         private void ApplyFilters2()
@@ -1048,6 +1228,16 @@ namespace CTOTracker.View.UserControls
         private void dtEmpDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyFilters2();
+        }
+
+        private void txtschFname_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (txtschFname.SelectedItem != null)
+            {
+                ApplyFiltersAndUpdateDataGrid();
+                PopulateTaskEmpComboBox();
+            }
+            
         }
     }
 }
