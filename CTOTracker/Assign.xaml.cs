@@ -114,7 +114,7 @@ namespace CTOTracker
             else if (duration.Ticks < 0)
             {
 
-                return 0.0;
+                return -0.1;
             }
             else
             {
@@ -535,9 +535,11 @@ namespace CTOTracker
                     DateTime startDate = startDatePicker.SelectedDate ?? DateTime.Now;
                     DateTime endDate = endDatePicker.SelectedDate ?? DateTime.Now;
 
+
                     // Get selected times from time pickers (if checkbox is checked)
                     string timeIn = (showTimeCheckBox.IsChecked == true) ? startTimeTextBox.Text : string.Empty;
                     string timeOut = (showTimeCheckBox.IsChecked == true) ? endTimeTextBox.Text : string.Empty;
+
 
                     // Insert data into Schedule table
                     InsertIntoSchedule(employeeId, taskId, startDate, endDate, timeIn, timeOut);
@@ -565,6 +567,7 @@ namespace CTOTracker
                             MessageBox.Show("Planned start date cannot be greater than planned end date.");
                             return;
                         }
+                        
 
                         string query = "INSERT INTO Schedule (empID, taskID, plannedStart, plannedEnd, timeIn, timeOut, ctoEarned, ctoBalance) " +
                                        "VALUES (@empID, @taskID, @plannedStart, @plannedEnd, @timeIn, @timeOut, @ctoEarned, @ctoBalance)";
@@ -588,7 +591,7 @@ namespace CTOTracker
                                 DateTime dateTimeOutWithDate = endDate.Date + timeOutDateTime.TimeOfDay;
                                 command.Parameters.AddWithValue("@timeOut", dateTimeOutWithDate.ToString("MM/dd/yyyy hh:mm tt"));
                                 double ctoEarned = CalculateCtoEarned(dateTimeInWithDate, dateTimeOutWithDate);
-                                if (ctoEarned >= 0.0)
+                                if (ctoEarned > 0.0)
                                 {
                                     command.Parameters.AddWithValue("@ctoEarned", ctoEarned);
                                     command.Parameters.AddWithValue("@ctoBalance", ctoEarned);
@@ -599,7 +602,7 @@ namespace CTOTracker
                                 }
                                 else
                                 {
-                                    MessageBox.Show("The time you have inputted is in a wrong order.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("The time you have inputted is in a wrong order or there is nothing to earn", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
 
                             }
