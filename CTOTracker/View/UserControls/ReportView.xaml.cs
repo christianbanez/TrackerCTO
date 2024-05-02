@@ -418,6 +418,31 @@ namespace CTOTracker.View.UserControls
             }
 
         }
+        private void PopulateTaskEmpComboBox()
+        {
+            try
+            {
+                // Fetch data from the Employee table
+                List<string> task = GetDataFromTaskEmp();
+
+                // Check if 'allEmployees' is null before binding to the ComboBox
+                if (task != null)
+                {
+                    cmbxTask.ItemsSource = task;
+                }
+                //else
+                //{
+                //    // Handle the case when 'allEmployees' is null
+                //    MessageBox.Show("No employees found.");
+                //}
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+        }
 
         private void PopulateEmployeeComboBox()
         {
@@ -490,6 +515,65 @@ namespace CTOTracker.View.UserControls
                 MessageBox.Show("Error retrieving employee ID: " + ex.Message);
                 return null;
             }
+        }
+        private List<string> GetDataFromTaskEmp()
+        {
+            List<string> tasks = new List<string>();
+
+            try
+            {
+                // Get connection from DataConnection
+                using (OleDbConnection connection = dataConnection.GetConnection())
+                {
+                    // Define the Access query to select task ID (taskID) and task name (taskName) from the Task table
+                    string query = "SELECT DISTINCT Task.taskName FROM Task INNER JOIN Schedule ON Task.taskID = Schedule.taskID WHERE Schedule.empID = ?";
+
+                    // Create a command object with the query and connection
+                    OleDbCommand command = new OleDbCommand(query, connection);
+
+                    // Check if the selected item is not null and employee ID is not empty
+                    if (txtschFname.SelectedItem != null)
+                    {
+                        string employeeId = GetSelectedEmployeeId();
+                        if (!string.IsNullOrEmpty(employeeId))
+                        {
+                            command.Parameters.AddWithValue("?", employeeId); // Add parameter using AddWithValue
+                        }
+                    }
+
+                    // Open the connection to the database
+                    connection.Open();
+
+                    // Execute the command and retrieve data using a data reader
+                    OleDbDataReader reader = command.ExecuteReader();
+
+                    // Iterate through the data reader to read each row
+                    while (reader.Read())
+                    {
+                        // Check if the taskName column contains non-null values
+                        if (!reader.IsDBNull(reader.GetOrdinal("taskName")))
+                        {
+                            // Get the task name
+                            string taskName = reader["taskName"].ToString();
+
+                            // Add the task name to the list
+                            tasks.Add(taskName);
+                        }
+                    }
+
+                    // Close the data reader
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if an exception occurs
+                MessageBox.Show("Error: " + ex.Message);
+            }
+
+            // Return the list of employee names retrieved from the database
+            return tasks;
+            
         }
         private List<string> GetDataFromTask()
         {
@@ -1031,6 +1115,7 @@ namespace CTOTracker.View.UserControls
             dtEDate.SelectedDate = null;
             cmbxEmpMoY.SelectedIndex = 0;
             //dtUDate.SelectedDate = null;
+            PopulateTaskComboBox();
             DataReportView();
         }
         private void ApplyFilters2()
@@ -1176,6 +1261,7 @@ namespace CTOTracker.View.UserControls
             if (txtschFname.SelectedItem != null)
             {
                 ApplyFiltersAndUpdateDataGrid();
+                PopulateTaskEmpComboBox();
             }
             
         }
