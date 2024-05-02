@@ -181,6 +181,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     materialDesign:HintAssist.Hint="Select Task"
+                    materialDesign:HintAssist.IsFloating="False"
                     Background="#66B7CDE4"
                     FontSize="14"
                     IsEditable="True"

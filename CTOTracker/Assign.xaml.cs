@@ -195,7 +195,7 @@ namespace CTOTracker
                         return selectedItem.Value; // This is the employee ID
                     }
                 }
-                MessageBox.Show("No employee selected or improper ComboBox item.");
+                //MessageBox.Show("No employee selected or improper ComboBox item.");
                 return null;
             }
             catch (Exception ex)

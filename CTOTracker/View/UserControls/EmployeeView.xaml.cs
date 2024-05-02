@@ -202,7 +202,7 @@ namespace CTOTracker.View
             bool isValid = true;
             if (string.IsNullOrEmpty(txtEmpID.Text))
             {
-                MessageBox.Show("ID  cannot be empty.", "Error");
+                MessageBox.Show("ID cannot be empty.", "Error");
                 isValid = false;
             }
             if (string.IsNullOrEmpty(txtFname.Text))
@@ -223,6 +223,11 @@ namespace CTOTracker.View
             if (!IsValidContact(txtContact.Text))
             {
                 MessageBox.Show("Please enter a valid Philippines contact number (09xxxxxxxxx).", "Error");
+                isValid = false;
+            }
+            if (string.IsNullOrEmpty(txtRole.Text))
+            {
+                MessageBox.Show("Role cannot be empty.", "Error");
                 isValid = false;
             }
 
@@ -536,11 +541,18 @@ namespace CTOTracker.View
 
                 if (roleID == null)
                 {
-                    selectedRole = txtRole.Text.Trim();
-                    // If task ID is null, insert the task into the database
-                    InsertRoleIntoDatabase(selectedRole);
-                    // Retrieve the task ID again after insertion
-                    roleID = GetRoleID(selectedRole);
+                    if (txtRole.Text == "")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        selectedRole = txtRole.Text.Trim();
+                        // If task ID is null, insert the task into the database
+                        InsertRoleIntoDatabase(selectedRole);
+                        // Retrieve the task ID again after insertion
+                        roleID = GetRoleID(selectedRole);
+                    }
                     
                 }
                 PopulateRoleComboBox();
