@@ -64,7 +64,8 @@ namespace CTOTracker.View.UserControls
 
                 // Display data in input field
                 roleNameInput.Text = roleName;
-                //roleAddEditPnl.Visibility = Visibility.Visible;
+                taskNameInput.Text = "";
+                roleAddbtnPnl.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -287,17 +288,29 @@ namespace CTOTracker.View.UserControls
                         return; // Exit the method
                     }
 
-                    UpdateRoleInDatabase(roleId, roleName);
-                    LoadRoleView();
+                    MessageBoxResult result = MessageBox.Show("Are you sure you want to save this role?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                    // Show the appropriate panel
-                    //roleAddEditPnl.Visibility = Visibility.Collapsed;
-                    roleAddbtnPnl.Visibility = Visibility.Visible;
-                    roleEditPnl.Visibility = Visibility.Collapsed;
-                    roleNameInput.IsEnabled = false;
-                    roleNameInput.Text = "";
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            UpdateRoleInDatabase(roleId, roleName);
+                            LoadRoleView();
 
-                    roleGridView.IsReadOnly = true;
+                            // Show the appropriate panel
+                            //roleAddEditPnl.Visibility = Visibility.Collapsed;
+                            roleAddbtnPnl.Visibility = Visibility.Visible;
+                            roleEditPnl.Visibility = Visibility.Collapsed;
+                            roleNameInput.IsEnabled = false;
+                            roleNameInput.Text = "";
+
+                            roleGridView.IsReadOnly = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("An error occurred while saving the role: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
                 }
                 else
                 {
@@ -478,6 +491,7 @@ namespace CTOTracker.View.UserControls
                 taskNameInput.Text = taskName;
                 taskDescInput.Text = taskDesc;
                 //editBtn.IsEnabled = true;
+                taskAddEditPnl.Visibility = Visibility.Collapsed;
             }
         }
         private void LoadTaskView()
@@ -787,6 +801,8 @@ namespace CTOTracker.View.UserControls
 
                         // Hide the editBtn
                         roleEditBtn.Visibility = Visibility.Collapsed;
+
+                        MessageBox.Show("Task updated successfully.", "Success");
                     }
                     catch (Exception ex)
                     {
