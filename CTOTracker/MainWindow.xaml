@@ -15,16 +15,17 @@
     MinWidth="1360"
     MinHeight="768"
     MaxWidth="1360"
-    MaxHeight="798"
+    MaxHeight="768"
     Padding="5,5,5,5"
     AllowsTransparency="True"
     Background="Transparent"
+    Icon="/Images/VeCTOr updated icon.ico"
     ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
     UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
-    mc:Ignorable="d" Icon="/Images/VeCTOr updated icon.ico">
+    mc:Ignorable="d">
 
     <Border BorderThickness="3" CornerRadius="3">
         <Border.BorderBrush>
@@ -43,6 +44,7 @@
                     <GradientStop Offset="1" Color="#FDB1BAD8" />
                 </LinearGradientBrush>
             </Grid.Background>
+
 
             <!--  Main panel  -->
             <Grid
@@ -145,6 +147,7 @@
                 <!--  Overlay  -->
                 <Grid
                     x:Name="OverlayGrid"
+                    Margin="0,-20,0,0"
                     Background="Black"
                     Visibility="Collapsed" />
             </Grid>
@@ -162,46 +165,21 @@
                     </LinearGradientBrush>
                 </Grid.Background>
 
-                <StackPanel x:Name="stpnlBtns" Margin="0,30,0,0">
+                <StackPanel x:Name="stpnlBtns" Margin="0,20,0,0">
                     <!--  Menu toggle Grid  -->
-                    <Grid Height="90">
-
-                        <!--  Menu text  -->
-                        <Label
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="73,-20,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            Content="M E N U"
-                            FontSize="20"
-                            Foreground="White">
-
-                            <!--  // Shadow Effect //  -->
-
-                            <Label.Effect>
-                                <DropShadowEffect
-                                    BlurRadius="10"
-                                    Direction="-90"
-                                    ShadowDepth="1"
-                                    Color="White" />
-                            </Label.Effect>
-                        </Label>
-
+                    <Grid Height="75">
                         <!--  Toggle Button  -->
                         <ToggleButton
                             x:Name="tgbMenu"
                             Grid.Column="0"
                             Width="30"
                             Height="30"
-                            Margin="18,-20,0,0"
+                            Margin="17,-20,0,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Background="Transparent"
                             BorderBrush="Transparent"
                             Checked="tgbMenu_Checked"
-                            MouseEnter="tgbMenu_MouseEnter"
                             Style="{DynamicResource tb_style}"
                             Unchecked="tgbMenu_Unchecked">
 
@@ -236,7 +214,36 @@
                                     </BeginStoryboard>
                                 </EventTrigger>
                             </ToggleButton.Triggers>
+                            <ToggleButton.ToolTip>
+                                <ToolTip
+                                    x:Name="ttMenu"
+                                    Content="Menu"
+                                    Style="{StaticResource tt_style}" />
+                            </ToggleButton.ToolTip>
                         </ToggleButton>
+
+                        <!--  Menu text  -->
+                        <Label
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="73,-20,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            Content="M E N U"
+                            FontSize="20"
+                            Foreground="White">
+
+                            <!--  // Shadow Effect //  -->
+
+                            <Label.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="10"
+                                    Direction="-90"
+                                    ShadowDepth="1"
+                                    Color="White" />
+                            </Label.Effect>
+                        </Label>
                     </Grid>
 
                     <!--  ListView Menu list items  -->
@@ -264,7 +271,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="AccountTie" />
 
@@ -292,7 +299,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="CalendarClockOutline" />
 
@@ -320,7 +327,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="FileExportOutline" />
                                 <Label
@@ -331,7 +338,7 @@
                         </ListViewItem>
 
                         <ListViewItem
-                            Margin="0,360,0,15"
+                            Margin="0,385,0,15"
                             HorizontalAlignment="Left"
                             Selected="ListViewItem_Selected_3">
                             <ListViewItem.ToolTip>
@@ -345,7 +352,7 @@
                                 <materialDesign:PackIcon
                                     Width="40"
                                     Height="40"
-                                    Margin="8,0,0,0"
+                                    Margin="7,0,0,0"
                                     Foreground="White"
                                     Kind="FormatListBulletedSquare" />
                                 <Label
