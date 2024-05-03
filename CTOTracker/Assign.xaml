@@ -9,239 +9,251 @@
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="Assign Schedule"
-    UseLayoutRounding="True"
     Width="430"
     Height="450"
+    Padding="5"
+    AllowsTransparency="True"
+    Background="Transparent"
     ResizeMode="NoResize"
     Template="{StaticResource Window_template}"
+    UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Grid>
-        <!--  BG  -->
-        <Grid.Background>
+
+    <Border BorderThickness="3" CornerRadius="3">
+        <Border.BorderBrush>
             <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
-                <GradientStop Offset="0" Color="#FFEFF6FB" />
-                <GradientStop Offset="1" Color="#FFD1D6EA" />
+                <GradientStop Offset="0" Color="#FF3A4575" />
+                <GradientStop Offset="1" Color="#FF3A2586" />
             </LinearGradientBrush>
-        </Grid.Background>
+        </Border.BorderBrush>
+        <Grid>
+            <!--  BG  -->
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#FFEFF6FB" />
+                    <GradientStop Offset="1" Color="#FFD1D6EA" />
+                </LinearGradientBrush>
+            </Grid.Background>
 
-        <Grid Margin="20,50,20,10">
+            <Grid Margin="20,50,20,10">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <StackPanel>
-                <!--  Employee Grid  -->
-                <Grid Margin="0,0,0,5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Label
+                <StackPanel>
+                    <!--  Employee Grid  -->
+                    <Grid Margin="0,0,0,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Label
+                            Margin="10,10,0,0"
+                            Content="Employee :"
+                            FontSize="14"
+                            Foreground="Black"
+                            Style="{StaticResource font_style}" />
+                        <ComboBox
+                            x:Name="Employee_Cmbox"
+                            Grid.Row="1"
+                            Width="311"
+                            Margin="10,10,10,5"
+                            Padding="5"
+                            Background="#66CBE0F5"
+                            FontSize="12"
+                            IsReadOnly="True"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                    </Grid>
+
+                    <!--  Task Grid  -->
+                    <Grid Margin="0,0,0,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="40" />
+                        </Grid.RowDefinitions>
+                        <Label
+                            Margin="10,10,0,0"
+                            Content="Task : "
+                            FontSize="14"
+                            Foreground="Black"
+                            Style="{StaticResource font_style}" />
+                        <ComboBox
+                            x:Name="Task_Cmbox"
+                            Grid.Row="1"
+                            Width="311"
+                            Margin="10,10,10,5"
+                            Padding="5"
+                            Background="#66CBE0F5"
+                            FontSize="12"
+                            IsEditable="True"
+                            Style="{StaticResource MaterialDesignOutlinedComboBox}" />
+                    </Grid>
+
+                    <!--  DatePickers Grid  -->
+                    <Grid Margin="0,0,0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*" />
+                            <ColumnDefinition Width="50*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Label
+                            Margin="0,10,0,0"
+                            Content="Start Date :"
+                            FontSize="14"
+                            Foreground="Black"
+                            Style="{DynamicResource font_style}" />
+                        <Label
+                            Grid.Column="1"
+                            Margin="0,10,0,0"
+                            Content="End Date :"
+                            FontSize="14"
+                            Foreground="Black"
+                            Style="{DynamicResource font_style}" />
+                        <DatePicker
+                            x:Name="startDatePicker"
+                            Grid.Row="1"
+                            Margin="5,0,50,0"
+                            Padding="5"
+                            Background="#66CBE0F5"
+                            BorderBrush="#FF5D86A4"
+                            IsTodayHighlighted="True"
+                            PreviewKeyDown="DatePicker_PreviewKeyDown"
+                            SelectedDate="{x:Static sys:DateTime.Now}"
+                            SelectedDateFormat="Short"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                        <DatePicker
+                            x:Name="endDatePicker"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="5,0,50,0"
+                            Padding="5"
+                            Background="#66CBE0F5"
+                            BorderBrush="#FF5D86A4"
+                            PreviewKeyDown="DatePicker_PreviewKeyDown"
+                            SelectedDate="{x:Static sys:DateTime.Now}"
+                            SelectedDateFormat="Short"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
+                    </Grid>
+
+                    <!--  Show Time CheckBox  -->
+                    <CheckBox
+                        x:Name="showTimeCheckBox"
                         Margin="10,10,0,0"
-                        Content="Employee :"
+                        Checked="showTimeCheckBox_Checked"
+                        Content="Add Time"
+                        FontFamily="Roboto"
                         FontSize="14"
                         Foreground="Black"
-                        Style="{StaticResource font_style}" />
-                    <ComboBox
-                        x:Name="Employee_Cmbox"
-                        Grid.Row="1"
-                        Width="311"
-                        Margin="10,10,10,5"
-                        Padding="5"
-                        Background="#66CBE0F5"
-                        FontSize="12"
-                        IsReadOnly="True"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
-                </Grid>
+                        Unchecked="showTimeCheckBox_Unchecked" />
 
-                <!--  Task Grid  -->
-                <Grid Margin="0,0,0,5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="40" />
-                    </Grid.RowDefinitions>
-                    <Label
-                        Margin="10,10,0,0"
-                        Content="Task : "
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{StaticResource font_style}" />
-                    <ComboBox
-                        x:Name="Task_Cmbox"
-                        Grid.Row="1"
-                        Width="311"
-                        Margin="10,10,10,5"
-                        Padding="5"
-                        Background="#66CBE0F5"
-                        FontSize="12"
-                        IsEditable="True"
-                        Style="{StaticResource MaterialDesignOutlinedComboBox}" />
-                </Grid>
+                    <!--  Time Labels and TextBoxes Grid  -->
+                    <Grid
+                        x:Name="addTime"
+                        Margin="0,0,0,5"
+                        Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Margin="10,10,0,0"
+                            Content="Time In:"
+                            FontSize="14"
+                            Foreground="Black"
+                            Style="{DynamicResource font_style}" />
+                        <Label
+                            Grid.Column="2"
+                            Margin="10,10,0,0"
+                            Content="Time out :"
+                            FontSize="14"
+                            Foreground="Black"
+                            Style="{DynamicResource font_style}" />
 
-                <!--  DatePickers Grid  -->
-                <Grid Margin="0,0,0,5">
+                        <materialDesign:TimePicker
+                            x:Name="startTimeTextBox"
+                            Grid.Column="1"
+                            Width="100"
+                            Margin="5,10,10,0"
+                            Padding="5"
+                            Background="#66CBE0F5"
+                            BorderBrush="#FF5D86A4"
+                            SelectedTimeFormat="Long"
+                            Style="{StaticResource MaterialDesignOutlinedTimePicker}" />
+                        <materialDesign:TimePicker
+                            x:Name="endTimeTextBox"
+                            Grid.Column="3"
+                            Width="100"
+                            Margin="5,10,10,0"
+                            Padding="5"
+                            Background="#66CBE0F5"
+                            BorderBrush="#FF5D86A4"
+                            SelectedTimeFormat="Long"
+                            Style="{StaticResource MaterialDesignOutlinedTimePicker}" />
+                    </Grid>
+
+                    <!--  TextBox for Schedule ID  -->
+                    <TextBox
+                        x:Name="schedIDTextBox"
+                        Width="28"
+                        Height="22"
+                        Margin="10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Text="TextBox"
+                        TextWrapping="Wrap"
+                        Visibility="Collapsed" />
+                </StackPanel>
+
+                <!--  Buttons Grid  -->
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50*" />
-                        <ColumnDefinition Width="50*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Label
-                        Margin="0,10,0,0"
-                        Content="Start Date :"
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{DynamicResource font_style}" />
-                    <Label
-                        Grid.Column="1"
-                        Margin="0,10,0,0"
-                        Content="End Date :"
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{DynamicResource font_style}" />
-                    <DatePicker
-                        x:Name="startDatePicker"
-                        Grid.Row="1"
-                        Margin="5,0,50,0"
-                        Padding="5"
-                        Background="#66CBE0F5"
-                        BorderBrush="#FF5D86A4"
-                        IsTodayHighlighted="True"
-                        PreviewKeyDown="DatePicker_PreviewKeyDown"
-                        SelectedDate="{x:Static sys:DateTime.Now}"
-                        SelectedDateFormat="Short"
-                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
-                    <DatePicker
-                        x:Name="endDatePicker"
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="5,0,50,0"
-                        Padding="5"
-                        Background="#66CBE0F5"
-                        BorderBrush="#FF5D86A4"
-                        PreviewKeyDown="DatePicker_PreviewKeyDown"
-                        SelectedDate="{x:Static sys:DateTime.Now}"
-                        SelectedDateFormat="Short"
-                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" />
-                </Grid>
-
-                <!--  Show Time CheckBox  -->
-                <CheckBox
-                    x:Name="showTimeCheckBox"
-                    Margin="10,10,0,0"
-                    Checked="showTimeCheckBox_Checked"
-                    Content="Add Time"
-                    FontFamily="Roboto"
-                    FontSize="14"
-                    Foreground="Black"
-                    Unchecked="showTimeCheckBox_Unchecked" />
-
-                <!--  Time Labels and TextBoxes Grid  -->
-                <Grid
-                    x:Name="addTime"
-                    Margin="0,0,0,5"
-                    Visibility="Collapsed">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Label
-                        Margin="10,10,0,0"
-                        Content="Time In:"
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{DynamicResource font_style}" />
-                    <Label
+
+                    <Button
+                        x:Name="AddButton"
+                        Grid.Column="1"
+                        Width="50"
+                        Height="25"
+                        Margin="0,0,10,0"
+                        Click="Button_Click"
+                        Content="ADD"
+                        Style="{DynamicResource button_style}" />
+                    <Button
                         Grid.Column="2"
-                        Margin="10,10,0,0"
-                        Content="Time out :"
-                        FontSize="14"
-                        Foreground="Black"
-                        Style="{DynamicResource font_style}" />
-
-                    <materialDesign:TimePicker
-                        x:Name="startTimeTextBox"
+                        Width="55"
+                        Height="25"
+                        Margin="10"
+                        Click="Button_Click_1"
+                        Content="CANCEL"
+                        Style="{DynamicResource button_style}" />
+                    <Button
+                        x:Name="SaveButton"
                         Grid.Column="1"
-                        Width="100"
-                        Margin="5,10,10,0"
-                        Padding="5"
-                        Background="#66CBE0F5"
-                        BorderBrush="#FF5D86A4"
-                        SelectedTimeFormat="Long"
-                        Style="{StaticResource MaterialDesignOutlinedTimePicker}" />
-                    <materialDesign:TimePicker
-                        x:Name="endTimeTextBox"
-                        Grid.Column="3"
-                        Width="100"
-                        Margin="5,10,10,0"
-                        Padding="5"
-                        Background="#66CBE0F5"
-                        BorderBrush="#FF5D86A4"
-                        SelectedTimeFormat="Long"
-                        Style="{StaticResource MaterialDesignOutlinedTimePicker}" />
+                        Width="48"
+                        Height="25"
+                        Margin="10"
+                        Click="SAVE_Click"
+                        Content="Save"
+                        Style="{DynamicResource button_style}"
+                        Visibility="Collapsed" />
                 </Grid>
-
-                <!--  TextBox for Schedule ID  -->
-                <TextBox
-                    x:Name="schedIDTextBox"
-                    Width="28"
-                    Height="22"
-                    Margin="10"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Text="TextBox"
-                    TextWrapping="Wrap"
-                    Visibility="Collapsed" />
-            </StackPanel>
-
-            <!--  Buttons Grid  -->
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <Button
-                    x:Name="AddButton"
-                    Grid.Column="1"
-                    Width="50"
-                    Height="25"
-                    Margin="0,0,10,0"
-                    Click="Button_Click"
-                    Content="ADD"
-                    Style="{DynamicResource button_style}" />
-                <Button
-                    Grid.Column="2"
-                    Width="55"
-                    Height="25"
-                    Margin="10"
-                    Click="Button_Click_1"
-                    Content="CANCEL"
-                    Style="{DynamicResource button_style}" />
-                <Button
-                    x:Name="SaveButton"
-                    Grid.Column="1"
-                    Width="48"
-                    Height="25"
-                    Margin="10"
-                    Click="SAVE_Click"
-                    Content="Save"
-                    Style="{DynamicResource button_style}"
-                    Visibility="Collapsed" />
             </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </Window>

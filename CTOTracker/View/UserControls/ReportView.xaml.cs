@@ -43,8 +43,8 @@ namespace CTOTracker.View.UserControls
             rbBalance.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbUsed.Checked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
             rbUsed.Unchecked += (sender, e) => ApplyFiltersAndUpdateDataGrid();
-            rbEmpEarned.Checked += (sender, e) => ApplyFilters2();
-            rbEmpEarned.Unchecked += (sender, e) => ApplyFilters2();
+            //rbEmpEarned.Checked += (sender, e) => ApplyFilters2();
+            //rbEmpEarned.Unchecked += (sender, e) => ApplyFilters2();
             rbEmpBalance.Checked += (sender, e) => ApplyFilters2();
             rbEmpBalance.Unchecked += (sender, e) => ApplyFilters2();
             rbEmpUsed.Checked += (sender, e) => ApplyFilters2();
@@ -101,7 +101,7 @@ namespace CTOTracker.View.UserControls
                     }
                     else
                     {
-                        MessageBox.Show("No data found in the Records.", "Information");
+                        //MessageBox.Show("No data found in the Records.", "Information");
                         txtschFname.Text = "";
                         cmbxTask.SelectedIndex = -1;
                         cmbxTask.Tag = "Task";
@@ -894,8 +894,6 @@ namespace CTOTracker.View.UserControls
             lblEmpName.Content = fullName;
             lblID.Content = inforID;
             lblRole.Content = role;
-            //lblContactNum.Content = contactNum;
-            //lblEmail.Content = email;
 
             try
             {
@@ -916,29 +914,6 @@ namespace CTOTracker.View.UserControls
                         OleDbDataAdapter adapter = new OleDbDataAdapter(command);
                         DataTable dataTable = new DataTable();
                         adapter.Fill(dataTable);
-
-                        // Set visibility of EmpFilPnl to visible
-                        //EmpFilPnl.Visibility = System.Windows.Visibility.Visible;
-                        //Check if any rows were returned with completed = -1
-                        /*if (cmbxMoY.SelectedItem != null && cmbxMoY.SelectedItem.ToString() == "Month/Year")
-                        {
-                            // Check if the date picker has a selected date
-                            if (dtEmpDate.SelectedDate.HasValue)
-                            {
-                                DateTime selectedDate = dtEmpDate.SelectedDate.Value;
-                                query += $" AND (MONTH(Schedule.plannedEnd) = {selectedDate.Month} AND YEAR(Schedule.plannedEnd) = {selectedDate.Year})";
-                            }
-                        }
-                        else if (cmbxEmpMoY.SelectedItem != null && cmbxEmpMoY.SelectedItem.ToString() == "Year")
-                        {
-                            // Get the selected year from the date picker
-                            int selectedYear = dtEmpDate.SelectedDate.HasValue ? dtEmpDate.SelectedDate.Value.Year : DateTime.Now.Year;
-
-                            // Apply the "Year" filter to the query
-                            query += $" AND YEAR(Schedule.plannedEnd) = {selectedYear}";
-                        }
-                        // Execute the query and update the DataGrid
-                        LoadEmployeeReportHistory(fullName, role, empID) ;*/
                         if (dataTable.Rows.Count > 0)
                         {
                             // Bind the DataTable to the DataGrid
@@ -1234,8 +1209,8 @@ namespace CTOTracker.View.UserControls
 
         private void rbEmpEarned_Checked(object sender, RoutedEventArgs e)
         {
-            rbEmpEarned.IsChecked = true;
-            ApplyFilters2();
+            //rbEmpEarned.IsChecked = true;
+            //ApplyFilters2();
         }
 
         private void btnEmpClear_Click(object sender, RoutedEventArgs e)
@@ -1247,7 +1222,6 @@ namespace CTOTracker.View.UserControls
             rbEmpUsed.IsChecked = false;
             dtEmpDate.SelectedDate = null;
             cmbxEmpMoY.SelectedIndex = 0;
-            //dtUDate.SelectedDate = null;
             LoadEmployeeReportHistory(fullname, role, inforID);
         }
 

@@ -7,7 +7,7 @@
     Title="Use CTO"
     Width="900"
     Height="600"
-    Padding="5,5,5,5"
+    Padding="5"
     AllowsTransparency="True"
     Background="Transparent"
     Loaded="MainWindow_Loaded"

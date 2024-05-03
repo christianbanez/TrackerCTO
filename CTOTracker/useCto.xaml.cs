@@ -84,6 +84,7 @@ namespace CTOTracker
                 selectedScheduleDataTable.Columns.Add("inforID", typeof(int));
                 selectedScheduleDataTable.Columns.Add("fName", typeof(string));
                 selectedScheduleDataTable.Columns.Add("lName", typeof(string));
+                selectedScheduleDataTable.Columns.Add("taskName", typeof(string));
                 selectedScheduleDataTable.Columns.Add("completed", typeof(bool));
                 selectedScheduleDataTable.Columns.Add("ctoEarned", typeof(double));
                 selectedScheduleDataTable.Columns.Add("ctoUsed", typeof(double)); // Change type to double for decimal values
@@ -97,6 +98,7 @@ namespace CTOTracker
                     newRow["inforID"] = row["inforID"];
                     newRow["fName"] = row["fName"];
                     newRow["lName"] = row["lName"];
+                    newRow["taskName"] = row["taskName"];
                     newRow["completed"] = row["completed"]; // Assuming 'completed' is always false for selected rows
                     newRow["ctoEarned"] = row["ctoEarned"];
                    // newRow["ctoUsed"] = row["ctoUsed"];
@@ -125,16 +127,40 @@ namespace CTOTracker
                 {
                     SelectedScheduleView.Columns[0].Header = "Select CTO";
                     SelectedScheduleView.Columns[1].Header = "Schedule ID";
+                    SelectedScheduleView.Columns[1].Visibility = Visibility.Collapsed;
                     SelectedScheduleView.Columns[2].Header = "Infor ID";
                     SelectedScheduleView.Columns[3].Header = "First Name";
                     SelectedScheduleView.Columns[4].Header = "Last Name";
-                    SelectedScheduleView.Columns[5].Header = "Completed";
-                    SelectedScheduleView.Columns[6].Header = "CTO Earned";
-                    SelectedScheduleView.Columns[7].Header = "CTO Used";
-                    SelectedScheduleView.Columns[8].Header = "CTO Balance";
+                    SelectedScheduleView.Columns[5].Header = "Task Name";
+                    SelectedScheduleView.Columns[6].Header = "Completed";
+                    SelectedScheduleView.Columns[7].Header = "CTO Earned";
+                    SelectedScheduleView.Columns[8].Header = "CTO Used";
+                    SelectedScheduleView.Columns[8].Visibility = Visibility.Collapsed;
+                    SelectedScheduleView.Columns[9].Header = "CTO Balance";
 
-                    //SelectedScheduleView.Columns.RemoveAt(5); // Remove "Completed" column
-                    SelectedScheduleView.Columns.RemoveAt(6); // Remove "Completed" column
+
+                    foreach (var column in SelectedScheduleView.Columns)
+                    {
+                        if (column is DataGridTextColumn textColumn)
+                        {
+                            // Apply the custom cell style to specific columns
+                            if (textColumn.Header.ToString() == "Select CTO" ||
+                                textColumn.Header.ToString() == "Infor ID" ||
+                                textColumn.Header.ToString() == "CTO Earned" ||
+                                textColumn.Header.ToString() == "CTO Balance")
+                            {
+                                textColumn.CellStyle = FindResource("CenteredDataGridCell") as Style;
+                                textColumn.HeaderStyle = FindResource("CenteredDataGridColumnHeader") as Style;
+                            }                            
+                        }
+
+                        if (column is DataGridCheckBoxColumn checkBoxColumn && column.Header.ToString() == "Completed")
+                        {
+                            checkBoxColumn.ElementStyle = FindResource("CustomCheckBoxStyle") as Style;
+                            column.CellStyle = FindResource("CenteredDataGridCell") as Style;
+                            column.HeaderStyle = FindResource("CenteredDataGridColumnHeader") as Style;
+                        }
+                    }
 
                 };
 
@@ -201,11 +227,13 @@ namespace CTOTracker
                 changesDataTable.Columns.Add("schedID", typeof(int));
                 changesDataTable.Columns.Add("inforID", typeof(int));
                 changesDataTable.Columns.Add("fName", typeof(string));
-                changesDataTable.Columns.Add("lName", typeof(string));
+                changesDataTable.Columns.Add("lName", typeof(string));       
+                changesDataTable.Columns.Add("taskName", typeof(string));
                 changesDataTable.Columns.Add("completed", typeof(bool));
                 changesDataTable.Columns.Add("ctoEarned", typeof(double));
                 changesDataTable.Columns.Add("ctoUsed", typeof(double));
                 changesDataTable.Columns.Add("ctoBalance", typeof(double)); // Change type to double
+
 
                 // Calculate the CTO balance and add rows to the changesDataTable
                 foreach (var item in SelectedScheduleView.Items)
@@ -224,7 +252,7 @@ namespace CTOTracker
                         // Check if ctoUsed is greater than ctoEarned
                         if (ctoUsed > ctoBalance)
                         {
-                            MessageBox.Show("CTO Used cannot be greater than CTO Earned for schedule ID: " + rowView["schedID"], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("CTO Used cannot be greater than CTO Earned", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             return; // Exit the method if error
                         }
 
@@ -253,28 +281,54 @@ namespace CTOTracker
                         newRow["inforID"] = Convert.ToInt32(rowView["inforID"]);
                         newRow["fName"] = rowView["fName"];
                         newRow["lName"] = rowView["lName"];
+                        newRow["taskName"] = rowView["taskName"];
                         newRow["completed"] = completed;
                         newRow["ctoEarned"] = ctoEarned;
                         newRow["ctoUsed"] = ctoUsed;
                         newRow["ctoBalance"] = ctoBalance;
                         changesDataTable.Rows.Add(newRow);
+
                     }
                 }
  
                 // Bind the changesDataTable to the ChangesGridView
-                ChangesGridView.ItemsSource = changesDataTable.DefaultView;               
-                
-                    ChangesGridView.Columns[0].Header = "Schedule ID";
-                    ChangesGridView.Columns[1].Header = "Infor ID";
-                    ChangesGridView.Columns[2].Header = "First Name";
-                    ChangesGridView.Columns[3].Header = "Last Name";
-                    ChangesGridView.Columns[4].Header = "Completed";
-                    ChangesGridView.Columns[5].Header = "CTO Earned";
-                    ChangesGridView.Columns[6].Header = "CTO Used";
-                    ChangesGridView.Columns[7].Header = "CTO Balance";
+                ChangesGridView.ItemsSource = changesDataTable.DefaultView;
 
-                    //ChangesGridView.Columns.RemoveAt(4); // Remove "Completed" column
-                    ChangesGridView.Columns.RemoveAt(5); // Remove "Completed" column
+                ChangesGridView.Columns[0].Header = "Schedule ID";
+                ChangesGridView.Columns[1].Header = "Infor ID";
+                ChangesGridView.Columns[1].Width = 75;
+                ChangesGridView.Columns[2].Header = "First Name";
+                ChangesGridView.Columns[3].Header = "Last Name";
+                ChangesGridView.Columns[4].Header = "Task Name";
+                ChangesGridView.Columns[5].Header = "Completed";
+                ChangesGridView.Columns[6].Header = "CTO Earned";
+                ChangesGridView.Columns[7].Header = "CTO Used";
+                ChangesGridView.Columns[8].Header = "CTO Balance";
+
+                ChangesGridView.Columns[0].Visibility = Visibility.Collapsed;
+                //ChangesGridView.Columns[6].Visibility = Visibility.Collapsed; 
+
+                foreach (var column in ChangesGridView.Columns)
+                {
+                    if (column is DataGridTextColumn textColumn)
+                    {
+                        // Apply the custom cell style to specific columns
+                        if (textColumn.Header.ToString() == "Infor ID" ||
+                            textColumn.Header.ToString() == "CTO Earned" ||
+                            textColumn.Header.ToString() == "CTO Used" ||
+                            textColumn.Header.ToString() == "CTO Balance")
+                        {
+                            textColumn.CellStyle = FindResource("CenteredDataGridCell") as Style;
+                            textColumn.HeaderStyle = FindResource("CenteredDataGridColumnHeader") as Style;
+                        }
+                    }
+                    if (column is DataGridCheckBoxColumn checkBoxColumn && column.Header.ToString() == "Completed")
+                    {
+                        checkBoxColumn.ElementStyle = FindResource("CustomCheckBoxStyle") as Style;
+                        column.CellStyle = FindResource("CenteredDataGridCell") as Style;
+                        column.HeaderStyle = FindResource("CenteredDataGridColumnHeader") as Style;
+                    }
+                }
 
 
             }
