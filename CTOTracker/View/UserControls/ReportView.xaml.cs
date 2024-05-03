@@ -109,9 +109,9 @@ namespace CTOTracker.View.UserControls
                         cmbxRole.Tag = "Role";
                         dtEDate.SelectedDate = null;
                         //dtUDate.SelectedDate = null;
-                        DataReportView();
+                        //DataReportView();
 
-                        return;
+                        //return;
                     }
                     if (!columnsAdded)
                     {
