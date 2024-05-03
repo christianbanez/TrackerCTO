@@ -6,6 +6,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace CTOTracker.View
 {
@@ -183,6 +185,106 @@ namespace CTOTracker.View
         }
 
         #region---Input Validation----
+        private Popup popup;
+
+        /*        private void ValidateInput()
+                    {
+                    // Validate Employee ID
+                    if (string.IsNullOrEmpty(txtEmpID.Text))
+                    {
+                        ShowPopupForTextBox(txtEmpID, "ID cannot be empty.");
+                    }
+                    else if (!IsNumeric(txtEmpID.Text))
+                    {
+                        ShowPopupForTextBox(txtEmpID, "Employee ID must be numeric.");
+                    }
+                    else
+                    {
+                        HidePopup();
+                    }
+
+                    // Validate First Name
+                    if (string.IsNullOrEmpty(txtFname.Text))
+                    {
+                        ShowPopupForTextBox(txtFname, "First Name cannot be empty.");
+                    }
+                    else
+                    {
+                        HidePopup();
+                    }
+
+                    // Validate Last Name
+                    if (string.IsNullOrEmpty(txtLname.Text))
+                    {
+                        ShowPopupForTextBox(txtLname, "Last Name cannot be empty.");
+                    }
+                    else
+                    {
+                        HidePopup();
+                    }
+
+                    // Validate Email
+                    if (string.IsNullOrEmpty(txtEmail.Text))
+                    {
+                        ShowPopupForTextBox(txtEmail, "Email cannot be empty.");
+                    }
+                    else if (!IsValidEmail(txtEmail.Text))
+                    {
+                        ShowPopupForTextBox(txtEmail, "Please enter a valid email address.");
+                    }
+                    else
+                    {
+                        HidePopup();
+                    }
+
+                    // Validate Contact
+                    if (string.IsNullOrEmpty(txtContact.Text))
+                    {
+                        ShowPopupForTextBox(txtContact, "Contact cannot be empty.");
+                    }
+                    else if (!IsValidContact(txtContact.Text))
+                    {
+                        ShowPopupForTextBox(txtContact, "Please enter a valid Philippines contact number (09xxxxxxxxx).");
+                    }
+                    else
+                    {
+                        HidePopup();
+                    }
+
+                    // Validate Role
+                    if (string.IsNullOrEmpty(txtRole.Text))
+                    {
+                        ShowPopupForComboBox(txtRole, "Role cannot be empty.");
+                    }
+                    else
+                    {
+                        HidePopup();
+                    }
+                }
+        */
+        private void ShowTooltip(Control control, string message)
+        {
+            ToolTip tooltip = new ToolTip();
+            tooltip.Content = message;
+            control.ToolTip = tooltip;
+            tooltip.PlacementTarget = control;
+            tooltip.Placement = PlacementMode.Bottom;
+            tooltip.IsOpen = true;
+        }
+
+        private void HideTooltip(Control control)
+        {
+            ToolTip tooltip = control.ToolTip as ToolTip;
+            if (tooltip != null)
+            {
+                tooltip.IsOpen = false;
+            }
+        }
+
+        private bool IsNumeric(string input)
+        {
+            return int.TryParse(input, out _);
+        }
 
         private bool IsValidEmail(string email)
         {
@@ -197,46 +299,93 @@ namespace CTOTracker.View
             }
         }
 
-        private bool ValidateInput()
-        {
-            bool isValid = true;
-            if (string.IsNullOrEmpty(txtEmpID.Text))
-            {
-                MessageBox.Show("ID cannot be empty.", "Error");
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(txtFname.Text))
-            {
-                MessageBox.Show("First Name cannot be empty.", "Error");
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(txtLname.Text))
-            {
-                MessageBox.Show("Last Name cannot be empty.", "Error");
-                isValid = false;
-            }
-            if (!IsValidEmail(txtEmail.Text))
-            {
-                MessageBox.Show("Please enter a valid email address.", "Error");
-                isValid = false;
-            }
-            if (!IsValidContact(txtContact.Text))
-            {
-                MessageBox.Show("Please enter a valid Philippines contact number (09xxxxxxxxx).", "Error");
-                isValid = false;
-            }
-            if (string.IsNullOrEmpty(txtRole.Text))
-            {
-                MessageBox.Show("Role cannot be empty.", "Error");
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
         private bool IsValidContact(string contactNumber)
         {
             return Regex.IsMatch(contactNumber, @"^09\d{9}$");
+        }
+
+        private void txtEmpID_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtEmpID.Text))
+            {
+                ShowTooltip(txtEmpID, "ID cannot be empty.");
+            }
+            else if (!IsNumeric(txtEmpID.Text))
+            {
+                ShowTooltip(txtEmpID, "Employee ID must be numeric.");
+            }
+            else
+            {
+                HideTooltip(txtEmpID);
+            }
+        }
+
+        private void txtFname_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtFname.Text))
+            {
+                ShowTooltip(txtFname, "First Name cannot be empty.");
+            }
+            else
+            {
+                HideTooltip(txtFname);
+            }
+        }
+
+        private void txtLname_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtLname.Text))
+            {
+                ShowTooltip(txtLname, "Last Name cannot be empty.");
+            }
+            else
+            {
+                HideTooltip(txtLname);
+            }
+        }
+
+        private void txtEmail_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtEmail.Text))
+            {
+                ShowTooltip(txtEmail, "Email cannot be empty.");
+            }
+            else if (!IsValidEmail(txtEmail.Text))
+            {
+                ShowTooltip(txtEmail, "Please enter a valid email address.");
+            }
+            else
+            {
+                HideTooltip(txtEmail);
+            }
+        }
+
+        private void txtContact_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtContact.Text))
+            {
+                ShowTooltip(txtContact, "Contact cannot be empty.");
+            }
+            else if (!IsValidContact(txtContact.Text))
+            {
+                ShowTooltip(txtContact, "Please enter a valid Philippines contact number (09xxxxxxxxx).");
+            }
+            else
+            {
+                HideTooltip(txtContact);
+            }
+        }
+
+        private void txtRole_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        {
+            if (txtRole.SelectedIndex == -1)
+            {
+                ShowTooltip(txtRole, "Role cannot be empty.");
+            }
+            else
+            {
+                HideTooltip(txtRole);
+            }
         }
 
         private void txtEmpID_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -259,7 +408,6 @@ namespace CTOTracker.View
         {
             try
             {
-
                 // Fetch data from the Employee table
                 List<string> role = GetDataFromRole();
 
@@ -270,7 +418,7 @@ namespace CTOTracker.View
                 }
                 else
                 {
-                    // Handle the case when 'employees' is null
+                    // Handle the case when 'role' is null
                     MessageBox.Show("No role found.");
                 }
             }
@@ -283,7 +431,7 @@ namespace CTOTracker.View
 
         private List<string> GetDataFromRole()
         {
-            // Create a list to store employee names
+            // Create a list to store role names
             List<string> role = new List<string>();
 
             try
@@ -291,8 +439,8 @@ namespace CTOTracker.View
                 // Get connection from DataConnection
                 using (OleDbConnection connection = dataConnection.GetConnection())
                 {
-                    // Define the Access query to select first names (fName) and last names (lName) from the Employee table
-                    string query = "SELECT roleID, roleName FROM Role";
+                    // Define the Access query to select role names from the Role table
+                    string query = "SELECT roleName FROM Role";
 
                     // Create a command object with the query and connection
                     OleDbCommand command = new OleDbCommand(query, connection);
@@ -306,13 +454,13 @@ namespace CTOTracker.View
                     // Iterate through the data reader to read each row
                     while (reader.Read())
                     {
-                        // Check if the fName and lName columns contain non-null values
+                        // Check if the roleName column contains non-null values
                         if (!reader.IsDBNull(reader.GetOrdinal("roleName")))
                         {
-                            // Concatenate the first name and last name to form the full name
-                            string roleName = $"{reader["roleName"]}";
+                            // Get the role name
+                            string roleName = reader["roleName"].ToString();
 
-                            // Add the full name to the list of employees
+                            // Add the role name to the list
                             role.Add(roleName);
                         }
                     }
@@ -327,7 +475,7 @@ namespace CTOTracker.View
                 MessageBox.Show("Error: " + ex.Message);
             }
 
-            // Return the list of employee names retrieved from the database
+            // Return the list of role names retrieved from the database
             return role;
         }
 
@@ -383,11 +531,11 @@ namespace CTOTracker.View
 
                     string inforID = txtEmpID.Text;
                     connection.Open();
-                    // Validate input fields
+                   /* // Validate input fields
                     if (!ValidateInput())
                     {
                         return;
-                    }
+                    }*/
                     // Check for existing inforID
                     using (OleDbCommand cmd = new OleDbCommand("SELECT COUNT(*) FROM Employee WHERE inforID = ?", connection))
                     {
@@ -532,10 +680,10 @@ namespace CTOTracker.View
         {
             try
             {
-                if (!ValidateInput())
+                /*if (!ValidateInput())
                 {
                     return;
-                }
+                }*/
                 string selectedRole = txtRole.SelectedItem?.ToString() ?? txtRole.Text;
                 string roleID = GetRoleID(selectedRole);
 
@@ -673,10 +821,10 @@ namespace CTOTracker.View
             {
                 try
                 {
-                    if (!ValidateInput())
+/*                    if (!ValidateInput())
                     {
                         return;
-                    }
+                    }*/
 
                     MessageBoxResult msgRes = MessageBox.Show("Are you sure you want to delete this?", "Cancel", MessageBoxButton.YesNo);
                     if (DataGridEmployee1.SelectedItem != null)

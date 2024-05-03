@@ -123,22 +123,13 @@
                             VerticalContentAlignment="Center"
                             materialDesign:HintAssist.Hint="Infor ID"
                             materialDesign:HintAssist.IsFloating="False"
-                            materialDesign:ValidationAssist.OnlyShowOnFocus="True"
-                            materialDesign:ValidationAssist.Background="Transparent"
                             Background="#66B7CDE4"
                             FontSize="14"
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtEmpID_PreviewTextInput"
-                            Style="{StaticResource MaterialDesignOutlinedTextBox}">
-                            <TextBox.Text>
-                                <Binding Path="InforID" UpdateSourceTrigger="Explicit">
-                                    <Binding.ValidationRules>
-                                        <local:FieldRequiredValidation ValidatesOnTargetUpdated="True" />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                            PreviewLostKeyboardFocus="txtEmpID_PreviewLostKeyboardFocus"
+                            Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
                         <TextBox
                             x:Name="txtFname"
                             Grid.Row="2"
@@ -151,6 +142,7 @@
                             Background="#66B7CDE4"
                             FontSize="14"
                             IsEnabled="False"
+                            PreviewLostKeyboardFocus="txtFname_PreviewLostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                         <TextBox
                             x:Name="txtLname"
@@ -164,6 +156,7 @@
                             Background="#66B7CDE4"
                             FontSize="14"
                             IsEnabled="False"
+                            PreviewLostKeyboardFocus="txtLname_PreviewLostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                         <TextBox
                             x:Name="txtEmail"
@@ -177,6 +170,7 @@
                             Background="#66B7CDE4"
                             FontSize="14"
                             IsEnabled="False"
+                            PreviewLostKeyboardFocus="txtEmail_PreviewLostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                         <TextBox
                             x:Name="txtContact"
@@ -192,6 +186,7 @@
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtContact_PreviewTextInput"
+                            PreviewLostKeyboardFocus="txtContact_PreviewLostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                         <ComboBox
                             x:Name="txtRole"
@@ -209,6 +204,7 @@
                             FontSize="14"
                             IsEditable="True"
                             IsEnabled="False"
+                            PreviewLostKeyboardFocus="txtRole_PreviewLostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     </Grid>
 
