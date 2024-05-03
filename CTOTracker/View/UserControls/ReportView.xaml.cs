@@ -734,7 +734,7 @@ namespace CTOTracker.View.UserControls
 
             DoubleAnimation gridHeightAnimation = new DoubleAnimation();
             gridHeightAnimation.From = reportDataGrid.ActualHeight;
-            gridHeightAnimation.To = 602; // Adjust this value as needed
+            gridHeightAnimation.To = 502; // Adjust this value as needed
             gridHeightAnimation.Duration = TimeSpan.FromSeconds(0.3);
             reportDataGrid.BeginAnimation(HeightProperty, gridHeightAnimation);
             //dtPnl.Height -= filterPnlHeight;
@@ -758,7 +758,7 @@ namespace CTOTracker.View.UserControls
 
             DoubleAnimation gridHeightAnimation = new DoubleAnimation();
             gridHeightAnimation.From = reportDataGrid.ActualHeight;
-            gridHeightAnimation.To = 650; // Adjust this value as needed
+            gridHeightAnimation.To = 550; // Adjust this value as needed
             gridHeightAnimation.Duration = TimeSpan.FromSeconds(0.3);
             reportDataGrid.BeginAnimation(HeightProperty, gridHeightAnimation);
             //dtPnl.Height = originalDtPnlHeight;

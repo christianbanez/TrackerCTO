@@ -6,8 +6,6 @@
     xmlns:local="clr-namespace:CTOTracker.View.UserControls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="768"
-    d:DesignWidth="1360"
     Focusable="True"
     UseLayoutRounding="True"
     mc:Ignorable="d">
@@ -49,7 +47,7 @@
 
             <Grid
                 x:Name="dtPnl"
-                Height="725"
+                Height="600"
                 Margin="0,42,0,0"
                 VerticalAlignment="Top"
                 Focusable="True">
@@ -57,7 +55,7 @@
                 <DataGrid
                     x:Name="reportDataGrid"
                     Grid.ColumnSpan="2"
-                    Height="650"
+                    Height="550"
                     Margin="0,0,10,0"
                     VerticalAlignment="Top"
                     d:ItemsSource="{d:SampleData ItemCount=5}"

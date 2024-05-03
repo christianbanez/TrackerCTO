@@ -10,12 +10,6 @@
     xmlns:usercontrols="clr-namespace:CTOTracker.View.UserControls"
     x:Name="Employee_Tracker"
     Title="VeCTOr"
-    Width="1370"
-    Height="778"
-    MinWidth="1360"
-    MinHeight="768"
-    MaxWidth="1360"
-    MaxHeight="768"
     Padding="5,5,5,5"
     AllowsTransparency="True"
     Background="Transparent"
@@ -24,6 +18,7 @@
     Template="{StaticResource Window_template}"
     UseLayoutRounding="True"
     WindowStartupLocation="CenterScreen"
+    SizeToContent="WidthAndHeight"
     WindowStyle="None"
     mc:Ignorable="d">
 
@@ -50,7 +45,7 @@
             <Grid
                 x:Name="MainPnl"
                 Width="1290"
-                Margin="0,40,0,0"
+                Margin="65,40,0,0"
                 HorizontalAlignment="Right">
 
                 <Frame
