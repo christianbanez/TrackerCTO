@@ -186,7 +186,7 @@
                             IsEnabled="False"
                             MaxLength="11"
                             PreviewTextInput="txtContact_PreviewTextInput"
-                            PreviewLostKeyboardFocus="txtContact_PreviewLostKeyboardFocus"
+                            LostKeyboardFocus="txtContact_LostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                         <ComboBox
                             x:Name="txtRole"
@@ -204,7 +204,7 @@
                             FontSize="14"
                             IsEditable="True"
                             IsEnabled="False"
-                            PreviewLostKeyboardFocus="txtRole_PreviewLostKeyboardFocus"
+                            LostKeyboardFocus="txtRole_LostKeyboardFocus"
                             Style="{StaticResource MaterialDesignOutlinedComboBox}" />
                     </Grid>
 

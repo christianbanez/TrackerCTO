@@ -210,21 +210,28 @@ namespace CTOTracker.View
 
         private void ShowTooltip(Control control, string message)
         {
-            ToolTip tooltip = new ToolTip();
+            ToolTip tooltip = control.ToolTip as ToolTip;
+            if (tooltip == null)
+            {
+                tooltip = new ToolTip();
+                control.ToolTip = tooltip;
+            }
+
             tooltip.Content = message;
-            control.ToolTip = tooltip;
             tooltip.PlacementTarget = control;
             tooltip.Placement = PlacementMode.Bottom;
             tooltip.IsOpen = true;
+
         }
 
         private void HideTooltip(Control control)
         {
-            ToolTip tooltip = control.ToolTip as ToolTip;
-            if (tooltip != null)
+            if (control.ToolTip is ToolTip tooltip)
             {
                 tooltip.IsOpen = false;
+                control.ToolTip = null; // Clear the tooltip
             }
+
         }
 
         private bool IsNumeric(string input)
@@ -292,6 +299,7 @@ namespace CTOTracker.View
 
         private void txtEmpID_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
         {
+            TextBox txtEmpID = sender as TextBox;
             if (string.IsNullOrEmpty(txtEmpID.Text))
             {
                 ShowTooltip(txtEmpID, "ID cannot be empty.");
@@ -308,6 +316,7 @@ namespace CTOTracker.View
 
         private void txtFname_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
         {
+            TextBox txtFname = sender as TextBox;
             if (string.IsNullOrEmpty(txtFname.Text))
             {
                 ShowTooltip(txtFname, "First Name cannot be empty.");
@@ -320,6 +329,7 @@ namespace CTOTracker.View
 
         private void txtLname_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
         {
+            TextBox txtLname = sender as TextBox;
             if (string.IsNullOrEmpty(txtLname.Text))
             {
                 ShowTooltip(txtLname, "Last Name cannot be empty.");
@@ -332,6 +342,7 @@ namespace CTOTracker.View
 
         private void txtEmail_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
         {
+            TextBox txtEmail = sender as TextBox;
             if (string.IsNullOrEmpty(txtEmail.Text))
             {
                 ShowTooltip(txtEmail, "Email cannot be empty.");
@@ -346,8 +357,9 @@ namespace CTOTracker.View
             }
         }
 
-        private void txtContact_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        private void txtContact_LostKeyboardFocus(object sender, RoutedEventArgs e)
         {
+            TextBox txtContact = sender as TextBox;
             if (string.IsNullOrEmpty(txtContact.Text))
             {
                 ShowTooltip(txtContact, "Contact cannot be empty.");
@@ -362,9 +374,14 @@ namespace CTOTracker.View
             }
         }
 
-        private void txtRole_PreviewLostKeyboardFocus(object sender, RoutedEventArgs e)
+        private void txtRole_LostKeyboardFocus(object sender, RoutedEventArgs e)
         {
+
             if (txtRole.SelectedIndex == -1)
+            {
+                ShowTooltip(txtRole, "Role cannot be empty.");
+            }
+            else if (txtRole.Text == "")
             {
                 ShowTooltip(txtRole, "Role cannot be empty.");
             }
