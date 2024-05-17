@@ -994,7 +994,7 @@ namespace CTOTracker.View
                         }
 
                         MessageBox.Show("Records Successfully Deleted");
-                        LoadEmployeeView();
+                        
 
                         btnDeleteEmp.IsEnabled = false;
                         btnDeleteEmp.Visibility = Visibility.Collapsed;
@@ -1028,6 +1028,7 @@ namespace CTOTracker.View
                         DataGridEmployee1.IsEnabled = true;
                         DataGridEmployee1.SelectedItem = null;
                     }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -1037,7 +1038,9 @@ namespace CTOTracker.View
                 {
                     connection.Close();
                 }
+                
             }
+            LoadEmployeeView();
         }
     }
 }

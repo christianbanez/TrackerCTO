@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="dbCto.accdb" />
     <None Remove="Images\VeCTOr Main Icon.png" />
     <None Remove="Images\VeCTOr updated icon.ico" />
     <None Remove="View\Resource Dictionary\Assets\btnEmp.png" />
@@ -29,7 +28,9 @@
     <Content Include="Images\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\VeCTOr Main Icon.png" />
+    <Content Include="Images\VeCTOr Main Icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +40,9 @@
 
   <ItemGroup>
     <Resource Include="Images\VeCTOr Main Icon.png" />
-    <Resource Include="Images\VeCTOr updated icon.ico" />
+    <Resource Include="Images\VeCTOr updated icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="View\Resource Dictionary\Assets\btnEmp.png" />
     <Resource Include="View\Resource Dictionary\Assets\btnRep.png" />
     <Resource Include="View\Resource Dictionary\Assets\btnSched.png" />
@@ -54,6 +57,12 @@
     <PackageReference Include="System.Data.OleDb" Version="9.0.0-preview.3.24172.9" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="dbCto.accdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

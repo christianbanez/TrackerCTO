@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.OleDb;
+using System.Windows;
 
 
 namespace CTOTracker
@@ -26,7 +27,7 @@ namespace CTOTracker
 
             // Replace the placeholder with the actual database path
             connectionString = connectionString.Replace("[DATABASE_PATH]", databasePath);
-
+            
             return connectionString;
         }
         //public string connectionStrings = ConfigurationManager.ConnectionStrings["connectionName"].ConnectionString;

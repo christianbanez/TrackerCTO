@@ -13,6 +13,8 @@ using Org.BouncyCastle.Ocsp;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.VisualBasic;
+using System.Configuration;
+using System.Reflection;
 
 namespace CTOTracker.View.UserControls
 {
@@ -24,7 +26,9 @@ namespace CTOTracker.View.UserControls
 
     public partial class ReportView : UserControl
     {
-        string imagePath = @"C:\Users\dkeh\Source\Repos\TrackerCTO\CTOTracker\Images\VeCTOr Main Icon.png";
+
+        private string imageVector;
+        private string imagePath;
         private DataConnection dataConnection;
         private DataView dataView;
         private List<string> allEmployees;
@@ -34,6 +38,9 @@ namespace CTOTracker.View.UserControls
         private string roleFilter = "";
         public ReportView()
         {
+            imageVector = @"Images\VeCTOr Main Icon.png";
+            string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            imagePath = Path.Combine(exeLocation, imageVector);
             InitializeComponent();
             dataConnection = new DataConnection();
             DataReportView();
